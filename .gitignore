@@ -56,7 +56,6 @@ data/
 *.xlsx
 *.xls
 *.json
-*.txt
 
 # python环境相关目录
 rag/
