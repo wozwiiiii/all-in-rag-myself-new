@@ -31,17 +31,14 @@ pip install -r requirements.txt
 
 ## 二、运行RAG示例代码
 
-完成上述所有设置后，您就可以运行RAG示例了。
+完成上述所有设置后，就可以运行RAG示例了。
 
-打开您的终端，确保虚拟环境已激活 (如果适用)，然后执行以下命令：
+打开终端，确保虚拟环境已激活 (如果适用)，然后执行以下命令：
 
 ```bash
-# 假设您当前在 all-in-rag 项目的根目录下
+# 假设当前在 all-in-rag 项目的根目录下
 # 并且使用的是项目根目录下的 rag 虚拟环境
 ./rag/Scripts/python.exe ./docs/chapter1/code/01_langchain_example.py
-
-# 或者，如果您在 docs/chapter1/code 目录下创建并激活了 .venv
-# python 01_langchain_example.py
 ```
 
 代码运行后，可以看到类似下面的输出（格式化后）：
@@ -97,14 +94,14 @@ usage_metadata={
 - **`additional_kwargs`**: 包含一些额外的参数，在这个例子中是 `{'refusal': None}`，表示模型没有拒绝回答。
 - **`response_metadata`**: 包含了关于LLM响应的元数据。
     - `token_usage`: 显示了本次调用消耗的token数量，包括完成（completion_tokens）、提示（prompt_tokens）和总量（total_tokens）。
-    - `model_name`: 使用的LLM模型名称，例如 `deepseek-chat`。
+    - `model_name`: 使用的LLM模型名称，当前是 `deepseek-chat`。
     - `system_fingerprint`, `id`, `service_tier`, `finish_reason`, `logprobs`: 这些是更详细的API响应信息，例如 `finish_reason: 'stop'` 表示模型正常完成了生成。
-- **`id`**: 本次运行的唯一标识符，例如 `run--ab0bf38e-ee4a-4523-a988-df9637df6e56-0`。
+- **`id`**: 本次运行的唯一标识符。
 - **`usage_metadata`**: 与 `response_metadata` 中的 `token_usage` 类似，提供了输入和输出token的统计。
 
 ## 三、基于LangChain框架的RAG实现
 
-> 在第一节中，我们提到四步构建最小可行系统分别是数据准备、索引构建、检索优化和生成集成。接下来围绕这四个方面来实现一个基于LangChain框架的RAG应用。
+> 在第一节中，我们提到四步构建最小可行系统分别是数据准备、索引构建、检索优化和生成集成。接下来将围绕这四个方面来实现一个基于LangChain框架的RAG应用。
 
 ### 3.1 初始化设置
 
@@ -121,6 +118,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_deepseek import ChatDeepSeek
 from modelscope.hub.snapshot_download import snapshot_download
 
+# 加载环境变量
 load_dotenv()
 
 # 下载嵌入模型
@@ -156,18 +154,6 @@ model_dir = snapshot_download(
     ```python
     text_splitter = RecursiveCharacterTextSplitter()
     texts = text_splitter.split_documents(docs)
-    ```
-- **准备嵌入模型**: 脚本会从ModelScope社区下载预训练的文本嵌入模型 (`BAAI/bge-small-zh-v1.5`) 到本地的 `models/` 目录。这个模型后续用于将文本块转换为向量表示。
-    ```python
-    model_dir = snapshot_download(
-        'BAAI/bge-small-zh-v1.5',
-        allow_patterns=[
-            'config.json', 'configuration.json', 'model.safetensors', 
-            'modules.json', 'sentence_bert_config.json', 'special_tokens_map.json', 
-            'tokenizer.json', 'tokenizer_config.json', 'vocab.txt', '1_Pooling/*'
-        ],
-        local_dir=os.path.join(base_model_dir, 'bge-small-zh-v1.5') 
-    )
     ```
 
 ### 3.3 索引构建 (Index Construction)
@@ -239,5 +225,4 @@ model_dir = snapshot_download(
     answer = llm.invoke(prompt.format(question=question, context=docs_content))
     print(answer)
     ```
-
-通过以上步骤，示例代码完成了一个从文档加载、索引构建到检索增强生成的完整RAG流程。
+[完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter1/code/01_langchain_example.py)
