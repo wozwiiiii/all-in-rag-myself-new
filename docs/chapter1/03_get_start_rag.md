@@ -225,7 +225,7 @@ model_dir = snapshot_download(
     answer = llm.invoke(prompt.format(question=question, context=docs_content))
     print(answer)
     ```
-[完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter1/code/01_langchain_example.py)
+[完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C1/01_langchain_example.py)
 
 > 老湿老湿，Langchain很强大但还是太吃操作了，有没有更加简单又好用的框架推荐呢？
 
