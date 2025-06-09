@@ -24,10 +24,10 @@ model_dir = snapshot_download(
         'vocab.txt',
         '1_Pooling/*'
     ],
-    local_dir='models/bge-small-zh-v1.5'
+    local_dir='../../models/bge-small-zh-v1.5'
 )
 
-markdown_path = "data/C1/markdown/easy-rl-chapter1.md"
+markdown_path = "../../data/C1/markdown/easy-rl-chapter1.md"
 
 # 加载本地markdown文件
 loader = UnstructuredMarkdownLoader(markdown_path)
