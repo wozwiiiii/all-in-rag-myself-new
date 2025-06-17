@@ -23,7 +23,7 @@
 激活虚拟环境后，首先切换到存放 `requirements.txt` 文件的目录，然后使用 `pip` 安装所有依赖项：
 
 ```bash
-cd docs/chapter1/code
+cd code/C1
 pip install -r requirements.txt
 ```
 

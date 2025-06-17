@@ -7,19 +7,18 @@
 *注：这里写你的项目所面向的受众，本项目能给他们带来什么，对他们的基础能力要求有哪些*
 
 ## 目录
-*这里写你的项目目录，已完成的部分用添加上跳转链接*
-- [第1章](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter1/chapter1.md)
-- [第2章](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter2)
-  - [2.1 我是2.1的标题](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter2/chapter2_1.md)
-  - [2.2 我是2.2的标题](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter2/chapter2_2.md)
-- [第3章](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter3)
-  - [3.1 我是3.1的标题](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter3/chapter3_1)
-    - [3.1.1 我是3.1.1的标题](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter3/chapter3_1/chapter3_1_1.md)
-    - [3.1.2 我是3.1.2的标题](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter3/chapter3_1/chapter3_1_2.md)
-  - 3.2 我是3.2的标题
-- 第4章
-  - 4.1 我是4.1的标题
-  - 4.2 我是4.2的标题
+
+- [第一章 解锁RAG](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter1)
+  - [第一节 RAG简介](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter1/01_RAG_intro.md)
+  - [第二节 准备工作](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter1/02_preparation.md)
+  - [第三节 四步构建RAG](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter1/03_get_start_rag.md)
+- [第二章 数据准备](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter2)
+  - [第一节 数据加载](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter2/04_data_load.md)
+  - [第二节 我是2.2的标题](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter2/chapter2_2.md)
+- [第3章 索引构建](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3)
+- [第4章 检索优化](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4)
+- [第5章 生成集成](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter5)
+- [第6章 系统评估](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter6)
 
 ## 贡献者名单
 

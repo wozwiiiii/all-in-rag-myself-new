@@ -6,26 +6,9 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_deepseek import ChatDeepSeek
-from modelscope.hub.snapshot_download import snapshot_download
 
 load_dotenv()
-
-# 下载嵌入模型
-model_dir = snapshot_download(
-    'BAAI/bge-small-zh-v1.5',
-    allow_patterns=[
-        'config.json',
-        'model.safetensors',
-        'modules.json',
-        'sentence_bert_config.json',
-        'special_tokens_map.json',
-        'tokenizer.json',
-        'tokenizer_config.json',
-        'vocab.txt',
-        '1_Pooling/*'
-    ],
-    local_dir='../../models/bge-small-zh-v1.5'
-)
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 
 markdown_path = "../../data/C1/markdown/easy-rl-chapter1.md"
 
@@ -39,7 +22,7 @@ texts = text_splitter.split_documents(docs)
 
 # 中文嵌入模型
 embeddings = HuggingFaceEmbeddings(
-    model_name=model_dir,
+    model_name="BAAI/bge-small-zh-v1.5",
     model_kwargs={'device': 'cpu'},
     encode_kwargs={'normalize_embeddings': True}
 )
