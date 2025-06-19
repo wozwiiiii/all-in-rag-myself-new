@@ -109,42 +109,25 @@ usage_metadata={
 
 ```python
 import os
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 from dotenv import load_dotenv
-from langchain_community.document_loaders import UnstructuredMarkdownLoader
+from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_deepseek import ChatDeepSeek
-from modelscope.hub.snapshot_download import snapshot_download
 
 # 加载环境变量
 load_dotenv()
-
-# 下载嵌入模型
-model_dir = snapshot_download(
-    'BAAI/bge-small-zh-v1.5',
-    allow_patterns=[
-        'config.json',
-        'model.safetensors',
-        'modules.json',
-        'sentence_bert_config.json',
-        'special_tokens_map.json',
-        'tokenizer.json',
-        'tokenizer_config.json',
-        'vocab.txt',
-        '1_Pooling/*'
-    ],
-    local_dir='../../models/bge-small-zh-v1.5'
-)
 ```
 
 ### 3.2 数据准备 (Data Preparation)
 
-- **加载原始文档**: 先定义Markdown文件的路径，然后使用`UnstructuredMarkdownLoader`加载该文件作为知识源。
+- **加载原始文档**: 先定义Markdown文件的路径，然后使用`TextLoader`加载该文件作为知识源。
     ```python
     markdown_path = "../../data/C1/markdown/easy-rl-chapter1.md"
-    loader = UnstructuredMarkdownLoader(markdown_path)
+    loader = TextLoader(markdown_path)
     docs = loader.load()
     ```
 - **文本分块 (Chunking)**: 为了便于后续的嵌入和检索，长文档被分割成较小的、可管理的文本块（chunks）。这里采用了递归字符分割策略，使用其默认参数进行分块。当不指定参数初始化 `RecursiveCharacterTextSplitter()` 时，其默认行为旨在最大程度保留文本的语义结构：
@@ -163,7 +146,7 @@ model_dir = snapshot_download(
 - **初始化中文嵌入模型**: 使用`HuggingFaceEmbeddings`加载之前在初始化设置中下载的中文嵌入模型。配置模型在CPU上运行，并启用嵌入归一化 (`normalize_embeddings: True`)。
     ```python
     embeddings = HuggingFaceEmbeddings(
-        model_name=model_dir,
+        model_name="BAAI/bge-small-zh-v1.5",
         model_kwargs={'device': 'cpu'},
         encode_kwargs={'normalize_embeddings': True}
     )
@@ -237,6 +220,7 @@ model_dir = snapshot_download(
 
 ```python
 import os
+os.environ['HF_ENDPOINT']='https://hf-mirror.com'
 from dotenv import load_dotenv
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings 
 from llama_index.llms.deepseek import DeepSeek
@@ -244,8 +228,8 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 load_dotenv()
 
-Settings.llm = DeepSeek(model="deepseek-reasoner", api_key=os.getenv("DEEPSEEK_API_KEY"))
-Settings.embed_model = HuggingFaceEmbedding("../../models/bge-small-zh-v1.5")
+Settings.llm = DeepSeek(model="deepseek-chat", api_key=os.getenv("DEEPSEEK_API_KEY"))
+Settings.embed_model = HuggingFaceEmbedding("BAAI/bge-small-zh-v1.5")
 
 documents = SimpleDirectoryReader(input_files=["../../data/C1/markdown/easy-rl-chapter1.md"]).load_data()
 
@@ -253,11 +237,13 @@ index = VectorStoreIndex.from_documents(documents)
 
 query_engine = index.as_query_engine()
 
+print(query_engine.get_prompts())
+
 print(query_engine.query("文中举了哪些例子?"))
 ```
 
-## 练习
+## 练习（可利用大模型辅助完成）
 
 - 修改Langchain代码中`RecursiveCharacterTextSplitter()`的参数`chunk_size`和`chunk_overlap`，观察输出结果有什么变化。
-- LangChain代码最终得到的输出携带了各种参数，尝试把这些参数过滤掉得到`content`里的具体回答。
+- LangChain代码最终得到的输出携带了各种参数，查询相关资料尝试把这些参数过滤掉得到`content`里的具体回答。
 - 给LlamaIndex代码添加代码注释。

@@ -71,7 +71,7 @@ Unstructured能够识别和分类以下文档元素：
 
 ## 三、从LangChain封装到原始Unstructured
 
-在第一章的示例中，我们使用了LangChain的`UnstructuredMarkdownLoader`，它是对Unstructured库的封装。接下来展示如何直接使用Unstructured库，这样可以获得更大的灵活性和控制力。
+在第一章的示例中，我们使用了LangChain的`UnstructuredMarkdownLoader`，它是LangChain对Unstructured库的封装。接下来展示如何直接使用Unstructured库，这样可以获得更大的灵活性和控制力。
 
 ### 3.1 安装依赖
 
@@ -115,9 +115,6 @@ for i, element in enumerate(elements[:5]):
 
 ## 五、总结
 
-本章介绍了RAG系统中的文档加载基础：
-- 文档加载器的基本功能
-- Unstructured库的核心特性
-- 从LangChain封装到原始库的迁移
+
 
 下一章我们将学习文档分块策略的设计与实现。
