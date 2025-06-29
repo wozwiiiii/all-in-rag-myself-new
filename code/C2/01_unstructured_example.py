@@ -1,4 +1,3 @@
-import os
 from unstructured.partition.auto import partition
 
 # PDF文件路径
@@ -7,16 +6,20 @@ pdf_path = "../../data/C2/pdf/rag.pdf"
 # 使用Unstructured加载并解析PDF文档
 elements = partition(
     filename=pdf_path,
-    include_metadata=True,
-    strategy="hi_res"  # 高分辨率处理，适用于PDF
+    content_type="application/pdf"
 )
 
-# 打印基本信息
-print(f"文档解析完成，共识别出 {len(elements)} 个元素")
-print(f"总字符数: {sum(len(str(element)) for element in elements)}")
+# 打印解析结果
+print(f"解析完成: {len(elements)} 个元素, {sum(len(str(e)) for e in elements)} 字符")
 
-# 显示前5个元素的内容
-print("\n前5个元素内容：")
-for i, element in enumerate(elements[:5]):
-    print(f"\n元素 {i+1} - 类型: {element.category}")
-    print(f"内容: {str(element)}") 
+# 统计元素类型
+from collections import Counter
+types = Counter(e.category for e in elements)
+print(f"元素类型: {dict(types)}")
+
+# 显示所有元素
+print("\n所有元素:")
+for i, element in enumerate(elements, 1):
+    print(f"Element {i} ({element.category}):")
+    print(element)
+    print("=" * 60)

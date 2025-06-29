@@ -87,7 +87,7 @@ usage_metadata={
 }
 ```
 
-> 首次运行时，脚本会从魔塔社区下载`BAAI/bge-small-zh-v1.5`嵌入模型到本地的 `models/` 目录下。
+> 首次运行时，脚本会下载`BAAI/bge-small-zh-v1.5`嵌入模型。
 
 输出参数解析：
 - **`content`**: 这是最核心的部分，即大型语言模型（LLM）根据您的问题和提供的上下文生成的具体回答。
@@ -109,7 +109,7 @@ usage_metadata={
 
 ```python
 import os
-os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+# os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 from dotenv import load_dotenv
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -220,7 +220,7 @@ load_dotenv()
 
 ```python
 import os
-os.environ['HF_ENDPOINT']='https://hf-mirror.com'
+# os.environ['HF_ENDPOINT']='https://hf-mirror.com'
 from dotenv import load_dotenv
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings 
 from llama_index.llms.deepseek import DeepSeek

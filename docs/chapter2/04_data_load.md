@@ -82,10 +82,9 @@ pip install -r requirements.txt
 
 ### 3.2 代码示例
 
-让我们创建一个简单的示例，专注于文档加载：
+创建一个简单的示例，尝试使用Unstructured库加载并解析一个PDF文件：
 
 ```python
-import os
 from unstructured.partition.auto import partition
 
 # PDF文件路径
@@ -94,27 +93,40 @@ pdf_path = "../../data/C2/pdf/rag.pdf"
 # 使用Unstructured加载并解析PDF文档
 elements = partition(
     filename=pdf_path,
-    include_metadata=True,
-    strategy="hi_res"  # 高分辨率处理，适用于PDF
+    content_type="application/pdf"
 )
 
-# 打印基本信息
-print(f"文档解析完成，共识别出 {len(elements)} 个元素")
-print(f"总字符数: {sum(len(str(element)) for element in elements)}")
+# 打印解析结果
+print(f"解析完成: {len(elements)} 个元素, {sum(len(str(e)) for e in elements)} 字符")
 
-# 显示前5个元素的内容
-print("\n前5个元素内容：")
-for i, element in enumerate(elements[:5]):
-    print(f"\n元素 {i+1} - 类型: {element.category}")
-    print(f"内容: {str(element)}")
+# 统计元素类型
+from collections import Counter
+types = Counter(e.category for e in elements)
+print(f"元素类型: {dict(types)}")
+
+# 显示所有元素
+print("\n所有元素:")
+for i, element in enumerate(elements, 1):
+    print(f"Element {i} ({element.category}):")
+    print(element)
+    print("=" * 60)
 ```
 
+**partition函数参数解析：**
+
+- `filename`: 文档文件路径，支持本地文件路径
+- `content_type`: 可选参数，指定MIME类型（如"application/pdf"），可绕过自动文件类型检测
+- `file`: 可选参数，文件对象，与filename二选一使用
+- `url`: 可选参数，远程文档URL，支持直接处理网络文档
+- `include_page_breaks`: 布尔值，是否在输出中包含页面分隔符
+- `strategy`: 处理策略，可选"auto"、"fast"、"hi_res"等
+- `encoding`: 文本编码格式，默认自动检测
+
+`partition`函数使用自动文件类型检测，内部会根据文件类型路由到对应的专用函数（如PDF文件会调用`partition_pdf`）。如果需要更专业的PDF处理，可以直接使用`from unstructured.partition.pdf import partition_pdf`，它提供更多PDF特有的参数选项，如OCR语言设置、图像提取、表格结构推理等高级功能，同时性能更优。
+
 > **完整代码文件**：[`code/C2/01_unstructured_example.py`](../../code/C2/01_unstructured_example.py)
+> [**Unstructured官方文档**](https://docs.unstructured.io/open-source/core-functionality/partitioning)
 
-**注意**：运行前请确保 `data/C2/pdf/rag.pdf` 文件存在。
+## 练习
 
-## 五、总结
-
-
-
-下一章我们将学习文档分块策略的设计与实现。
+- 使用`partition_pdf`替换当前`partition`函数并分别用`hi_res`和`ocr_only`进行解析，观察输出结果有何变化。
