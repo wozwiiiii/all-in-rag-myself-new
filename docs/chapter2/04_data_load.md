@@ -42,7 +42,7 @@
 - **图像**：`.png`, `.jpeg/.jpg`, `.tiff`, `.bmp`, `.gif`
 - **自定义格式**：`.custom`, `.web`
 
-## 二、Unstructured库详解
+## 二、Unstructured文档处理库
 
 [**Unstructured**](https://docs.unstructured.io/open-source/) 是一个专业的文档处理库，专门设计用于RAG和AI微调场景的非结构化数据预处理。提供了统一的接口来处理多种文档格式，是目前最受欢迎的文档加载解决方案之一。
 
@@ -129,4 +129,4 @@ for i, element in enumerate(elements, 1):
 
 ## 练习
 
-- 使用`partition_pdf`替换当前`partition`函数并分别用`hi_res`和`ocr_only`进行解析，观察输出结果有何变化。
+- 使用`partition_pdf`替换当前`partition`函数并分别尝试用`hi_res`和`ocr_only`进行解析，观察输出结果有何变化。
