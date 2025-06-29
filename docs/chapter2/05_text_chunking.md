@@ -62,19 +62,40 @@ LangChain 提供了丰富且易于使用的文本分割器（Text Splitters）�
 
 ### 3.1 固定大小分块
 
-这是最简单直接的方法，按照预设的字符数（`chunk_size`）进行硬切分，并可以通过`chunk_overlap`参数设置块之间的重叠部分，以保留部分上下文。
+这是最简单直接的分块方法。它的**实现原理**是：使用 `CharacterTextSplitter`，并设置一个空的 `separator=""`，从而严格按照预设的字符数（`chunk_size`）进行“硬切分”。它会从文本开头逐一计数字符，一旦达到 `chunk_size`，就立即切分出一个块。
 
-- **实现原理**: 从文本开头按`chunk_size`计数，达到数量就切一刀。
-- **代表工具**: `langchain.text_splitter.CharacterTextSplitter`
-- **优势**: 简单、快速、计算开销小。
-- **劣势**: **严重破坏语义完整性**。极有可能在句子中间、单词中间切断，导致上下文丢失，是**最不推荐**但在某些简单场景下可用的方法。
+下面的代码展示了如何配置一个固定大小分块器：
+
+```python
+from langchain.text_splitter import CharacterTextSplitter
+from langchain_community.document_loaders import TextLoader
+
+loader = TextLoader("../../data/C2/txt/蜂医.txt")
+docs = loader.load()
+
+text_splitter = CharacterTextSplitter(
+    separator="",      # 关键参数：按单个字符进行分割，实现“硬切分”
+    chunk_size=100,    # 每个块的目标大小为100个字符
+    chunk_overlap=10   # 每个块之间重叠10个字符，以缓解语义割裂
+)
+
+chunks = text_splitter.split_documents(docs)
+
+print(f"文本被切分为 {len(chunks)} 个块。\n")
+print("--- 前5个块内容示例 ---")
+for i, chunk in enumerate(chunks[:5]):
+    print("=" * 60)
+    # chunk 是一个 Document 对象，需要访问它的 .page_content 属性来获取文本
+    print(f'块 {i+1} (长度: {len(chunk.page_content)}): "{chunk.page_content}"')
+```
+
+这种方法的主要**优势**在于其简单、快速且计算开销小。然而，它的**劣势**也同样显著：由于不考虑句子、段落等语义边界，会**严重破坏语义完整性**，极有可能在句子或单词中间切断文本，导致上下文信息丢失。因此，这种方法仅在某些对语义要求不高的简单场景下偶尔使用。
 
 ### 3.2 递归字符分块
 
 这是 **LangChain 中最推荐、最通用的默认方法**。它尝试按一组预定义的、有层次结构的分隔符（如段落、句子、单词）进行递归分割，以最大程度地保留文本的语义结构。
 
 - **实现原理**: 优先使用最高级别的分隔符（如`\n\n`）进行分割。如果分割后的块仍然大于`chunk_size`，则在该块上使用次一级的分隔符（如`\n`）继续分割，以此类推，直到所有块都小于`chunk_size`。
-- **代表工具**: `langchain.text_splitter.RecursiveCharacterTextSplitter`
 - **优势**: 尽最大努力保持段落、句子的完整性，是语义保留和实现简单性之间的最佳平衡。
 - **劣势**: 效果依赖于文本自身的格式是否规范。
 
@@ -85,7 +106,6 @@ LangChain 提供了丰富且易于使用的文本分割器（Text Splitters）�
 #### Markdown 结构分块
 
 - **实现原理**: 根据Markdown的标题（`#`、`##`等）来分割文档，可以将一个章节或小节作为一个完整的块。
-- **代表工具**: `langchain.text_splitter.MarkdownHeaderTextSplitter`
 - **优势**: 完美保留文档的逻辑层次结构，语义内聚性极高。每个块都与一个特定的标题相关联，非常适合问答。
 - **劣势**: 只适用于格式良好的Markdown文档。
 
