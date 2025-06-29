@@ -35,26 +35,38 @@
 
 ### 2.1 Unstructured的核心优势
 
-🚀 **格式支持广泛**
+**格式支持广泛**
 - 支持多种文档格式：PDF、Word、Excel、HTML、Markdown等
 - 统一的API接口，无需为不同格式编写不同代码
 
-📊 **智能内容解析**
+**智能内容解析**
 - 自动识别文档结构：标题、段落、表格、列表等
 - 保留文档元数据信息
 
-### 2.2 支持的文档元素类型
+### 2.2 [支持的文档元素类型](https://docs.unstructured.io/open-source/concepts/document-elements)
 
 Unstructured能够识别和分类以下文档元素：
 
 | 元素类型 | 描述 |
 |---------|------|
 | `Title` | 文档标题 |
-| `NarrativeText` | 正文段落 |
-| `ListItem` | 列表项 |
+| `NarrativeText` | 由多个完整句子组成的正文文本，不包括标题、页眉、页脚和说明文字 |
+| `ListItem` | 列表项，属于列表的正文文本元素 |
 | `Table` | 表格 |
-| `Image` | 图像 |
+| `Image` | 图像元数据 |
 | `Formula` | 公式 |
+| `Address` | 物理地址 |
+| `EmailAddress` | 邮箱地址 |
+| `FigureCaption` | 图片标题/说明文字 |
+| `Header` | 文档页眉 |
+| `Footer` | 文档页脚 |
+| `CodeSnippet` | 代码片段 |
+| `PageBreak` | 页面分隔符 |
+| `PageNumber` | 页码 |
+| `UncategorizedText` | 未分类的自由文本 |
+| `CompositeElement` | 分块处理时产生的复合元素* |
+
+> **注：*** `CompositeElement` 是通过分块（chunking）处理产生的特殊元素类型，由一个或多个连续的文本元素组合而成。例如，多个列表项可能会被组合成一个单独的块。
 
 ## 三、从LangChain封装到原始Unstructured
 
