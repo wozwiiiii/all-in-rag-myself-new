@@ -1,8 +1,11 @@
-- 第1章 [RAG简介](chapter1/01_RAG_intro)
-- 第2章 我是第2章的标题
-    - [2.1 我是2.1的标题](chapter2/chapter2_1)
-    - [2.2 我是2.2的标题](chapter2/chapter2_2)
-- 第3章 我是第3章的标题
+- 第1章 解锁RAG
+    - [第一节 RAG简介](chapter1/01_RAG_intro)
+    - [第二节 准备工作](chapter1/02_preparation)
+    - [第三节 四步构建RAG](chapter1/03_get_start_rag)
+- 第2章 数据准备
+    - [第一节 数据加载](chapter2/04_data_load)
+    - [第二节 文本分块](chapter2/05_text_chunking)
+- 第3章 索引构建
     - 3.1 我是3.1的标题
         - 3.1.1 [我是3.1.1的标题](chapter3/chapter3_1/chapter3_1_1)
         - 3.1.2 [我是3.1.2的标题](chapter3/chapter3_1/chapter3_1_2)
