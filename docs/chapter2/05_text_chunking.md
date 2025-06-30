@@ -56,7 +56,7 @@
 
 通过合理分块，可以有效提升检索的信噪比，确保了后续生成环节能得到最优质、最相关的上下文。
 
-## 三、主流分块策略
+## 三、基础分块策略
 
 LangChain 提供了丰富且易于使用的文本分割器（Text Splitters），下面将介绍几种最核心的策略。
 
@@ -104,7 +104,7 @@ for i, chunk in enumerate(chunks[:5]):
 
 ### 3.2 递归字符分块
 
-在前面的章节中，已经使用了 `RecursiveCharacterTextSplitter()` 的默认配置来处理文档分块。现在让我们深入了解 `RecursiveCharacterTextSplitter()` 的实现。它通过分隔符层级递归处理，解决了固定大小分块无法处理超长文本的问题。
+在前面的章节中，已经尝试了使用 `RecursiveCharacterTextSplitter` 的默认配置来处理文档分块。现在让我们深入了解 `RecursiveCharacterTextSplitter` 的实现。它通过分隔符层级递归处理，相对与固定大小分块，改善了超长文本的处理效果。
 
 **算法流程**：
 1.  **寻找有效分隔符**: 从分隔符列表中从前到后遍历，找到第一个在当前文本中**存在**的分隔符。如果都不存在，使用最后一个分隔符（通常是空字符串 `""`）。
@@ -129,8 +129,10 @@ for i, chunk in enumerate(chunks[:5]):
 
 ```python
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import TextLoader
 
-# 加载文档为 `docs`
+loader = TextLoader("../../data/C2/txt/蜂医.txt")
+docs = loader.load()
 
 text_splitter = RecursiveCharacterTextSplitter(
     separators=["\n\n", "\n", "。", "，", " ", ""],  # 分隔符优先级
@@ -165,94 +167,128 @@ splitter = RecursiveCharacterTextSplitter.from_language(
 )
 ```
 
-递归字符分块的核心思想是采用一组有层次结构的分隔符（如段落、句子、单词）进行递归分割，旨在有效平衡语义完整性与块大小控制这两个核心目标。在  `RecursiveCharacterTextSplitter` 的实现中，它首先尝试使用最高优先级的分隔符（如段落标记）来切分文本。如果切分后的块仍然过大，该方法会继续对这个大块应用下一优先级分隔符（如句号），如此循环往复，直到块满足大小限制。这种分层处理的策略，使其在尽可能保持高级语义结构完整性的同时，又能有效控制块大小。
+递归字符分块的核心思想是采用一组有层次结构的分隔符（如段落、句子、单词）进行递归分割，旨在有效平衡语义完整性与块大小控制。在  `RecursiveCharacterTextSplitter` 的实现中，它首先尝试使用最高优先级的分隔符（如段落标记）来切分文本。如果切分后的块仍然过大，会继续对这个大块应用下一优先级分隔符（如句号），如此循环往复，直到块满足大小限制。这种分层处理的策略，使其在尽可能保持高级语义结构完整性的同时，又能有效控制块大小。
 
-### 3.3 基于文档结构的分块
+### 3.3 语义分块
+
+语义分块（Semantic Chunking）是一种更先进的策略，它不依赖于固定的字符数或预设的分隔符，而是尝试根据文本的语义内涵来切分。其核心思想是：**在语义主题发生显著变化的地方进行切分**。这使得每个分块都具有高度的内部语义一致性。
+
+LangChain 提供了 `langchain_experimental.text_splitter.SemanticChunker` 来实现这一功能。
+
+**实现原理**
+
+`SemanticChunker` 的工作流程可以概括为以下几个核心步骤：
+
+1.  **句子分割 (Sentence Splitting)**: 首先，使用标准的句子分割规则（例如，基于句号、问号、感叹号）将输入文本拆分成一个句子列表。
+
+2.  **上下文感知嵌入 (Context-Aware Embedding)**: 这是 `SemanticChunker` 的一个关键设计。它不是对每个句子独立进行嵌入，而是通过 `buffer_size` 参数（默认为1）来捕捉上下文信息。对于列表中的每一个句子，它会将其与前后各 `buffer_size` 个句子组合起来，然后对这个临时的、更长的组合文本进行嵌入。这样，每个句子最终得到的嵌入向量就融入了其上下文的语义。
+
+3.  **计算语义距离 (Distance Calculation)**: 计算每对**相邻**句子的嵌入向量之间的余弦距离。这个距离值量化了两个句子之间的语义差异——距离越大，表示语义关联越弱，跳跃越明显。
+
+4.  **识别断点 (Breakpoint Identification)**: `SemanticChunker` 会分析所有计算出的距离值，并根据一个统计策略（默认为 `percentile`）来确定一个动态阈值。例如，它可能会将所有距离中第95百分位的值作为切分阈值。所有距离大于此阈值的点，都被识别为语义上的“断点”。
+
+5.  **合并成块 (Merging into Chunks)**: 最后，根据识别出的所有断点位置，将原始的句子序列进行切分，并将每个切分后的部分内的所有句子合并起来，形成一个最终的、语义连贯的文本块。
+
+**断点识别策略 (`breakpoint_threshold_type`)**
+
+如何定义“显著的语义跳跃”是语义分块的关键。`SemanticChunker` 提供了几种基于统计的策略来识别断点：
+
+-   `percentile` (百分位法 - **默认策略**):
+    -   **逻辑**: 计算所有相邻句子的语义差异值，并将这些差异值进行排序。当一个差异值超过某个百分位阈值时，就认为它是一个断点。
+    -   **参数**: `breakpoint_threshold_amount` (默认为 `95`)，表示使用第95个百分位作为阈值。这意味着，只有最显著的5%的语义差异点会被选为切分点。
+
+-   `standard_deviation` (标准差法):
+    -   **逻辑**: 计算所有差异值的平均值和标准差。当一个差异值超过“平均值 + N * 标准差”时，被视为异常高的跳跃，即断点。
+    -   **参数**: `breakpoint_threshold_amount` (默认为 `3`)，表示使用3倍标准差作为阈值。
+
+-   `interquartile` (四分位距法):
+    -   **逻辑**: 使用统计学中的四分位距（IQR）来识别异常值。当一个差异值超过 `Q3 + N * IQR` 时，被视为断点。
+    -   **参数**: `breakpoint_threshold_amount` (默认为 `1.5`)，表示使用1.5倍的IQR。
+
+-   `gradient` (梯度法):
+    -   **逻辑**: 这是一种更复杂的方法。它首先计算差异值的变化率（梯度），然后对梯度应用百分位法。对于那些句子间语义联系紧密、差异值普遍较低的文本（如法律、医疗文档）特别有效，因为它能更好地捕捉到语义变化的“拐点”。
+    -   **参数**: `breakpoint_threshold_amount` (默认为 `95`)。
+
+**具体示例如下**
+
+```python
+import os
+## os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+from langchain_experimental.text_splitter import SemanticChunker
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.document_loaders import TextLoader
+
+embeddings = HuggingFaceEmbeddings(
+    model_name="BAAI/bge-small-zh-v1.5",
+    model_kwargs={'device': 'cpu'},
+    encode_kwargs={'normalize_embeddings': True}
+)
+
+# 初始化 SemanticChunker
+text_splitter = SemanticChunker(
+    embeddings,
+    breakpoint_threshold_type="percentile" # 断点识别策略
+)
+
+loader = TextLoader("../../data/C2/txt/蜂医.txt")
+documents = loader.load()
+
+docs = text_splitter.split_documents(documents)
+```
+
+### 3.4 基于文档结构的分块
 
 对于具有明确结构标记的文档格式（如Markdown、HTML、LaTex），可以利用这些标记来实现更智能、更符合逻辑的分割。
 
-#### Markdown 结构分块
+#### 以 Markdown 结构分块为例
 
-- **实现原理**: 根据Markdown的标题（`#`、`##`等）来分割文档，可以将一个章节或小节作为一个完整的块。
-- **优势**: 完美保留文档的逻辑层次结构，语义内聚性极高。每个块都与一个特定的标题相关联，非常适合问答。
-- **劣势**: 只适用于格式良好的Markdown文档。
+对于结构清晰的 Markdown 文档，利用其标题层级进行分块是一种高效且保留了丰富语义的策略。LangChain 提供了 `MarkdownHeaderTextSplitter` 来处理。
 
-## 四、高级分块策略
+- **实现原理**: 该分块器的核心思想是“先按标题分组，再按需细分”。
+    1.  **定义分割规则**: 用户首先需要提供一个标题层级的映射关系，例如 `[ ("#", "Header 1"), ("##", "Header 2") ]`，告诉分块器 `#` 是一级标题，`##` 是二级标题。
+    2.  **内容聚合**: 分块器会遍历整个文档，将每个标题下的所有内容（直到下一个同级或更高级别的标题出现前）聚合在一起。每个聚合后的内容块都会被赋予一个包含其完整标题路径的元数据。
 
-当基础策略无法满足复杂需求时，可以考虑以下更高级的技巧。
+- **元数据注入的威力**: 这是此方法最大的亮点。例如，对于一篇关于机器学习的文章，某个段落可能位于“第三章：模型评估”下的“3.2节：评估指标”中。经过分割后，这个段落形成的文本块，其元数据就会是 `{"Header 1": "第三章：模型评估", "Header 2": "3.2节：评估指标"}`。这种元数据为每个块提供了精确的“地址”，极大地增强了上下文的准确性，让大模型能更好地理解信息片段的来源和背景。
 
-### 4.1 语义分块
+- **局限性与组合使用**: 单纯按标题分割可能会导致一个问题：某个章节下的内容可能非常长，远超模型能处理的上下文窗口。为了解决这个问题，`MarkdownHeaderTextSplitter` 可以与其它分块器（如 `RecursiveCharacterTextSplitter`）**组合使用**。具体流程是：
+    1.  第一步，使用 `MarkdownHeaderTextSplitter` 将文档按标题分割成若干个大的、带有元数据的逻辑块。
+    2.  第二步，对这些逻辑块再应用 `RecursiveCharacterTextSplitter`，将其进一步切分为符合 `chunk_size` 要求的小块。由于这个过程是在第一步之后进行的，所有最终生成的小块都会**继承**来自第一步的标题元数据。
 
-- **实现原理**: 不依赖于固定大小或特定字符，而是使用语言模型来分析句子之间的语义相似性。当相邻句子之间的语义差异超过某个阈值时，就进行切分。
-- **优势**: 能最精准地捕捉语义边界，生成的块在概念上是独立的、内聚的。
-- **劣势**: 计算成本非常高，处理速度慢，需要调用额外的（通常是嵌入）模型来计算相似度。
-- **代表库**: `semantic-text-splitter` (by LlamaIndex)
+- **RAG应用优势**: 这种两阶段的分块策略，既保留了文档的宏观逻辑结构（通过元数据），又确保了每个块的大小适中，是处理结构化文档进行RAG的理想方案。
 
-**适用场景**: 对检索质量要求极高，且不计较预处理成本的场景，如法律文书分析、科研论文检索。
+## 四、其他开源框架中的分块策略
 
-### 4.2 块重叠
+除了 LangChain，还有其他优秀的开源框架提供了便捷且强大的分块方案。
 
-`chunk_overlap` 是一个看似简单却非常重要的参数。
+### 4.1 Unstructured：基于文档元素的智能分块
 
-- **目的**: 在相邻的两个块之间保留一部分重复的内容。这可以确保在块边界处的句子或概念不会被硬生生切断，从而保留了上下文的连续性。
-- **如何选择**:
-    - **太小**: 无法有效连接上下文。
-    - **太大**: 增加存储和计算冗余，可能引入不必要的噪声。
-    - **经验法则**: 通常设置为 `chunk_size` 的 **10% - 20%** 是一个不错的起点。例如，`chunk_size=512`，`chunk_overlap`可以设为`50`。
+`Unstructured`是一个强大的文档处理工具，同样提供了实用的[分块功能](https://docs.unstructured.io/open-source/core-functionality/chunking)。
 
-### 4.3 添加元数据
+1.  **分区 (Partitioning)**: 这是一个核心功能，负责将原始文档（如PDF、HTML）解析成一系列结构化的“元素”（Elements）。每个元素都带有语义标签，如 `Title` (标题)、`NarrativeText` (叙述文本)、`ListItem` (列表项) 等。这个过程本身就完成了对文档的深度理解和结构化。
+2.  **分块 (Chunking)**: 该功能建立在**分区**的结果之上。它不是对纯文本进行操作，而是将分区产生的“元素”列表作为输入，进行智能组合。Unstructured 提供了两种主要的分块策略：
+    -   **`basic`**: 这是默认策略。它会连续地组合文档元素（如段落、列表项），直到达到 `max_characters` 上限，尽可能地填满每个块。如果单个元素超过上限，则会对其进行文本分割。
+    -   **`by_title`**: 该策略在 `basic` 策略的基础上，增加了对“章节”的感知。它将 `Title` 元素视为一个新章节的开始，并强制在此处开始一个新的块，确保同一个块内不会包含来自不同章节的内容。这在处理报告、书籍等结构化文档时非常有用，效果类似于 LangChain 的 `MarkdownHeaderTextSplitter`，但适用范围更广。
 
-分块不仅仅是切割文本，更重要的是为每个块添加`身份证`——元数据。
+Unstructured 允许将分块作为分区的一个参数在单次调用中完成，也支持在分区之后作为一个独立的步骤来执行分块。这种“先理解、后分割”的策略，使得 Unstructured 能在最大程度上保留文档的原始语义结构，特别是在处理版式复杂的文档时，优势尤为明显。
 
-- **常见元数据**:
-    - `source`: 文档来源（文件名、URL）
-    - `page_number`: 页码
-    - `chapter`/`section`: 章节标题
-    - `start_index`: 在原文中的起始位置
+### 4.2 LlamaIndex：面向节点的解析与转换
 
-- **作用**:
-    1.  **来源追溯**: 生成答案后，可以告诉用户答案来自哪个文档的哪个部分。
-    2.  **过滤检索**: 在检索时可以先通过元数据进行过滤（例如，只在“第三章”中检索）。
-    3.  **上下文丰富**: 将元数据信息（如标题）一并送给LLM，帮助其更好地理解块的内容。
+[LlamaIndex](https://docs.llamaindex.ai/en/stable/module_guides/loading/node_parsers/modules/) 将数据处理流程抽象为对“**节点（Node）**”的操作。文档被加载后，首先会被解析成一系列的“节点”，分块只是节点转换（Transformation）中的一环。
 
-## 五、如何选择分块策略
+LlamaIndex 的分块体系有以下特点：
 
-没有万能的策略，选择取决于你的数据和应用。
+1.  **丰富的节点解析器 (Node Parser)**: LlamaIndex 提供了大量针对特定数据格式和策略的节点解析器，可以大致分为几类：
+    -   **结构感知型**: 如 `MarkdownNodeParser`, `JSONNodeParser`, `CodeSplitter` 等，能理解并根据源文件的结构（如Markdown标题、代码函数）进行切分。
+    -   **语义感知型**: 
+        -   `SemanticSplitterNodeParser`: 与 LangChain 的 `SemanticChunker` 类似，它使用嵌入模型来检测句子之间的语义“断点”，从而在语义最连贯的地方进行切分。
+        -   `SentenceWindowNodeParser`: 这是一种非常精巧的策略。它将文档切分成单个的句子，但在每个句子节点（Node）的元数据中，会存储其前后相邻的N个句子（即“窗口”）。这使得在检索时，可以先用单个句子的嵌入进行精确匹配，然后将包含上下文“窗口”的完整文本送给LLM，极大地提升了上下文的质量。
+    -   **常规型**: 如 `TokenTextSplitter`, `SentenceSplitter` 等，提供基于Token数量或句子边界的常规切分方法。
+2.  **灵活的转换流水线**: 用户可以构建一个灵活的流水线，例如先用 `MarkdownNodeParser` 按章节切分文档，再对每个章节节点应用 `SentenceSplitter` 进行更细粒度的句子级切分。每个节点都携带丰富的元数据，记录着它的来源和上下文关系。
+3.  **良好的互操作性**: LlamaIndex 提供了 `LangchainNodeParser`，可以方便地将任何 LangChain 的 `TextSplitter` 封装成 LlamaIndex 的节点解析器，无缝集成到其处理流程中。
 
-| 策略类型 | 适用数据 | 优点 | 缺点 | 推荐度 |
-| :--- | :--- | :--- | :--- | :--- |
-| **递归字符分块** | 通用文本，特别是半结构化文档 | **智能降级分割**，严格控制块大小，语义保护好 | 递归计算开销，分隔符需调优 | ★★★★★ (首选) |
-| **Markdown/HTML分块** | 格式良好的Markdown、HTML文档 | **语义最完整**，逻辑清晰，自带元数据 | 适用范围窄 | ★★★★☆ (若适用) |
-| **语义分块** | 任何文本，特别是段落密集的文章 | **理论上效果最好**，概念内聚 | 计算成本极高，速度慢 | ★★★☆☆ (特定场景) |
-| **固定大小分块** | 结构化数据、代码、日志文件 | 速度最快，实现最简单 | **严重破坏语义**，上下文丢失 | ★☆☆☆☆ (不推荐) |
+### 4.3 ChunkViz：简易的可视化分块工具
 
-**决策流程建议**:
-
-1.  **检查文档格式**:
-    - 是不是格式规范的 Markdown 或 HTML？**是** -> 优先使用 `MarkdownHeaderTextSplitter`。
-    - **否** -> 进入下一步。
-2.  **评估性能要求**:
-    - 是否对检索质量有极致要求，且能接受高昂的预处理成本？**是** -> 尝试**语义分块**。
-    - **否** -> 进入下一步。
-3.  **默认选择**:
-    - 在绝大多数情况下，**`RecursiveCharacterTextSplitter`** 都是最稳妥、最高效的选择。从它开始，调整 `chunk_size` 和 `chunk_overlap` 进行实验。
-
-最终，最佳的分块策略和参数组合需要通过在你的特定数据集上进行**评估和迭代**来确定。
-
-## 六、分块结果可视化
-
-理论讲了这么多，但如何直观地感受不同分块策略带来的差异呢？“眼见为实”是检验分块效果的最佳方式。通过可视化工具，我们可以清晰地看到：
-
--   文本是如何被切分的。
--   `chunk_overlap` 在哪里生效。
--   句子或段落是否被完整保留。
-
-一个好用的社区工具是 [**ChunkViz**](https://github.com/FullStackRetrieval-com/chunkviz)。它可以将你的文档、分块配置作为输入，生成一个交互式的HTML文件，用不同的颜色块展示每个 chunk 的边界和重叠部分。
-
-![ChunkViz 可视化示例](https://raw.githubusercontent.com/datawhalechina/llm-universe/main/docs/images/c2/2/chunkviz-demo.png)
-
-通过这种可视化，你可以快速诊断出分块策略的问题（例如，一个重要的表格被无情地切开），并据此调整 `chunk_size`、`chunk_overlap` 或更换分块策略，从而为你的 RAG 系统打下坚实的基础。
-
+在本文开头部分展示的分块图就是通过 [**ChunkViz**](https://github.com/FullStackRetrieval-com/chunkviz) 生成的。它可以将你的文档、分块配置作为输入，用不同的颜色块展示每个 chunk 的边界和重叠部分，方便快速理解分块逻辑。
 
 ## 参考文献
 

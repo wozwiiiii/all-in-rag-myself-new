@@ -1,3 +1,4 @@
 unstructured-client==0.29.0
 unstructured-inference==0.8.7
 unstructured.pytesseract==0.3.13
+langchain_experimental==0.3.4
