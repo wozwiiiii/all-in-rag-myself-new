@@ -86,7 +86,7 @@ loader = TextLoader("../../data/C2/txt/蜂医.txt")
 docs = loader.load()
 
 text_splitter = CharacterTextSplitter(
-    chunk_size=100,    # 每个块的目标大小为100个字符
+    chunk_size=200,    # 每个块的目标大小为100个字符
     chunk_overlap=10   # 每个块之间重叠10个字符，以缓解语义割裂
 )
 

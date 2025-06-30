@@ -7,7 +7,7 @@ docs = loader.load()
 
 # 2. 初始化固定大小分块器
 text_splitter = CharacterTextSplitter(
-    chunk_size=100,    # 每个块的大小
+    chunk_size=200,    # 每个块的大小
     chunk_overlap=10   # 块之间的重叠大小
 )
 
