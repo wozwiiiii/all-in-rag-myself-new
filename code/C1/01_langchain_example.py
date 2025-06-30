@@ -18,7 +18,7 @@ docs = loader.load()
 
 # 文本分块
 text_splitter = RecursiveCharacterTextSplitter()
-texts = text_splitter.split_documents(docs)
+chunks = text_splitter.split_documents(docs)
 
 # 中文嵌入模型
 embeddings = HuggingFaceEmbeddings(
@@ -29,7 +29,7 @@ embeddings = HuggingFaceEmbeddings(
   
 # 构建向量存储
 vectorstore = InMemoryVectorStore(embeddings)
-vectorstore.add_documents(texts)
+vectorstore.add_documents(chunks)
 
 # 提示词模板
 prompt = ChatPromptTemplate.from_template("""请根据下面提供的上下文信息来回答问题。
