@@ -16,7 +16,7 @@
   - [第一节 数据加载](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter2/04_data_load.md)
   - [第二节 文本分块](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter2/05_text_chunking.md)
 - [第3章 索引构建](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3)
-  - [第一节 嵌入模型](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/05_embed_model.md)
+  - [第一节 向量嵌入](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/05_embed_model.md)
   - [第二节 向量数据库](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/06_vector_db.md)
 - [第4章 检索优化](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4)
 - [第5章 生成集成](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter5)
