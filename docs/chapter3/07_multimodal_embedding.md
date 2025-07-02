@@ -119,4 +119,4 @@ print(f"图文结合1 vs 图文结合2: {sim_4}")
 图文结合1 vs 图文结合2: tensor([[0.9058]])
 ```
 
-> 这场从静态词向量到动态、上下文感知、跨模态表示的演进，是人工智能短暂历史中最重大的成就之一。它反映了我们向着能够理解和生成人类全部体验模态的 AI 系统迈进的根本性转变，也让我们离真正的人工智能更近了一步。
+> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C3/01_bge_visualized.py)
