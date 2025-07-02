@@ -21,6 +21,7 @@
 - [第4章 检索优化](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4)
 - [第5章 生成集成](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter5)
 - [第6章 系统评估](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter6)
+- [第7章 成熟RAG系统](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter7)
 
 ## 贡献者名单
 

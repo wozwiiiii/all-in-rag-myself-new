@@ -6,7 +6,7 @@
 
 前面的章节介绍了如何为文本创建向量嵌入。然而，仅有文本的世界是不完整的。现实世界的信息是多模态的，包含图像、音频、视频等。传统的文本嵌入无法理解“那张有红色汽车的图片”这样的查询，因为文本向量和图像向量处于相互隔离的空间，存在一堵“模态墙”。
 
-**多模态嵌入 (Multimodal Embedding)** 的目标正是为了打破这堵墙。它的核心是将不同类型的数据（如图像和文本）映射到**同一个共享的向量空间**。在这个统一的空间里，一段描述“一只奔跑的狗”的文字，其向量会非常接近一张真实小狗奔跑的图片向量。
+**多模态嵌入 (Multimodal Embedding)** 的目标正是为了打破这堵墙。其核心是将不同类型的数据（如图像和文本）映射到**同一个共享的向量空间**。在这个统一的空间里，一段描述“一只奔跑的狗”的文字，其向量会非常接近一张真实小狗奔跑的图片向量。
 
 实现这一目标的关键，在于解决了**跨模态对齐 (Cross-modal Alignment)** 的挑战。以对比学习、视觉 Transformer (ViT) 等技术为代表的突破，让模型能够学习到不同模态数据之间的语义关联，最终催生了像 CLIP 这样的模型。
 
@@ -38,130 +38,85 @@ BGE-M3 的核心特性可以概括为“M3”：
 
 凭借其统一的多模态、多语言和多功能设计，BGE-M3 为构建全球化、高性能的 RAG 应用提供了一个强大而便捷的解决方案。
 
-## 六、代码实战：使用 LlamaIndex 构建图文 RAG
+## 四、代码示例
 
-LlamaIndex 为构建多模态 RAG 提供了强大的支持。下面，我们将演示如何使用 LlamaIndex 和 CLIP 模型，构建一个可以对图像进行提问的简单 RAG 应用。
+### 4.1 环境准备
 
-### 7.1 环境准备
+**步骤1：安装 visual_bge 模块**
 
-首先，安装必要的库：
 ```bash
-pip install llama-index-multi-modal-llms-openai llama-index-embeddings-clip llama-index-vector-stores-qdrant qdrant-client
+# 进入 visual_bge 目录
+cd code/C3/visual_bge
+
+# 安装 visual_bge 模块及其依赖
+pip install -e .
+
+# 返回上级目录
+cd ..
 ```
 
-### 7.2 数据准备
+**步骤2：下载模型权重**
 
-准备一些图像文件，并将它们放在一个文件夹中，例如 `data/C3/images/`。
+```bash
+# 运行模型下载脚本
+python download_model.py
+```
 
-### 7.3 索引图像
+模型下载脚本会自动检查 `../../models/bge/` 目录下是否存在模型文件，如果不存在则从 Hugging Face 镜像站下载。
 
-接下来，我们加载图像，使用 CLIP 模型为它们创建嵌入，并将它们索引到 Qdrant 向量数据库中。
+### 4.2 基础示例
 
 ```python
 import os
-from llama_index.core import SimpleDirectoryReader, VectorStoreIndex
-from llama_index.vector_stores.qdrant import QdrantVectorStore
-from llama_index.embeddings.clip import ClipEmbedding
-import qdrant_client
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+import torch
+from visual_bge.visual_bge.visual_bge.modeling import Visualized_BGE
 
-# 设置 OpenAI API Key
-os.environ["OPENAI_API_KEY"] = "sk-..."
+model = Visualized_BGE(model_name_bge="BAAI/bge-base-en-v1.5",
+                      model_weight="../../models/bge/Visualized_base_en_v1.5.pth")
+model.eval()
 
-# 1. 加载图像数据
-image_loader = SimpleDirectoryReader("data/C3/images/")
-documents = image_loader.load_data()
+with torch.no_grad():
+    text_emb = model.encode(text="datawhale开源组织的logo")
+    img_emb_1 = model.encode(image="../../data/C3/imgs/datawhale01.png")
+    multi_emb_1 = model.encode(image="../../data/C3/imgs/datawhale01.png", text="datawhale开源组织的logo")
+    img_emb_2 = model.encode(image="../../data/C3/imgs/datawhale02.png")
+    multi_emb_2 = model.encode(image="../../data/C3/imgs/datawhale02.png", text="datawhale开源组织的logo")
 
-# 2. 初始化 Qdrant 向量存储
-client = qdrant_client.QdrantClient(path="qdrant_db")
-vector_store = QdrantVectorStore(client=client, collection_name="image_collection")
+# 计算相似度
+sim_1 = img_emb_1 @ img_emb_2.T
+sim_2 = img_emb_1 @ multi_emb_1.T
+sim_3 = text_emb @ multi_emb_1.T
+sim_4 = multi_emb_1 @ multi_emb_2.T
 
-# 3. 初始化 CLIP 嵌入模型
-clip_embedding = ClipEmbedding()
-
-# 4. 构建并持久化索引
-image_index = VectorStoreIndex.from_documents(
-    documents,
-    vector_store=vector_store,
-    embed_model=clip_embedding,
-)
-
-print("图像索引构建完成！")
+print("=== 相似度计算结果 ===")
+print(f"纯图像 vs 纯图像: {sim_1}")
+print(f"图文结合1 vs 纯图像: {sim_2}")
+print(f"图文结合1 vs 纯文本: {sim_3}")
+print(f"图文结合1 vs 图文结合2: {sim_4}")
 ```
 
-### 7.4 查询
+**代码解读：**
 
-索引构建完成后，我们就可以用文本查询来检索相关的图像，并让多模态 LLM (GPT-4V) 来回答问题。
+- **模型架构**: `Visualized_BGE` 是通过将图像token嵌入集成到BGE文本嵌入框架中构建的通用多模态嵌入模型，具备处理超越纯文本的多模态数据的灵活性
+- **模型参数**:
+  - `model_name_bge`: 指定底层BGE文本嵌入模型，继承其强大的文本表示能力
+  - `model_weight`: Visual BGE的预训练权重文件，包含视觉编码器参数
+- **多模态编码能力**: Visual BGE提供了编码多模态数据的多样性，支持纯文本、纯图像或图文组合的格式：
+  - **纯文本编码**: 保持原始BGE模型的强大文本嵌入能力
+  - **纯图像编码**: 使用基于EVA-CLIP的视觉编码器处理图像
+  - **图文联合编码**: 将图像和文本特征融合到统一的向量空间
+- **应用场景**: 主要用于混合模态检索任务，包括多模态知识检索、组合图像检索、多模态查询的知识检索等
+- **相似度计算**: 使用矩阵乘法计算余弦相似度，所有嵌入向量都被标准化到单位长度，确保相似度值在合理范围内
 
-```python
-from llama_index.multi_modal_llms.openai import OpenAIMultiModal
+**运行结果：**
 
-# 1. 从已持久化的索引加载
-client = qdrant_client.QdrantClient(path="qdrant_db")
-vector_store = QdrantVectorStore(client=client, collection_name="image_collection")
-image_index = VectorStoreIndex.from_vector_store(
-    vector_store=vector_store,
-    embed_model=ClipEmbedding() # 加载时也需要指定嵌入模型
-)
-
-# 2. 初始化多模态 LLM
-openai_mm_llm = OpenAIMultiModal(
-    model="gpt-4-vision-preview", 
-    max_new_tokens=1000
-)
-
-# 3. 创建查询引擎
-query_engine = image_index.as_query_engine(
-    multi_modal_llm=openai_mm_llm,
-    similarity_top_k=2 # 检索最相关的2张图片
-)
-
-# 4. 执行查询
-query_str = "请描述图片中的车辆是什么颜色的，以及它在什么场景下？"
-response = query_engine.query(query_str)
-
-print("问题:", query_str)
-print("回答:", response.response)
-
-# 打印引用的源文件
-for source_node in response.source_nodes:
-    print("- 来源:", source_node.metadata.get('file_path'))
+```bash
+=== 相似度计算结果 ===
+纯图像 vs 纯图像: tensor([[0.8318]])
+图文结合1 vs 纯图像: tensor([[0.8291]])
+图文结合1 vs 纯文本: tensor([[0.7627]])
+图文结合1 vs 图文结合2: tensor([[0.9058]])
 ```
-
-## 七、前沿现状与新兴方向
-
-多模态领域正处在一个重要的发展阶段，基础模型的能力得到了显著提升，同时新的研究方向也在不断涌现。
-
-### 8.1 代表性模型
-
-- **GPT-4o / GPT-4V**: 在多模态基准测试中表现卓越，具备强大的图文理解和对话能力。
-- **Gemini 系列**: 支持原生视频分析，能够处理长达数小时的音频和数百万 token 的上下文。
-- **Claude 3.5 Sonnet**: 在代码和复杂推理任务上领先，并具备强大的视觉分析能力。
-- **开源模型**: LLaVA-NeXT、ImageBind 等开源模型也在不断推动技术民主化，它们在特定任务（如高分辨率处理、多模态统一嵌入）上取得了显著进展。
-
-### 8.2 新兴的技术方向
-
-- **上下文内多模态学习 (In-context Multimodal Learning)**：增强模型在少样本（Few-shot）场景下跨模态学习的能力。
-- **更先进的训练策略**：包括从概念对齐到指令微调的课程学习（Curriculum Learning）、减少对配对数据依赖的自监督学习，以及用于更好人类对齐的 RLHF。
-- **统一的 Transformer 架构**：探索能够处理任意模态组合，同时保持专业能力的通用架构。
-
-### 8.3 核心挑战
-
-尽管取得了巨大进展，多模态嵌入仍面临诸多挑战：
-
-- **模态缺失问题 (Missing Modality)**：当输入中缺少某个模态（如只有文本没有图像）时，系统性能可能会下降。
-- **幻觉问题 (Hallucination)**：在跨模态场景下，模型仍可能生成与事实不符的内容。
-- **计算成本**：训练和推理的巨大开销限制了其广泛部署。
-- **评测困难**：现有基准趋于饱和，缺乏衡量真实世界跨模态能力的标准化框架。
-
-### 本章小结
-
-从 CLIP 的“对齐”哲学，到 BLIP 的“理解与生成”并重，再到 ALIGN 的“规模即力量”以及 BGE-M3 的“多语言统一”，我们可以看到多模态嵌入技术正沿着不同的路径深化。它们共同的目标是打破模态的壁垒，构建一个更统一、更全面的语义表示空间。
-
-在为您的 RAG 应用选择多模态方案时，请将这些模型的特点与您的具体需求相结合：
--   如果您的核心任务是**跨模态检索与分类**，并希望有强大的零样本泛化能力，**CLIP** 及其思想是绝佳的起点。
--   如果应用需要**基于图像进行复杂的问答或生成详细描述**，**BLIP** 系列模型将是更合适的选择。
--   如果您的应用需要服务全球用户，处理**多种语言的图文内容**，**BGE-M3** 则提供了极具吸引力的统一解决方案。
-
-理解这些模型的差异，将帮助您在多模态的世界中做出更明智的决策。
 
 > 这场从静态词向量到动态、上下文感知、跨模态表示的演进，是人工智能短暂历史中最重大的成就之一。它反映了我们向着能够理解和生成人类全部体验模态的 AI 系统迈进的根本性转变，也让我们离真正的人工智能更近了一步。
