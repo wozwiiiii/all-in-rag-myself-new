@@ -50,13 +50,6 @@ logs/
 ehthumbs.db
 Thumbs.db
 
-# Data files
-data/
-*.csv
-*.xlsx
-*.xls
-*.json
-
 # python环境相关目录
 rag/
 
