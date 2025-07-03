@@ -8,21 +8,18 @@
 
 ### 1.1 激活虚拟环境
 
-假设已经按照前一章节的指导，在项目的根目录创建了名为 `rag` 的虚拟环境。在运行脚本前，请从项目根目录激活它：
+假设已经按照前一章节的指导，创建了名为 `rag` 的 Conda 虚拟环境。在运行脚本前，先激活虚拟环境：
 
 ```bash
-# Windows (PowerShell)
-# rag\Scripts\activate
-
-# macOS / Linux
-# source rag/bin/activate
+conda activate rag
 ```
 
 ### 1.2 安装依赖
 
-激活虚拟环境后，首先切换到存放 `requirements.txt` 文件的目录，然后使用 `pip` 安装所有依赖项：
+激活 `conda` 环境后，切换到存放 `requirements.txt` 文件的目录，然后使用 `pip` 安装所有依赖项。在 `conda` 环境中使用 `pip` 是完全兼容的。
 
 ```bash
+# 假设当前在 all-in-rag 项目的根目录下
 cd code/C1
 pip install -r requirements.txt
 ```
@@ -33,12 +30,10 @@ pip install -r requirements.txt
 
 完成上述所有设置后，就可以运行RAG示例了。
 
-打开终端，确保虚拟环境已激活 (如果适用)，然后执行以下命令：
+打开终端，确保虚拟环境已激活，然后执行以下命令：
 
 ```bash
-# 假设当前在 all-in-rag 项目的根目录下
-# 并且使用的是项目根目录下的 rag 虚拟环境
-./rag/Scripts/python.exe ./docs/chapter1/code/01_langchain_example.py
+python 01_langchain_example.py
 ```
 
 代码运行后，可以看到类似下面的输出（格式化后）：
