@@ -12,10 +12,10 @@ texts = [
     "LlamaIndex是一个用于构建和查询私有或领域特定数据的框架。",
     "它提供了数据连接、索引和查询接口等工具。"
 ]
-documents = [Document(text=t) for t in texts]
+docs = [Document(text=t) for t in texts]
 
 # 3. 创建索引并持久化到本地
-index = VectorStoreIndex.from_documents(documents)
+index = VectorStoreIndex.from_documents(docs)
 persist_path = "./llamaindex_index_store"
 index.storage_context.persist(persist_dir=persist_path)
 print(f"LlamaIndex 索引已保存至: {persist_path}")

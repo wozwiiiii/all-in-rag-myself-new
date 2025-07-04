@@ -115,7 +115,7 @@ loaded_vectorstore = FAISS.load_local(
     allow_dangerous_deserialization=True
 )
 
-# 执行相似性搜索
+# 相似性搜索
 query = "FAISS是做什么的？"
 results = loaded_vectorstore.similarity_search(query, k=1)
 
@@ -159,3 +159,7 @@ FAISS index has been saved to ./faiss_index_store
         *   **建立映射**: 更新 `index_to_docstore_id` 字典，建立起 FAISS 内部的整数 ID（如 0, 1, 2...）到我们文档唯一 ID 的映射关系。
 
 
+## 练习
+
+1. LlamaIndex默认会将数据存储为透明可读的JSON格式，运行[03_llamaindex_vector.py](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C3/03_llamaindex_vector.py)文件，查看保存的json文件内容。
+2. 新建一个代码文件实现对LlamaIndex存储数据的加载和相似性搜索。
