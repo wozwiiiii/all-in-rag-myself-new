@@ -6,6 +6,6 @@
     - [第一节 数据加载](chapter2/04_data_load)
     - [第二节 文本分块](chapter2/05_text_chunking)
 - 第3章 索引构建
-    - 3.1 我是3.1的标题
-        - 3.1.1 [我是3.1.1的标题](chapter3/chapter3_1/chapter3_1_1)
-        - 3.1.2 [我是3.1.2的标题](chapter3/chapter3_1/chapter3_1_2)
+    - [第一节 向量嵌入](chapter3/06_vector_embedding)
+    - [第二节 多模态嵌入](chapter3/07_multimodal_embedding)
+    - [第三节 向量数据库](chapter3/08_vector_db)

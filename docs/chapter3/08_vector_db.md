@@ -14,11 +14,9 @@
 4.  **可扩展与高可用**：现代向量数据库通常采用分布式架构，具备良好的水平扩展能力和容错性，能够通过增加节点来应对数据量的增长，并确保服务的稳定可靠。
 5.  **数据与模型生态集成**：与主流的 AI 框架（如 LangChain, LlamaIndex）和机器学习工作流无缝集成，简化了从模型训练到向量检索的应用开发流程。
 
-### 1.2 向量数据库 vs. 传统数据库
+### 1.2 向量数据库 vs 传统数据库
 
-传统的数据库（如 MySQL）擅长处理结构化数据的精确匹配查询（例如，`WHERE age = 25`），但它们并非为处理高维向量的相似性搜索而设计的。在庞大的向量集合中进行暴力、线性的相似度计算，其计算成本和时间延迟无法接受。
-
-**向量数据库 (Vector Database)** 正是为解决这一挑战而生。它是一种专门设计用于高效存储、管理和查询高维向量的数据库系统。在 RAG 流程中，扮演着“知识库”的角色，是连接数据与大语言模型的关键桥梁。
+传统的数据库（如 MySQL）擅长处理结构化数据的精确匹配查询（例如，`WHERE age = 25`），但它们并非为处理高维向量的相似性搜索而设计的。在庞大的向量集合中进行暴力、线性的相似度计算，其计算成本和时间延迟无法接受。**向量数据库 (Vector Database)** 很好的解决了这一问题，它是一种专门设计用于高效存储、管理和查询高维向量的数据库系统。在 RAG 流程中，它扮演着“知识库”的角色，是连接数据与大语言模型的关键桥梁。
 
 向量数据库与传统数据库的主要差异如下：
 
@@ -71,76 +69,93 @@
 -   **新手入门/小型项目**：从 `ChromaDB` 或 `FAISS` 开始是最佳选择。它们与 LangChain/LlamaIndex 紧密集成，几行代码就能运行，且能满足基本的存储和检索需求。
 -   **生产环境/大规模应用**：当数据量超过百万级，或需要高并发、实时更新、复杂元数据过滤时，应考虑更专业的解决方案，如 `Milvus`、`Weaviate` 或云服务 `Pinecone`。
 
-## 四、本地向量存储
+## 四、本地向量存储：以 FAISS 为例
 
-ChromaDB 是一个对开发者非常友好的开源向量数据库，它提供了“开箱即用”的体验，非常适合作为入门选择。
+FAISS (Facebook AI Similarity Search) 是一个由 Facebook AI Research 开发的高性能库，专门用于高效的相似性搜索和密集向量聚类。当与 LangChain 结合使用时，它可以作为一个强大的本地向量存储方案，非常适合快速原型设计和中小型应用。
+
+与 ChromaDB 等数据库不同，FAISS 本质上是一个算法库，它将索引直接保存为本地文件（一个 `.faiss` 索引文件和一个 `.pkl` 映射文件），而非运行一个数据库服务。这种方式轻量且高效。
 
 ### 4.1 环境准备
 
-```bash
-# 安装 chromadb 和 embedding 模型依赖
-pip install chromadb sentence-transformers
-```
+在开始之前，请确保已安装所有必需的库：
 
-### 4.2 基础示例
+> 当前requirements.txt安装的 `faiss-cpu` 是 CPU 版本。如果你的机器有 GPU，可以安装 `faiss-gpu` 以获得更好的性能。
 
-下面的代码演示了使用 ChromaDB 完成一个完整的“索引-查询”流程。
+### 4.2 基础示例(FAISS)
+
+下面的代码演示了使用 LangChain 和 FAISS 完成一个完整的“创建 -> 保存 -> 加载 -> 查询”流程。
 
 ```python
-import chromadb
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_core.documents import Document
 
-# 1. 初始化 ChromaDB 客户端
-# settings=... 用于指定 ChromaDB 的存储路径，实现数据持久化
-client = chromadb.PersistentClient(path="./chroma_db")
+# 1. 示例文本和嵌入模型
+texts = [
+    "张三是法外狂徒",
+    "FAISS是一个用于高效相似性搜索和密集向量聚类的库。",
+    "LangChain是一个用于开发由语言模型驱动的应用程序的框架。"
+]
+docs = [Document(page_content=t) for t in texts]
+embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-small-zh-v1.5")
 
-# 2. 创建或获取一个集合 (Collection)
-# 集合类似于关系数据库中的“表”
-collection = client.get_or_create_collection(name="my_collection")
+# 2. 创建向量存储并保存到本地
+vectorstore = FAISS.from_documents(docs, embeddings)
 
-# 3. 添加文档到集合中
-# ChromaDB 会自动使用默认的嵌入模型处理文本并存储向量
-collection.add(
-    documents=[
-        "这是一份关于苹果公司的文档。",
-        "那是一篇介绍香蕉营养价值的文章。",
-        "我最喜欢的水果是苹果。"
-    ],
-    metadatas=[
-        {"source": "doc1"},
-        {"source": "doc2"},
-        {"source": "doc3"}
-    ],
-    ids=["id1", "id2", "id3"] # 每个文档都需要一个唯一的ID
+local_faiss_path = "./faiss_index_store"
+vectorstore.save_local(local_faiss_path)
+
+print(f"FAISS index has been saved to {local_faiss_path}")
+
+# 3. 加载索引并执行查询
+# 加载时需指定相同的嵌入模型，并允许反序列化
+loaded_vectorstore = FAISS.load_local(
+    local_faiss_path,
+    embeddings,
+    allow_dangerous_deserialization=True
 )
 
-# 4. 执行相似性搜索
-query_text = "我想了解苹果这种水果"
-results = collection.query(
-    query_texts=[query_text],
-    n_results=2 # 返回最相似的2个结果
-)
+# 执行相似性搜索
+query = "FAISS是做什么的？"
+results = loaded_vectorstore.similarity_search(query, k=1)
 
-# 5. 查看结果
-print(results)
+print(f"\n查询: '{query}'")
+print("相似度最高的文档:")
+for doc in results:
+    print(f"- {doc.page_content}")
+```
+**运行结果与解读**：
+
+当你运行上述脚本时，会看到类似以下的输出：
+```bash
+FAISS index has been saved to ./faiss_index_store
+
+查询: 'FAISS是做什么的？'
+相似度最高的文档:
+- FAISS是一个用于高效相似性搜索和密集向量聚类的库。
 ```
 
-**运行结果**：
+**索引创建实现细节**：
+通过深入 LangChain 源码，可以发现索引创建是一个分层、解耦的过程，主要涉及以下几个方法的嵌套调用：
 
-```json
-{
-    "ids": [["id3", "id1"]],
-    "distances": [[0.528..., 1.018...]],
-    "metadatas": [[{"source": "doc3"}, {"source": "doc1"}]],
-    "embeddings": null,
-    "documents": [["我最喜欢的水果是苹果。", "这是一份关于苹果公司的文档。"]],
-    "uris": null,
-    "data": null
-}
-```
+1.  **`from_documents` (封装层)**:
+    *   这是我们直接调用的方法。它的职责很简单：从输入的 `Document` 对象列表中提取出纯文本内容 (`page_content`) 和元数据 (`metadata`)。
+    *   然后，它将这些提取出的信息传递给核心的 `from_texts` 方法。
 
-**结果解读**：
--   `ids`, `documents`, `metadatas` 分别返回了与查询最相关的两个文档的 ID、原始内容和元数据。
--   `distances` 表示查询向量与每个返回文档向量之间的“距离”。值越小，代表语义越相似。
--   可以看到，模型成功地区分了“苹果（水果）”和“苹果（公司）”，并将最相关的“我最喜欢的水T果是苹果。”排在了第一位。
+2.  **`from_texts` (向量化入口)**:
+    *   这个方法是面向用户的核心入口。它接收文本列表，并执行关键的第一步：调用 `embedding.embed_documents(texts)`，将所有文本批量转换为向量。
+    *   完成向量化后，它并不直接处理索引构建，而是将生成的向量和其他所有信息（文本、元数据等）传递给一个内部的辅助方法 `__from`。
 
-通过这个简单的例子，我们了解了向量数据库是如何简化 RAG 中最核心的检索步骤的。在后续章节中，我们将更深入地探讨如何将其与 LangChain 等框架结合，构建更复杂的应用。
+3.  **`__from` (构建索引框架)**:
+    *   这是一个内部方法，负责搭建 FAISS 向量存储的“空框架”。
+    *   它会根据指定的距离策略（默认为 L2 欧氏距离）初始化一个空的 FAISS 索引结构（如 `faiss.IndexFlatL2`）。
+    *   同时，它也准备好了用于存储文档原文的 `docstore` 和用于连接 FAISS 索引与文档的 `index_to_docstore_id` 映射。
+    *   最后，它调用另一个内部方法 `__add` 来完成数据的填充。
+
+4.  **`__add` (填充数据)**:
+    *   这是真正执行数据添加操作的核心。它接收到向量、文本和元数据后，执行以下关键操作：
+        *   **添加向量**: 将向量列表转换为 FAISS 需要的 `numpy` 数组，并调用 `self.index.add(vector)` 将其批量添加到 FAISS 索引中。
+        *   **存储文档**: 将文本和元数据打包成 `Document` 对象，存入 `docstore`。
+        *   **建立映射**: 更新 `index_to_docstore_id` 字典，建立起 FAISS 内部的整数 ID（如 0, 1, 2...）到我们文档唯一 ID 的映射关系。
+
+
