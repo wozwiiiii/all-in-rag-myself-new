@@ -19,7 +19,7 @@
   - [第一节 向量嵌入](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/06_vector_embedding.md)
   - [第二节 多模态嵌入](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/07_multimodal_embedding.md)
   - [第三节 向量数据库](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/08_vector_db.md)
-  - [第四节 Milvus介绍](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/09_milvus.md)
+  - [第四节 Milvus介绍及多模态检索实践](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/09_milvus.md)
 - [第4章 检索优化](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4)
   - [第一节 混合检索](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/09_hybrid_search.md)
 - [第5章 生成集成](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter5)
