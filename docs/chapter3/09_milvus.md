@@ -14,11 +14,11 @@ Milvus 提供了多种部署方式，这里以 **Milvus Standalone (单机版)**
 
 ### 1. 环境准备
 
-- **安装 Docker 与 Docker Compose**: 确保您的系统中已安装并正在运行 Docker 和 Docker Compose。如果您对 Docker 不熟悉，可以参考这篇详细的教程：[Docker 万字教程：从入门到掌握](https://mp.weixin.qq.com/s/u2es87JU5FNlGo3qDLY_ng)。
+- **安装 Docker 与 Docker Compose**: 确保系统中已安装并正在运行 Docker 和 Docker Compose。如果你对 Docker 不熟悉，可以参考这篇详细的教程：[Docker 万字教程：从入门到掌握](https://mp.weixin.qq.com/s/u2es87JU5FNlGo3qDLY_ng)。
 
 ### 2. 下载并启动 Milvus
 
-在您选定的工作目录下，打开终端（Terminal）或命令行工具（PowerShell），执行以下步骤：
+在你选定的工作目录下，打开终端（Terminal）或命令行工具（PowerShell），执行以下步骤：
 
 **第一步：下载配置文件**
 
@@ -26,7 +26,7 @@ Milvus 提供了多种部署方式，这里以 **Milvus Standalone (单机版)**
 
 ```bash
 # macOS / Linux (使用 wget)
-wget https://github.com/milvus-io/milvus/releases/download/v2.6.0-rc1/milvus-standalone-docker-compose.yml -O docker-compose.yml
+wget https://github.com/milvus-io/milvus/releases/download/v2.5.14/milvus-standalone-docker-compose.yml -O docker-compose.yml
 ```
 
 ```powershell
@@ -42,11 +42,11 @@ Invoke-WebRequest -Uri "https://github.com/milvus-io/milvus/releases/download/v2
 docker compose up -d
 ```
 
-Docker 将会自动拉取所需的镜像并启动三个容器：`milvus-standalone`, `milvus-minio`, 和 `milvus-etcd`。这个过程可能需要几分钟，具体取决于您的网络状况。
+Docker 将会自动拉取所需的镜像并启动三个容器：`milvus-standalone`, `milvus-minio`, 和 `milvus-etcd`。这个过程可能需要几分钟，具体取决于你的网络状况。
 
 ### 3. 验证安装
 
-您可以通过以下方式验证 Milvus 是否成功启动：
+可以通过以下方式验证 Milvus 是否成功启动：
 
 - **查看 Docker 容器**: 打开 Docker Desktop 的仪表盘 (Windows/macOS) 或在终端运行 `docker ps` 命令 (Linux)，确认三个 Milvus 相关容器（`milvus-standalone`, `milvus-minio`, `milvus-etcd`）都处于 `running` 或 `up` 状态。
 - **检查服务端口**: Milvus Standalone 默认通过 `19530` 端口提供服务，这是后续代码连接时需要用到的地址。
@@ -60,7 +60,7 @@ Docker 将会自动拉取所需的镜像并启动三个容器：`milvus-standalo
   此命令会停止并移除容器，但保留存储的数据卷。
 
 - **彻底清理 (停止并删除数据)**:
-  如果您想彻底删除所有数据（包括向量、元数据等），可以执行以下命令：
+  如果想彻底删除所有数据（包括向量、元数据等），可以执行以下命令：
   ```bash
   docker compose down -v
   ```
@@ -112,26 +112,26 @@ Schema 通常包含以下几类字段：
 
 **为什么使用别名？**
 
-- **安全地更新数据**: 想象一下，您需要对一个在线服务的 Collection 进行大规模的数据更新或重建索引。直接在原 Collection 上操作风险很高。正确的做法是：
+- **安全地更新数据**：想象一下，你需要对一个在线服务的 Collection 进行大规模的数据更新或重建索引。直接在原 Collection 上操作风险很高。正确的做法是：
     1. 创建一个新的 Collection (`collection_v2`) 并导入、索引好所有新数据。
     2. 将指向旧 Collection (`collection_v1`) 的别名（例如 `my_app_collection`）原子性地切换到新 Collection (`collection_v2`) 上。
-- **代码解耦**: 整个切换过程对上层应用完全透明，无需修改任何代码或重启服务，实现了数据的平滑无缝升级。
+- **代码解耦**：整个切换过程对上层应用完全透明，无需修改任何代码或重启服务，实现了数据的平滑无缝升级。
 
 ### 3.2 索引 (Index)
 
-如果说 Collection 是 Milvus 的骨架，那么**索引 (Index)** 就是其加速检索的肌肉和神经系统。从宏观上看，索引本身就是一种**为了加速查询而设计的复杂数据结构**。当深入其内部时，会发现它是由多个技术模块组合而成的。对向量数据创建索引后，Milvus 可以极大地提升向量相似性搜索的速度，代价是会占用额外的存储和内存资源。
+如果说 Collection 是 Milvus 的骨架，那么**索引 (Index)** 就是其加速检索的神经系统。从宏观上看，索引本身就是一种**为了加速查询而设计的复杂数据结构**。对向量数据创建索引后，Milvus 可以极大地提升向量相似性搜索的速度，代价是会占用额外的存储和内存资源。
 
 ![Milvus 索引结构与工作原理](./images/3_4_2.webp)
 
 上图清晰地展示了 Milvus 向量索引的内部组件及其工作流程：
-- **数据结构**: 这是索引的骨架，定义了向量的组织方式（如 HNSW 中的图结构）。
-- **量化**: (可选) 数据压缩技术，通过降低向量精度来减少内存占用和加速计算。
-- **结果精炼**: (可选) 在找到初步候选集后，进行更精确的计算以优化最终结果。
+- **数据结构**：这是索引的骨架，定义了向量的组织方式（如 HNSW 中的图结构）。
+- **量化**(可选)：数据压缩技术，通过降低向量精度来减少内存占用和加速计算。
+- **结果精炼**(可选)：在找到初步候选集后，进行更精确的计算以优化最终结果。
 
 Milvus 支持对标量字段和向量字段分别创建索引。
 
-- **标量字段索引**: 主要用于加速元数据过滤，常用的有 `INVERTED`、`BITMAP` 等。通常使用推荐的索引类型即可。
-- **向量字段索引**: 这是 Milvus 的核心。选择合适的向量索引是在查询性能、召回率和内存占用之间做出权衡的艺术。
+- **标量字段索引**：主要用于加速元数据过滤，常用的有 `INVERTED`、`BITMAP` 等。通常使用推荐的索引类型即可。
+- **向量字段索引**：这是 Milvus 的核心。选择合适的向量索引是在查询性能、召回率和内存占用之间做出权衡的艺术。
 
 #### 3.2.1 主要向量索引类型
 
