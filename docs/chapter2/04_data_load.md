@@ -123,7 +123,7 @@ for i, element in enumerate(elements, 1):
 
 `partition`函数使用自动文件类型检测，内部会根据文件类型路由到对应的专用函数（如PDF文件会调用`partition_pdf`）。如果需要更专业的PDF处理，可以直接使用`from unstructured.partition.pdf import partition_pdf`，它提供更多PDF特有的参数选项，如OCR语言设置、图像提取、表格结构推理等高级功能，同时性能更优。
 
-> **完整代码文件**：[`code/C2/01_unstructured_example.py`](../../code/C2/01_unstructured_example.py)
+> **完整代码文件**：[`01_unstructured_example.py`](../../code/C2/01_unstructured_example.py)
 
 > [**Unstructured官方文档**](https://docs.unstructured.io/open-source/core-functionality/partitioning)
 

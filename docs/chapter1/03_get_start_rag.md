@@ -85,7 +85,7 @@ usage_metadata={
 > 首次运行时，脚本会下载`BAAI/bge-small-zh-v1.5`嵌入模型。
 
 输出参数解析：
-- **`content`**: 这是最核心的部分，即大型语言模型（LLM）根据您的问题和提供的上下文生成的具体回答。
+- **`content`**: 这是最核心的部分，即大型语言模型（LLM）根据你的问题和提供的上下文生成的具体回答。
 - **`additional_kwargs`**: 包含一些额外的参数，在这个例子中是 `{'refusal': None}`，表示模型没有拒绝回答。
 - **`response_metadata`**: 包含了关于LLM响应的元数据。
     - `token_usage`: 显示了本次调用消耗的token数量，包括完成（completion_tokens）、提示（prompt_tokens）和总量（total_tokens）。

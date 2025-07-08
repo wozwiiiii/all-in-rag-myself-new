@@ -2,3 +2,4 @@ FlagEmbedding==1.3.5
 faiss-cpu==1.11.0
 grpcio==1.67.1
 pymilvus==2.5.11
+pymilvus[model]==2.5.11

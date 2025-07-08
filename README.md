@@ -21,7 +21,7 @@
   - [第三节 向量数据库](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/08_vector_db.md)
   - [第四节 Milvus介绍及多模态检索实践](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/09_milvus.md)
 - [第4章 检索优化](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4)
-  - [第一节 混合检索](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/09_hybrid_search.md)
+  - [第一节 混合检索](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/10_hybrid_search.md)
 - [第5章 生成集成](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter5)
 - [第6章 系统评估](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter6)
 - [第7章 成熟RAG架构](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter7)
