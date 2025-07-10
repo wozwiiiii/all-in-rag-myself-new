@@ -1,0 +1,4 @@
+bilibili-api-python==17.3.0
+chromadb==0.6.3
+langchain-chroma==0.2.1
+lark==1.2.2

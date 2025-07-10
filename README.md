@@ -1,10 +1,13 @@
-# 项目名称
+# All-in-RAG：从零到一的RAG全栈教程
 
-*这里写项目的各类介绍信息、背景、动机等内容*
+> **「RAG」 检索增强生成技术全栈教程。** 通过体系化的RAG学习路径和动手实践项目，帮助初学者：
+> 1. 深入理解RAG技术核心原理和架构设计。
+> 2. 掌握RAG全栈技能（从数据处理到生产部署）。
+> 3. 构建可落地的智能问答和知识检索应用。
 
 ## 项目受众
 
-*注：这里写你的项目所面向的受众，本项目能给他们带来什么，对他们的基础能力要求有哪些*
+对RAG感兴趣又无从下手，具备Python编程基础的同学
 
 ## 目录
 
@@ -22,6 +25,8 @@
   - [第四节 Milvus介绍及多模态检索实践](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter3/09_milvus.md)
 - [第4章 检索优化](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4)
   - [第一节 混合检索](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/10_hybrid_search.md)
+  - [第二节 查询构建](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/11_query_construction.md)
+  - [第三节 text2sql](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/12_text2sql.md)
 - [第5章 生成集成](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter5)
 - [第6章 系统评估](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter6)
 - [第7章 成熟RAG架构](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter7)
