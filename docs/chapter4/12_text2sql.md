@@ -253,8 +253,6 @@ def _execute_sql(self, sql: str) -> Tuple[bool, Any]:
         return True, {"columns": columns, "rows": results, "count": len(results)}
 ```
 
-
-
 ### 3.4 完整流程模拟
 
 以查询"年龄大于30的用户有哪些"为例，演示框架三个核心模块的完整协作过程：
@@ -363,22 +361,35 @@ SQLite引擎逐行检查users表中的数据：
 
 通过这个**语义理解 → 结构化查询 → 数据过滤 → 结果输出**的完整流程，框架成功将用户的自然语言问题转换为精确的数据库查询结果。
 
-### 3.5 为什么不直接使用封装好的框架？
+### 3.5 实际运行与测试
+
+如果你想测试这个Text2SQL框架，可以通过以下方式进行：
+
+**快速体验**：运行演示程序
+```bash
+python code/C4/03_text2sql_demo.py
+```
+> 完整演示代码：[03_text2sql_demo.py](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C4/03_text2sql_demo.py)
+
+**核心代码获取**：三个核心模块的完整实现
+- `knowledge_base.py` - 知识库模块
+- `sql_generator.py` - SQL生成模块  
+- `text2sql_agent.py` - 代理协调模块
+
+> 源码地址：[code/C4/text2sql/](https://github.com/FutureUnreal/all-in-rag/tree/main/code/C4/text2sql)
+
+**数据资源**：框架使用的JSON知识数据
+- `ddl_examples.json` - DDL结构示例
+- `qsql_examples.json` - 问题-SQL对示例
+- `db_descriptions.json` - 表和字段描述
+
+> 数据文件：[code/C4/text2sql/data/](https://github.com/FutureUnreal/all-in-rag/tree/main/code/C4/text2sql/data)
+
+### 3.6 为什么不直接使用封装好的框架？
 
 > 因为淋过雨，所以想为你撑把伞🤪
 
 市面上确实有很多成熟的Text2SQL框架，但这些高度封装的工具往往存在**黑盒问题**——当查询结果不符合预期时，很难定位是检索环节、SQL生成环节还是执行环节出了问题。正如上一节LangChain示例中遇到的查询异常，我们很难深入到框架内部进行精确调试和优化。
-
-### 3.5 架构优势总结
-
-这个Text2SQL框架相比传统方法具有以下显著优势：
-
-1. **更高准确性**：通过RAG机制提供精确的上下文信息，有效降低"幻觉"问题
-2. **更强容错性**：自动错误分析和修复机制，显著提高查询成功率
-3. **更好可扩展性**：模块化设计，可以轻松添加新的知识类型和处理逻辑
-4. **SQLite优化**：专门针对SQLite进行优化，适合轻量级部署场景
-
-整个框架遵循"检索→生成→执行→修复"的清晰工作流程，既保证了SQL生成的准确性，又具备了良好的实用性和可维护性。
 
 ## 参考文献
 
