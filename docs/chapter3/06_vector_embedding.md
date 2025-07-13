@@ -155,5 +155,6 @@ MTEB 榜单可以帮助我们快速筛选掉大量不合适的模型。但需要
 
 ## 参考文献
 
-[^1]: [Lewis et al. (2020). *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*. NeurIPS.](https://arxiv.org/abs/2005.11401)
-[^2]: [RoBERTa: A Modified BERT Model for NLP](https://www.comet.com/site/blog/roberta-a-modified-bert-model-for-nlp/)
+[^1]: [Lewis et al. (2020). *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*](https://arxiv.org/abs/2005.11401)
+
+[^2]: [*RoBERTa: A Modified BERT Model for NLP*](https://www.comet.com/site/blog/roberta-a-modified-bert-model-for-nlp/)

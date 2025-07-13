@@ -2,7 +2,7 @@
 
 继上一节探讨了如何为元数据和图数据构建查询后，本节我们将聚焦于结构化数据领域中一个至关重要的应用。在数据世界中，除了向量数据库能够处理的非结构化数据，关系型数据库（如 MySQL, PostgreSQL, SQLite）仍然是存储和管理结构化数据的核心。**文本到SQL（Text-to-SQL）**[^1] 正是为了打破人与结构化数据之间的语言障碍而生。它利用大语言模型（LLM）将用户的自然语言问题，直接翻译成可以在数据库上执行的SQL查询语句。
 
-![](./images/4_2_1.webp)
+![](./images/4_3_1.webp)
 
 ## 一、业务挑战
 
@@ -28,7 +28,7 @@
 
 本节基于RAGFlow方案实现了一个简单的Text2SQL框架。该框架使用Milvus向量数据库作为知识库，BGE-M3模型进行语义检索，DeepSeek作为大语言模型，专门针对SQLite数据库进行了优化。
 
-![Text2SQL框架工作流程](./images/4_2_2.webp)
+![Text2SQL框架工作流程](./images/4_3_2.webp)
 
 ### 3.1 知识库模块 (`knowledge_base.py`)
 
@@ -393,8 +393,12 @@ python code/C4/03_text2sql_demo.py
 
 ## 参考文献
 
-[^1]: [LangChain Docs: Text to SQL](https://python.langchain.com/docs/tutorials/sql_qa/)
-[^2]: [RAGFlow Blog: Implementing Text2SQL with RAGFlow](https://ragflow.io/blog/implementing-text2sql-with-ragflow)
+[^1]: [*LangChain Docs: Text to SQL*](https://python.langchain.com/docs/tutorials/sql_qa/)
+
+[^2]: [*RAGFlow Blog: Implementing Text2SQL with RAGFlow*](https://ragflow.io/blog/implementing-text2sql-with-ragflow)
+
 [^3]: DDL（Data Definition Language）是数据定义语言，用于定义数据库结构，如CREATE TABLE语句。
+
 [^4]: Q-SQL示例是指"问题-SQL"对，即自然语言问题与对应SQL查询的配对示例，用于少样本学习。
+
 [^5]: 表描述是对数据库表和字段的业务语义说明，帮助模型理解数据的实际含义和用途。

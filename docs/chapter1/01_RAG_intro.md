@@ -141,8 +141,13 @@ RAG技术按照复杂度可划分为[^4]：
 ## 参考文献
 
 [^1]: [Genesis, J. (2025). *Retrieval-Augmented Text Generation: Methods, Challenges, and Applications*](https://www.researchgate.net/publication/391141346_Retrieval-Augmented_Generation_Methods_Applications_and_Challenges).
+
 [^2]: [Gao et al. (2023). *Retrieval-Augmented Generation for Large Language Models: A Survey*](https://arxiv.org/abs/2312.10997).
-[^3]: [Lewis et al. (2020). *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*. NeurIPS.](https://arxiv.org/abs/2005.11401)
+
+[^3]: [Lewis et al. (2020). *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*](https://arxiv.org/abs/2005.11401). 
+
 [^4]: [Gao et al. (2024). *Modular RAG: Transforming RAG Systems into LEGO-like Reconfigurable Frameworks*](https://arxiv.org/abs/2407.21059).
-[^5]: [Martin, T. (2024). *RAG: Why Does It Matter, What Is It, and Does It Guarantee Accuracy?*](https://www.lawdroidmanifesto.com/p/rag-why-does-it-matter-what-is-it).
+
+[^5]: [*RAG: Why Does It Matter, What Is It, and Does It Guarantee Accuracy?*](https://www.lawdroidmanifesto.com/p/rag-why-does-it-matter-what-is-it).
+
 [^6]: [*TinyRAG: GitHub项目*](https://github.com/KMnO4-zx/TinyRAG). 

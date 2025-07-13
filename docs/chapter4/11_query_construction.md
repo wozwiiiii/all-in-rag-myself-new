@@ -6,7 +6,7 @@
 
 下图展示了查询构建在一个高级RAG流程中所处的位置：
 
-![Advanced RAG Pipeline](./images/4_1_1.webp)
+![Advanced RAG Pipeline](./images/4_2_1.webp)
 
 ## 一、文本到元数据过滤器
 
@@ -212,4 +212,4 @@ Cypher 是图数据库（如 Neo4j）中最常用的查询语言，其地位类�
 
 ## 参考文献
 
-[^1]: [LangChain Blog: Query Construction](https://blog.langchain.ac.cn/query-construction/)
+[^1]: [*LangChain Blog: Query Construction*](https://blog.langchain.ac.cn/query-construction/)
