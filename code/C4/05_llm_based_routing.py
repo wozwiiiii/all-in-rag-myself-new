@@ -4,20 +4,18 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_deepseek import ChatDeepSeek
 from langchain_core.runnables import RunnableBranch
 
-# 1. 设置不同菜系的处理链
 llm = ChatDeepSeek(
     model="deepseek-chat", 
     temperature=0, 
     api_key=os.getenv("DEEPSEEK_API_KEY")
     )
 
-# 川菜链
+# 1. 设置不同菜系的处理链
 sichuan_prompt = ChatPromptTemplate.from_template(
     "你是一位川菜大厨。请用正宗的川菜做法，回答关于「{question}」的问题。"
 )
 sichuan_chain = sichuan_prompt | llm | StrOutputParser()
 
-# 粤菜链
 cantonese_prompt = ChatPromptTemplate.from_template(
     "你是一位粤菜大厨。请用经典的粤菜做法，回答关于「{question}」的问题。"
 )
