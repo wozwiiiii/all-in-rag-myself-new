@@ -50,7 +50,7 @@
 2.  **在代码中调用 LLM，解析其返回的 JSON 指令，并执行相应的排序操作。**
 
     ```python
-    # ... (前略，初始化OpenAI客户端)
+    # ... (前略，初始化LLM客户端)
 
     # 请求LLM生成指令，并指定返回JSON格式
     response = client.chat.completions.create(
