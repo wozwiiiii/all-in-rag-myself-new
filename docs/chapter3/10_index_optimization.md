@@ -93,7 +93,7 @@ print(f"回答: {base_response}\n")
 2.  **构建查询引擎与后处理**：查询引擎的构建是实现“为生成质量而扩展上下文”的关键。
     *   在创建 `sentence_query_engine` 时，配置中加入了一个重要的后处理器 `MetadataReplacementPostProcessor`。
     *   它的作用是：当检索器根据用户查询找到最相关的节点（也就是单个句子）后，这个后处理器会立即介入。
-    *   它会从该节点的元数据中读取出我们预先存储的完整“窗口”文本，并用它**替换**掉节点中原来的单个句子内容。
+    *   它会从该节点的元数据中读取出预先存储的完整“窗口”文本，并用它**替换**掉节点中原来的单个句子内容。
     *   这样，最终传递给大语言模型的就不再是孤立的句子，而是包含丰富上下文的完整文本段落，从而确保了生成答案的质量和连贯性。
 
 我们向两个引擎提出的问题是：“关于大西洋经向翻转环流（AMOC），人们主要担忧什么？” (What are the concerns surrounding the AMOC?)。
@@ -117,6 +117,8 @@ print(f"回答: {base_response}\n")
 
 这种差异正是句子窗口检索策略优势的体现。它通过“精确检索小文本块（单个句子），再扩展上下文（句子窗口）”的方式，为大语言模型提供了高度相关且信息丰富的上下文，从而生成了质量更高的答案。
 
+> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C3/05_sentence_window_retrieval.py)
+
 ## 二、结构化索引
 
 随着知识库的规模不断扩大（例如，包含数百个PDF文件），传统的RAG方法（即对所有文本块进行top-k相似度搜索）会遇到瓶颈。当一个查询可能只与其中一两个文档相关时，在整个文档库中进行无差别的向量搜索，不仅效率低下，还容易被不相关的文本块干扰，导致检索结果不精确。
@@ -129,6 +131,8 @@ print(f"回答: {base_response}\n")
 *   作者
 *   任何自定义的分类标签
 
+![结构化索引](./images/3_5_1.webp)
+
 实际上，在第二章“文本分块”中介绍的**基于文档结构的分块**方法，就是实现结构化索引的一种前置步骤。例如，在使用 `MarkdownHeaderTextSplitter` 时，分块器会自动将Markdown文档的各级标题（如 `Header 1`, `Header 2` 等）提取并存入每个文本块的元数据中。这些标题信息就是非常有价值的结构化数据，可以直接用于后续的元数据过滤。
 
 通过这种方式，可以在检索时实现“元数据过滤”和“向量搜索”的结合。例如，当用户查询“请总结一下2023年第二季度财报中关于AI的论述”时，系统可以：
@@ -138,6 +142,117 @@ print(f"回答: {base_response}\n")
 
 这种“先过滤，再搜索”的策略，能够极大地缩小检索范围，显著提升大规模知识库场景下RAG应用的检索效率和准确性。LlamaIndex 提供了包括“自动检索”（Auto-Retrieval）在内的多种工具来支持这种结构化的检索范式。
 
+### 2.1 代码实现：基于多表格的递归检索
+
+在更复杂的场景中，结构化数据可能分布在多个来源中，例如一个包含多个工作表（Sheet）的 Excel 文件，每个工作表都代表一个独立的表格。在这种情况下，需要一种更强大的策略：**递归检索**[^3]。它能实现“路由”功能，先将查询引导至正确的知识来源（正确的表格），然后再在该来源内部执行精确查询。
+
+下面使用一个包含多个工作表的电影数据 Excel 文件（`movie.xlsx`）来演示，其中每个工作表（如 `年份_1994`, `年份_2002` 等）都存储了对应年份的电影信息。
+
+```python
+# 1. 为每个工作表创建查询引擎和摘要节点
+excel_file = '../../data/C3/excel/movie.xlsx'
+xls = pd.ExcelFile(excel_file)
+
+df_query_engines = {}
+all_nodes = []
+
+for sheet_name in xls.sheet_names:
+    df = pd.read_excel(xls, sheet_name=sheet_name)
+    # 为当前工作表创建一个 PandasQueryEngine
+    query_engine = PandasQueryEngine(df=df, llm=Settings.llm, verbose=True)
+    # 为当前工作表创建一个摘要节点（IndexNode）
+    year = sheet_name.replace('年份_', '')
+    summary = f"这个表格包含了年份为 {year} 的电影信息，可以用来回答关于这一年电影的具体问题。"
+    node = IndexNode(text=summary, index_id=sheet_name)
+    all_nodes.append(node)
+    # 存储工作表名称到其查询引擎的映射
+    df_query_engines[sheet_name] = query_engine
+
+# 2. 创建顶层索引（只包含摘要节点）
+vector_index = VectorStoreIndex(all_nodes)
+
+# 3. 创建递归检索器
+vector_retriever = vector_index.as_retriever(similarity_top_k=1)
+recursive_retriever = RecursiveRetriever(
+    "vector",
+    retriever_dict={"vector": vector_retriever},
+    query_engine_dict=df_query_engines,
+    verbose=True,
+)
+
+# 4. 创建查询引擎
+query_engine = RetrieverQueryEngine.from_args(recursive_retriever)
+
+# 5. 执行查询
+query = "1994年评分人数最多的电影是哪一部？"
+print(f"查询: {query}")
+response = query_engine.query(query)
+print(f"回答: {response}")
+```
+
+1.  **创建 PandasQueryEngine**：遍历 Excel 中的每个工作表，为每个工作表（即一个独立的 DataFrame）都实例化一个 `PandasQueryEngine`。其强大之处在于，它能将关于表格的自然语言问题（如“评分人数最多的是哪个”）转换成实际的 Pandas 代码（如 `df.sort_values('评分人数').iloc[-1]`）来执行。
+2.  **创建摘要节点 (`IndexNode`)**：对每个工作表，都创建一个 `IndexNode`，其内容是关于这个表格的一段摘要文本。这个节点将作为顶层检索的“指针”。
+3.  **构建顶层索引**：使用所有创建的 `IndexNode` 构建一个 `VectorStoreIndex`。这个索引不包含任何表格的详细数据，只包含指向各个表格的“指针”信息。
+4.  **创建 `RecursiveRetriever`**：这是实现递归检索的核心。将其配置为：
+    *   `retriever_dict`: 指定顶层的检索器，即在摘要节点中进行检索的 `vector_retriever`。
+    *   `query_engine_dict`: 提供一个从节点 ID（即工作表名称）到其对应查询引擎的映射。当顶层检索器匹配到某个摘要节点后，递归检索器就知道该调用哪个 `PandasQueryEngine` 来处理后续查询。
+
+#### 运行结果
+
+```bash
+查询: 1994年评分人数最少的电影是哪一部？
+> Retrieving with query id None: 1994年评分人数最少的电影是哪一部？
+> Retrieved node with id, entering: 年份_1994
+> Retrieving with query id 年份_1994: 1994年评分人数最少的电影是哪一部？
+> Pandas Instructions:
+```
+df[df['年份'] == 1994].nsmallest(1, '评分人数')['电影名称'].iloc[0]
+```
+> Pandas Output: 燃情岁月
+回答: 燃情岁月
+```
+
+从输出中可以清晰地看到递归检索的完整流程：
+1.  **顶层路由**：`Retrieving with query id None`，系统首先在顶层的摘要索引中检索，根据问题“1994年...”匹配到了摘要节点 `年份_1994`。
+2.  **进入子层**：`Retrieved node with id, entering: 年份_1994`，系统决定进入与“年份_1994”这个工作表关联的查询引擎。
+3.  **子层查询**：`Retrieving with query id 年份_1994`，`PandasQueryEngine` 接管查询，并将问题发送给 LLM，让其生成 Pandas 代码。
+4.  **代码生成与执行**：LLM 生成了 `df[df['年份'] == 1994].nsmallest(1, '评分人数')['电影名称'].iloc[0]`，引擎执行后得到输出 `燃情岁月`。
+
+> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C3/06_recursive_retrieval.py)
+
+> ⚠️ **重要安全警告**：实际上在 LlamaIndex 的官网有提到，`PandasQueryEngine` 是一个实验性功能，具有潜在的安全风险。它的工作原理是让 LLM 生成 Python 代码，然后使用 `eval()` 函数在本地执行。这意味着，在没有严格沙箱隔离的环境下，理论上可能执行任意代码。**因此，强烈不建议在生产环境中使用此工具**。
+
+### 2.2 另一种实现方式
+
+鉴于 `PandasQueryEngine` 的安全风险，还可以采用一种更安全的方式来实现类似的多表格查询，思路是**将路由和检索彻底分离**。
+
+这种改进方法的具体步骤如下：
+
+1.  **创建两个独立的向量索引**：
+    *   **摘要索引（用于路由）**：为每个Excel工作表（例如，“1994年电影数据”）创建一个非常简短的摘要性`Document`，例如：“此文档包含1994年的电影信息”。然后，用所有这些摘要文档构建一个轻量级的向量索引。这个索引的唯一目的就是充当“路由器”。
+    *   **内容索引（用于问答）**：将每个工作表的实际数据（例如，整个表格）转换为一个大的文本`Document`，并为其附加一个关键的元数据标签，如 `{"sheet_name": "年份_1994"}`。然后，用所有这些包含真实内容的文档构建一个向量索引。
+
+2.  **执行两步查询**：
+    *   **第一步：路由**。当用户提问（例如，“1994年评分人数最少的电影是哪一部？”）时，首先在“摘要索引”中进行检索。由于问题中的“1994年”与“此文档包含1994年的电影信息”这个摘要高度相关，检索器会快速返回其对应的元数据，告诉系统目标是 `年份_1994` 这个工作表。
+    *   **第二步：检索**。拿到 `年份_1994` 这个目标后，系统会在“内容索引”中进行检索，但这次会附加一个**元数据过滤器**（`MetadataFilter`），强制要求只在 `sheet_name == "年份_1994"` 的文档中进行搜索。这样，LLM就能在正确的、经过筛选的数据范围内找到问题的答案。
+
+通过这种“先路由，后用元数据过滤检索”的方式，既实现了跨多个数据源的查询能力，又避免了执行代码的安全隐患。
+
+> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C3/07_recursive_retrieval_v2.py)
+
+## 题外话：关于框架的思考
+
+> **有些人可能疑惑，为什么本教程不专注于一个框架（如 LlamaIndex 或 LangChain），而是混合使用，甚至造轮子？**
+
+框架是加速开发的强大工具，是帮助我们快速跨越技术鸿沟的“桥梁”。但任何桥梁都有其设计边界和局限性。我们的目标不是成为一个熟练的“过桥者”，而是成为一个懂得如何设计和建造桥梁的“工程师”。
+
+因此，本教程选择的路径是：
+
+1.  **以原理为中心**：我们优先关心的是“它是如何工作的？”而不是“我该调用哪个函数？”。理解了底层的思想，你将能更快地掌握任何现有或未来的框架。
+2.  **拥抱灵活性**：真实世界的业务需求往往比框架预设的场景更复杂。当框架无法满足需求，或者像本节使用的 `PandasQueryEngine` 那样存在安全隐患时，懂得原理的你，就有能力去修改它，或者像本节的示例一样，用更底层的模块组合出更安全、合适的解决方案。
+3.  **培养解决问题的能力**：只学习使用框架，好比是照着菜谱做菜，虽然能快速复刻出指定的菜肴，但一旦缺少某个食材或遇到意外情况，就可能束手无策。而理解原理，则像是学会了烹饪的精髓。这让你不仅能游刃有余地做出任何菜，还能创造新菜式。
+
+如果你希望深入某个框架的细节，它的官方文档永远是最好、最权威的学习资料。而本教程的使命，是帮助你建立起关于 RAG 的坚实知识体系，让你无论面对何种工具，都能游刃有余。
 
 
 ## 参考文献
@@ -145,3 +260,5 @@ print(f"回答: {base_response}\n")
 [^1]: [*Building Performant RAG Applications for Production*](https://docs.llamaindex.ai/en/stable/optimizing/production_rag/)
 
 [^2]: [*LlamaIndex - Sentence Window Retrieval*](https://docs.llamaindex.ai/en/stable/examples/node_postprocessor/MetadataReplacementDemo/#metadata-replacement-node-sentence-window)
+
+[^3]: [*Recursive Retriever + Query Engine Demo*](https://docs.llamaindex.ai/en/stable/examples/query_engine/pdf_tables/recursive_retriever)
