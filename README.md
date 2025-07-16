@@ -29,7 +29,7 @@
   - [第二节 查询构建](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/12_query_construction.md)
   - [第三节 text2sql](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/13_text2sql.md)
   - [第四节 查询重构与分发](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/14_query_rewriting.md)
-  - [第五节 重排序（待完成）](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/15_rerank.md)
+  - [第五节 检索进阶](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/15_advanced_retrieval_techniques.md)
 - [第5章 生成集成](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter5)
 - [第6章 系统评估](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter6)
 - [第7章 成熟RAG架构](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter7)
