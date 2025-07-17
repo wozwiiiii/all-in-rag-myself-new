@@ -7,13 +7,14 @@ from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_deepseek import ChatDeepSeek
+from langchain.retrievers.document_compressors import LLMListwiseRerank
 
 # 导入ColBERT重排器需要的模块
 from langchain.retrievers.document_compressors.base import BaseDocumentCompressor
+from langchain.retrievers.document_compressors import DocumentCompressorPipeline
 from langchain_core.documents import Document
-from typing import List, Sequence
+from typing import Sequence
 import torch
-import numpy as np
 from transformers import AutoTokenizer, AutoModel
 import torch.nn.functional as F
 
@@ -29,7 +30,7 @@ class ColBERTReranker(BaseDocumentCompressor):
         object.__setattr__(self, 'tokenizer', AutoTokenizer.from_pretrained(model_name))
         object.__setattr__(self, 'model', AutoModel.from_pretrained(model_name))
         self.model.eval()
-        print(f"✅ ColBERT模型加载完成")
+        print(f"ColBERT模型加载完成")
 
     def encode_text(self, texts):
         """ColBERT文本编码"""
@@ -131,9 +132,8 @@ class ColBERTReranker(BaseDocumentCompressor):
 
 
 # 初始化配置
-model_name = "BAAI/bge-large-zh-v1.5"
 hf_bge_embeddings = HuggingFaceBgeEmbeddings(
-    model_name=model_name
+    model_name="BAAI/bge-large-zh-v1.5"
 )
 
 llm = ChatDeepSeek(
@@ -152,64 +152,37 @@ docs = text_splitter.split_documents(documents)
 vectorstore = FAISS.from_documents(docs, hf_bge_embeddings)
 base_retriever = vectorstore.as_retriever(search_kwargs={"k": 20})
 
-# 3. 设置压缩器
+# 3. 设置ColBERT重排序器
+reranker = ColBERTReranker()
+
+# 4. 设置LLM压缩器
 compressor = LLMChainExtractor.from_llm(llm)
 
-# 4. 创建压缩检索器
-compression_retriever = ContextualCompressionRetriever(
-    base_compressor=compressor,
+# 5. 使用DocumentCompressorPipeline组装压缩管道
+# 流程: ColBERT重排 -> LLM压缩
+pipeline_compressor = DocumentCompressorPipeline(
+    transformers=[reranker, compressor]
+)
+
+# 6. 创建最终的压缩检索器
+final_retriever = ContextualCompressionRetriever(
+    base_compressor=pipeline_compressor,
     base_retriever=base_retriever
 )
 
-# 5. 执行查询并展示结果
+# 7. 执行查询并展示结果
 query = "AI还有哪些缺陷需要克服？"
 print(f"\n{'='*20} 开始执行查询 {'='*20}")
 print(f"查询: {query}\n")
 
-# 5.1 获取压缩后的结果
-compressed_docs = compression_retriever.invoke(query)
-
-# 5.2 展示结果
-print(f"\n--- [1] 压缩后结果 ---")
-for i, doc in enumerate(compressed_docs):
-    print(f"  [{i+1}] {doc.page_content}\n")
-
-# 6. 设置ColBERT重排序器
-reranker = ColBERTReranker()
-
-# 7. 组装完整的检索链
-# 7.1 创建带有重排的检索器
-rerank_retriever = ContextualCompressionRetriever(
-    base_compressor=reranker,
-    base_retriever=base_retriever
-)
-
-# 7.2 在重排检索器之上包裹一层压缩器
-# 流程: base_retriever -> reranker -> compressor
-final_compressor = LLMChainExtractor.from_llm(llm)
-compression_retriever = ContextualCompressionRetriever(
-    base_compressor=final_compressor,
-    base_retriever=rerank_retriever
-)
-
-# 8. 执行查询并展示结果
-print(f"\n{'='*20} 开始执行查询 {'='*20}")
-print(f"查询: {query}\n")
-
-# 8.1 基础检索结果
+# 7.1 基础检索结果
 print(f"--- (1) 基础检索结果 (Top 20) ---")
 base_results = base_retriever.get_relevant_documents(query)
 for i, doc in enumerate(base_results):
     print(f"  [{i+1}] {doc.page_content[:100]}...\n")
 
-# 8.2 ColBERT重排后的结果
-print(f"\n--- (2) ColBERT重排后结果 (Top 5) ---")
-rerank_results = rerank_retriever.get_relevant_documents(query)
-for i, doc in enumerate(rerank_results):
-    print(f"  [{i+1}] {doc.page_content[:100]}...\n")
-
-# 8.3 最终压缩后的结果
-print(f"\n--- (3) 最终压缩后结果 (从ColBERT Top 5中提取) ---")
-compressed_results = compression_retriever.get_relevant_documents(query)
-for i, doc in enumerate(compressed_results):
+# 7.2 使用管道压缩器的最终结果
+print(f"\n--- (2) 管道压缩后结果 (ColBERT重排 + LLM压缩) ---")
+final_results = final_retriever.get_relevant_documents(query)
+for i, doc in enumerate(final_results):
     print(f"  [{i+1}] {doc.page_content}\n")
