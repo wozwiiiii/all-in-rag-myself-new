@@ -31,6 +31,8 @@
   - [第四节 查询重构与分发](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/14_query_rewriting.md)
   - [第五节 检索进阶](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter4/15_advanced_retrieval_techniques.md)
 - [第5章 生成集成](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter5)
+  - [第一节 格式化生成](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter5/16_formatted_generation.md)
+
 - [第6章 系统评估](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter6)
 - [第7章 成熟RAG架构](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter7)
 - [第8章 项目实战](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter8)
