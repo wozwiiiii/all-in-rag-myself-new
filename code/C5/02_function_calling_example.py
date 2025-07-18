@@ -39,6 +39,7 @@ tools = [
 ]
 
 # 1. 用户提问，模型决策调用工具
+messages = [{"role": "user", "content": "杭州今天天气怎么样？"}]
 print(f"User> {messages[0]['content']}\n")
 message = send_messages(messages, tools=tools)
 
