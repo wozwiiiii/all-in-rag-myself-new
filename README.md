@@ -13,7 +13,7 @@
 
 - [第一章 解锁RAG](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter1)
   - [第一节 RAG简介](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter1/01_RAG_intro.md)
-  - [第二节 准备工作](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter1/02_preparation.md)
+  - [第二节 准备工作（待完成）](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter1/02_preparation.md)
   - [第三节 四步构建RAG](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter1/03_get_start_rag.md)
 - [第二章 数据准备](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter2)
   - [第一节 数据加载](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter2/04_data_load.md)
