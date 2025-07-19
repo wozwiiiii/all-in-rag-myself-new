@@ -100,9 +100,7 @@
 
 *   **ROUGE (Recall-Oriented Understudy for Gisting Evaluation):** ROUGE关注的重点是 **召回率**，即标准答案中的词语有多少被生成答案所覆盖，因此常用于评估内容的 **完整性**。其常用变体包括计算n-gram的 `ROUGE-N` 和计算最长公共子序列的 `ROUGE-L`。
 
-    $$
-    \text{ROUGE-N} = \frac{\text{匹配的 } n\text{-gram 数量}}{\text{参考答案中 } n\text{-gram 的总数}}
-    $$
+    $$ \text{ROUGE-N} = \frac{\text{匹配的 } n\text{-gram 数量}}{\text{参考答案中 } n\text{-gram 的总数}} $$
 
 *   **BLEU (Bilingual Evalu ation Understudy):** BLEU侧重于评估 **精确率**，衡量生成的答案中有多少词是有效的（即在标准答案中出现过）。它还引入了长度惩罚机制，避免模型生成过短的句子，因此更适合评估答案的 **流畅度和准确性**。
 
@@ -112,9 +110,7 @@
 
 *   **METEOR (Metric for Evaluation of Translation with Explicit ORdering):** 作为BLEU的改进版，METEOR同时考量 **精确率和召回率** 的调和平均，并通过词干和同义词匹配（如将'boat'和'ship'视为相关）来更好地捕捉语义相似性。其评估结果通常被认为与人类判断的相关性更高。
 
-    $$
-    F_{mean} = \frac{P \times R}{\alpha P + (1-\alpha)R}
-    $$
+    $$F_{\text{mean}} = \frac{P \times R}{\alpha P + (1-\alpha)R}$$
 
     $$\text{METEOR} = F_{\text{mean}} \times (1 - \text{Penalty})$$
 
