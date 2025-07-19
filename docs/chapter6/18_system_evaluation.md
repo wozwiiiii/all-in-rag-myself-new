@@ -48,19 +48,19 @@
 *   **核心评估指标：**
     *   **上下文精确率 (Context Precision):** 衡量检索结果的准确性。计算在检索到的前 **k** 个文档中相关文档所占的比例，其中 **k** 是一个预设的数字（例如，k=3或k=5），代表评估的范围。高精确率意味着检索结果的噪声较少。
 
-        $$\text{Precision}@k = \frac{\text{检索到的k个结果中的相关文档数}}{k}$$
+        $$ \text{Precision}@k = \frac{\text{检索到的}k\text{个结果中的相关文档数}}{k} $$
 
     *   **上下文召回率 (Context Recall):** 衡量检索结果的完整性。计算在检索到的前 **k** 个文档中，找到的相关文档占所有真实相关文档总数的比例。高召回率意味着系统能够成功找回大部分关键信息。
 
-        $$\text{Recall}@k = \frac{\text{检索到的k个结果中的相关文档数}}{\text{数据集中所有相关的文档总数}}$$
+        $$ \text{Recall}@k = \frac{\text{检索到的}k\text{个结果中的相关文档数}}{\text{数据集中所有相关的文档总数}} $$
 
     *   **F1分数 (F1-Score):** F1分数是精确率和召回率的调和平均数，它同时兼顾了这两个指标，在它们之间寻求平衡。当精确率和召回率都高时，F1分数也高。
 
-        $$F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$$
+        $$ F_1 = 2 \cdot \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} $$
 
     *   **平均倒数排名 (MRR - Mean Reciprocal Rank):** 评估系统将第一个相关文档排在靠前位置的能力。对于一个查询，倒数排名是第一个相关文档排名的倒数。MRR是所有查询的倒数排名的平均值。该指标适用于用户通常只关心第一个正确答案的场景。
 
-        $$\text{MRR} = \frac{1}{|Q|} \sum_{q=1}^{|Q|} \frac{1}{\text{rank}_q}$$
+        $$ \text{MRR} = \frac{1}{|Q|} \sum_{q=1}^{|Q|} \frac{1}{\text{rank}_q} $$
 
         其中 `|Q|` 是查询总数，`rank_q` 是第 `q` 个查询的第一个相关文档的排名。
     *   **平均准确率均值 (MAP - Mean Average Precision):** MAP是一个综合性指标，同时评估了检索结果的精确率和相关文档的排名。它先计算每个查询的平均精确率（AP），然后对所有查询的AP取平均值。AP本身是基于每个相关文档被检索到时的精确率计算的。
@@ -100,19 +100,19 @@
 
 *   **ROUGE (Recall-Oriented Understudy for Gisting Evaluation):** ROUGE关注的重点是 **召回率**，即标准答案中的词语有多少被生成答案所覆盖，因此常用于评估内容的 **完整性**。其常用变体包括计算n-gram的 `ROUGE-N` 和计算最长公共子序列的 `ROUGE-L`。
 
-    $$\text{ROUGE-N} = \frac{\text{匹配的 n-gram 数量}}{\text{参考答案中 n-gram 的总数}}$$
+    $$\text{ROUGE-N} = \frac{\text{匹配的 }n\text{-gram 数量}}{\text{参考答案中 }n\text{-gram 的总数}}$$
 
 *   **BLEU (Bilingual Evaluation Understudy):** BLEU侧重于评估 **精确率**，衡量生成的答案中有多少词是有效的（即在标准答案中出现过）。它还引入了长度惩罚机制，避免模型生成过短的句子，因此更适合评估答案的 **流畅度和准确性**。
 
-    $$\text{BLEU} = \text{BP} \cdot \exp\left(\sum_{n=1}^{N} w_n \log p_n\right)$$
+    $$\text{BLEU} = \text{BP} \times \exp\left(\sum_{n=1}^{N} w_n \log p_n\right)$$
 
     其中，`BP` 是长度惩罚因子，`p_n` 是修正后的n-gram精确率。
 
 *   **METEOR (Metric for Evaluation of Translation with Explicit ORdering):** 作为BLEU的改进版，METEOR同时考量 **精确率和召回率** 的调和平均，并通过词干和同义词匹配（如将'boat'和'ship'视为相关）来更好地捕捉语义相似性。其评估结果通常被认为与人类判断的相关性更高。
 
-    $$F_{mean} = \frac{P \cdot R}{\alpha P + (1-\alpha)R}$$
+    $$F_{\text{mean}} = \frac{P \times R}{\alpha P + (1-\alpha)R}$$
 
-    $$\text{METEOR} = F_{mean} \cdot (1 - \text{Penalty})$$
+    $$\text{METEOR} = F_{\text{mean}} \times (1 - \text{Penalty})$$
 
     其中 `P` 是精确率，`R` 是召回率，`Penalty` 是基于语序的惩罚项。
 
