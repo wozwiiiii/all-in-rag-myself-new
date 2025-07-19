@@ -110,7 +110,9 @@
 
 *   **METEOR (Metric for Evaluation of Translation with Explicit ORdering):** 作为BLEU的改进版，METEOR同时考量 **精确率和召回率** 的调和平均，并通过词干和同义词匹配（如将'boat'和'ship'视为相关）来更好地捕捉语义相似性。其评估结果通常被认为与人类判断的相关性更高。
 
-    $$ F_ {\text{mean}} = \frac{P \times R}{\alpha P + (1-\alpha)R} $$
+    $$
+    F_ {\text{mean}} = \frac{P \times R}{\alpha P + (1-\alpha)R}
+    $$
 
     $$\text{METEOR} = F_{\text{mean}} \times (1 - \text{Penalty})$$
 
