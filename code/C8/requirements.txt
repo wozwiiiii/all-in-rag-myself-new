@@ -1,0 +1,12 @@
+langchain==0.3.17
+langchain-huggingface==0.1.2
+langchain-text-splitters==0.3.5
+langchain-unstructured==0.1.6
+langchain-community==0.3.16
+faiss-cpu==1.11.0
+unstructured==0.16.17
+Markdown==3.7
+sentence-transformers==4.1.0
+lazy_loader==0.4
+rank_bm25==0.2.2
+openai==1.84.0

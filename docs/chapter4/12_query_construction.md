@@ -82,8 +82,6 @@ vectorstore = Chroma.from_documents(bili, embed_model)
 
 在上面的代码中，首先使用 `BiliBiliLoader` 加载了几个B站视频的文档和元数据。需要注意的是，由于 `BiliBiliLoader` 返回的原始元数据结构较为复杂（例如，作者和观看数信息嵌套在其他字典中），所以进行了一些预处理工作：遍历每个文档，手动提取需要的字段（如`title`, `author`, `view_count`, `length`），并构建一个干净、扁平化的新 `metadata` 字典。这个过程确保了后续的自查询检索器能够直接、可靠地访问这些字段。最后，将处理好的文档和元数据存入 `Chroma` 向量数据库中，为下一步的查询构建做好准备。
 
-> 本来是打算使用 FAISS 的，但是 `SelfQueryRetriever` 似乎没有支持 FAISS。
-
 ```python
 # 3. 配置元数据字段信息
 metadata_field_info = [
