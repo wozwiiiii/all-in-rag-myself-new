@@ -37,6 +37,10 @@
   - [第二节 常用工具（待完成）]()
 - [第7章 高级RAG架构](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter7)
 - [第8章 项目实战一（基础篇）](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter8)
+  - [第一节 环境配置与项目架构](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter8/01_env_architecture.md)
+  - [第二节 数据准备模块实现](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter8/02_data_preparation.md)
+  - [第三节 索引构建与检索优化](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter8/03_index_retrieval.md)
+  - [第四节 生成集成与系统整合](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter8/04_generation_sys.md)
 - [第9章 项目实战一（进阶篇选修）](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter9)
 - [第10章 项目实战二（选修）](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter10)
 

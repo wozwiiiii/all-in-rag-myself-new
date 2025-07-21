@@ -325,7 +325,7 @@ class RecipeRAGSystem:
             except Exception as e:
                 print(f"处理问题时出错: {e}")
         
-        print("\n感谢使用食谱RAG系统！")
+        print("\n感谢使用尝尝咸淡RAG系统！")
 
 
 
