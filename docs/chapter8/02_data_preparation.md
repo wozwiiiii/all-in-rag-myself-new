@@ -2,6 +2,53 @@
 
 RAG系统的效果很大程度上取决于数据准备的质量。在上一节中，我们明确了"小块检索，大块生成"的父子文本块策略。接下来学习如何将数据准备部分的架构思想转化为可运行的代码。
 
+```mermaid
+flowchart LR
+    %% 数据准备模块流程
+    START[📁 加载Markdown文件] --> ENHANCE[🔧 元数据增强]
+    ENHANCE --> SPLIT[✂️ 按标题分块]
+    SPLIT --> RELATION[🏷️ 父子关系建立]
+    RELATION --> DEDUP[🧠 智能去重机制]
+    DEDUP --> OUTPUT[📦 输出文本块chunks]
+    
+    %% 子流程详细说明
+    subgraph LoadProcess [文档加载过程]
+        L1[📂 递归查找md文件]
+        L2[📄 读取文件内容]
+        L3[🆔 分配父文档ID]
+        L1 --> L2 --> L3
+    end
+    
+    subgraph EnhanceProcess [元数据增强过程]
+        E1[🏷️ 提取菜品分类]
+        E2[📝 提取菜品名称]
+        E3[⭐ 分析难度等级]
+        E1 --> E2 --> E3
+    end
+    
+    subgraph SplitProcess [结构分块过程]
+        S1[一级标题分割]
+        S2[二级标题分割]
+        S3[三级标题分割]
+        S1 --> S2 --> S3
+    end
+    
+    %% 连接子流程
+    START -.-> LoadProcess
+    ENHANCE -.-> EnhanceProcess
+    SPLIT -.-> SplitProcess
+    
+    %% 样式定义
+    classDef process fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef subprocess fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    classDef output fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    
+    %% 应用样式
+    class START,ENHANCE,SPLIT,RELATION,DEDUP process
+    class LoadProcess,EnhanceProcess,SplitProcess subprocess
+    class OUTPUT output
+```
+
 ## 一、核心设计
 
 数据准备模块的核心是实现"小块检索，大块生成"的父子文本块架构。

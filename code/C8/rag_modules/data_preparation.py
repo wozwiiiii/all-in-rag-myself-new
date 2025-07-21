@@ -3,6 +3,7 @@
 """
 
 import logging
+import hashlib
 from pathlib import Path
 from typing import List, Dict, Any
 
@@ -47,8 +48,8 @@ class DataPreparationModule:
                 with open(md_file, 'r', encoding='utf-8') as f:
                     content = f.read()
 
-                # 为每个父文档分配唯一ID
-                parent_id = str(uuid.uuid4())
+                # 为每个父文档分配确定性的唯一ID（基于文件路径）
+                parent_id = hashlib.md5(str(md_file).encode()).hexdigest()
 
                 # 创建Document对象
                 doc = Document(

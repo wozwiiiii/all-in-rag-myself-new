@@ -58,6 +58,8 @@ rag/
 *.pt
 *.pth
 *.ckpt
+*.pkl
+*.faiss
 
 # Cache
 .cache/

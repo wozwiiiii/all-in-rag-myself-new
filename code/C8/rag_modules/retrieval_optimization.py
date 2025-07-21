@@ -7,7 +7,6 @@ from typing import List, Dict, Any
 
 from langchain_community.vectorstores import FAISS
 from langchain_community.retrievers import BM25Retriever
-from langchain.retrievers import EnsembleRetriever
 from langchain_core.documents import Document
 
 logger = logging.getLogger(__name__)
@@ -25,12 +24,11 @@ class RetrievalOptimizationModule:
         """
         self.vectorstore = vectorstore
         self.chunks = chunks
-        self.ensemble_retriever = None
         self.setup_retrievers()
 
     def setup_retrievers(self):
-        """设置混合检索器"""
-        logger.info("正在设置混合检索器...")
+        """设置向量检索器和BM25检索器"""
+        logger.info("正在设置检索器...")
 
         # 向量检索器
         self.vector_retriever = self.vectorstore.as_retriever(
@@ -44,38 +42,28 @@ class RetrievalOptimizationModule:
             k=5
         )
 
-        # 混合检索器（用于非RRF模式）
-        self.ensemble_retriever = EnsembleRetriever(
-            retrievers=[self.vector_retriever, self.bm25_retriever],
-            weights=[0.7, 0.3]  # 向量检索权重0.7，BM25权重0.3
-        )
 
-        logger.info("混合检索器设置完成")
+
+        logger.info("检索器设置完成")
     
-    def hybrid_search(self, query: str, top_k: int = 3, use_rrf: bool = True) -> List[Document]:
+    def hybrid_search(self, query: str, top_k: int = 3) -> List[Document]:
         """
-        混合检索 - 结合向量检索和BM25检索
+        混合检索 - 结合向量检索和BM25检索，使用RRF重排
 
         Args:
             query: 查询文本
             top_k: 返回结果数量
-            use_rrf: 是否使用RRF重排
 
         Returns:
             检索到的文档列表
         """
-        if use_rrf:
-            # 分别获取向量检索和BM25检索结果
-            vector_docs = self.vector_retriever.get_relevant_documents(query)
-            bm25_docs = self.bm25_retriever.get_relevant_documents(query)
+        # 分别获取向量检索和BM25检索结果
+        vector_docs = self.vector_retriever.get_relevant_documents(query)
+        bm25_docs = self.bm25_retriever.get_relevant_documents(query)
 
-            # 使用RRF重排
-            reranked_docs = self._rrf_rerank(vector_docs, bm25_docs)
-            return reranked_docs[:top_k]
-        else:
-            # 使用原有的EnsembleRetriever
-            results = self.ensemble_retriever.get_relevant_documents(query)
-            return results[:top_k]
+        # 使用RRF重排
+        reranked_docs = self._rrf_rerank(vector_docs, bm25_docs)
+        return reranked_docs[:top_k]
     
     def metadata_filtered_search(self, query: str, filters: Dict[str, Any], top_k: int = 5) -> List[Document]:
         """
