@@ -24,7 +24,7 @@
 
 下面通过 LlamaIndex 官网的示例，来演示如何实现句子窗口检索，并与常规的检索方法进行对比。该示例将加载一份PDF格式的IPCC气候报告，并就其中的专业问题进行提问。
 
-完整的代码如下：
+核心代码如下：
 
 ```python
 # 假设 Settings.llm 和 Settings.embed_model 已经预先配置好

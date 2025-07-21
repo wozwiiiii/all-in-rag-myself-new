@@ -27,6 +27,12 @@ cd code/C8
 pip install -r requirements.txt
 ```
 
+如果 API Key 已经配置好了，可以直接使用下面命令运行项目
+
+```bash
+python main.py
+```
+
 ### 2.3 申请Kimi API Key
 
 Kimi2 发布第八天来尝尝咸淡，申请地址：[Kimi API官网](https://platform.moonshot.cn/console/api-keys)。目前注册会送15元的额度，绰绰有余了。

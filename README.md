@@ -40,7 +40,7 @@
   - [第一节 格式化生成](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter5/16_formatted_generation.md)
 - [第6章 RAG系统评估](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter6)
   - [第一节 评估介绍](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter6/18_system_evaluation.md)
-  - [第二节 常用工具](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter6/19_common_tools.md)
+  - [第二节 评估常用工具（待完成）](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter6/19_common_tools.md)
 - [第7章 高级RAG架构（拓展）](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter7)
 - [第8章 项目实战一（基础篇）](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter8)
   - [第一节 环境配置与项目架构](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter8/01_env_architecture.md)
