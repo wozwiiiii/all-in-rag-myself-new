@@ -35,7 +35,7 @@
 - [第6章 RAG系统评估](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter6)
   - [第一节 评估介绍](https://github.com/FutureUnreal/all-in-rag/blob/main/docs/chapter6/18_system_evaluation.md)
   - [第二节 常用工具（待完成）]()
-- [第7章 成熟RAG架构](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter7)
+- [第7章 高级RAG架构](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter7)
 - [第8章 项目实战一（基础篇）](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter8)
 - [第9章 项目实战一（进阶篇选修）](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter9)
 - [第10章 项目实战二（选修）](https://github.com/FutureUnreal/all-in-rag/tree/main/docs/chapter10)
