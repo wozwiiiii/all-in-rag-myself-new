@@ -1,26 +1,12 @@
-#!/usr/bin/env python3
 """
-食谱RAG系统主程序
-================
-
-这是一个完整的模块化RAG系统，基于食谱数据构建。
-整合了四个核心模块：数据准备、索引构建、检索优化、生成集成。
-
-使用方法:
-    python recipe_rag_main.py
-
-功能特点:
-- 模块化设计，易于扩展和维护
-- 支持多种检索策略
-- 智能查询重写和结果重排序
-- 多样化的回答生成模式
+RAG系统主程序
 """
 
 import os
 import sys
 import logging
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List
 
 # 设置环境变量（临时设置，将在配置初始化时被覆盖）
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
