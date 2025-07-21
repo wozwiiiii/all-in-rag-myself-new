@@ -1,4 +1,10 @@
-# All-in-RAG：从原理出发的RAG全栈教程
+<div align='center'>
+  <img src="./logo.svg" alt="alt text" width="100%">
+  <h1>All-in-RAG</h1>
+</div>
+
+
+## 从原理出发的RAG全栈教程
 
 > **「RAG」 检索增强生成技术全栈教程。** 通过体系化的RAG学习路径和动手实践项目，帮助初学者：
 > 1. 深入理解RAG技术核心原理和架构设计。
