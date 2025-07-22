@@ -10,7 +10,6 @@ from llama_index.core.postprocessor import MetadataReplacementPostProcessor
 from llama_index.core.evaluation import (
     FaithfulnessEvaluator,
     RelevancyEvaluator,
-    RetrieverEvaluator,
     BatchEvalRunner,
 )
 from llama_index.core.evaluation.eval_utils import get_results_df
@@ -20,26 +19,21 @@ Settings.llm = DeepSeek(model="deepseek-chat", temperature=0.1, api_key=os.geten
 Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en")
 
 async def main():
-    # 1. 加载或生成评估数据集
-    eval_dataset_path = "./c6_eval_dataset.json"
-    if os.path.exists(eval_dataset_path):
-        print(f"正在从 {eval_dataset_path} 加载已有的评估数据集...")
-        eval_dataset = QueryResponseDataset.from_json(eval_dataset_path)
-        print("评估数据集加载完毕。")
-    else:
-        print(f"未找到评估数据集，正在生成新的数据集并保存到 {eval_dataset_path}...")
-        # 为了首次生成的速度，我们仅使用部分文档
-        reader = SimpleDirectoryReader(input_files=["../../data/C3/pdf/IPCC_AR6_WGII_Chapter03.pdf"])
-        documents = reader.load_data()
-        dataset_generator = DatasetGenerator.from_documents(documents[:20])
-        eval_dataset = await dataset_generator.agenerate_dataset_from_nodes(num=50)
-        print("评估数据集生成完毕，正在保存...")
-        eval_dataset.save_json(eval_dataset_path)
-        print("保存成功。")
-
-    # 提取文档用于后续索引构建
+    # 1. 加载文档
     reader = SimpleDirectoryReader(input_files=["../../data/C3/pdf/IPCC_AR6_WGII_Chapter03.pdf"])
     documents = reader.load_data()
+
+    # 1.1 加载或生成响应评估数据集
+    if os.path.exists("./c6_response_eval_dataset.json"):
+        print("加载响应评估数据集...")
+        response_eval_dataset = QueryResponseDataset.from_json("./c6_response_eval_dataset.json")
+    else:
+        print("生成响应评估数据集...")
+        dataset_generator = DatasetGenerator.from_documents(documents[:10])  # 减少文档数量
+        response_eval_dataset = await dataset_generator.agenerate_dataset_from_nodes(num=15)  # 减少问题数量
+        response_eval_dataset.save_json("./c6_response_eval_dataset.json")
+
+
 
     # 2. 构建两种不同的RAG查询引擎和检索器进行对比
     # 2.1 句子窗口检索
@@ -67,74 +61,65 @@ async def main():
     base_query_engine = base_index.as_query_engine(similarity_top_k=2)
     base_retriever = base_index.as_retriever(similarity_top_k=2)
 
-    # 3. 初始化评估器
-    # 响应评估器
+    # 3. 初始化响应评估器
     faithfulness_evaluator = FaithfulnessEvaluator(llm=Settings.llm)
     relevancy_evaluator = RelevancyEvaluator(llm=Settings.llm)
 
-    # 4. 执行对比评估
-    print("开始执行对比评估...")
+    # 4. 执行响应评估对比
+    print("开始执行响应评估对比...")
+    evaluators = {"faithfulness": faithfulness_evaluator, "relevancy": relevancy_evaluator}
+    queries = response_eval_dataset.queries
 
-    # 4.1 对句子窗口检索进行评估
-    print("\n=== 句子窗口检索评估 ===")
-    sentence_evaluators = {
-        "faithfulness": faithfulness_evaluator,
-        "relevancy": relevancy_evaluator,
-    }
-    sentence_runner = BatchEvalRunner(sentence_evaluators, workers=4, show_progress=True)
-
-    # 提取问题列表
-    queries = eval_dataset.queries
-
-    sentence_eval_results = await sentence_runner.aevaluate_queries(
-        queries=queries,
-        query_engine=sentence_query_engine
+    # 句子窗口检索响应评估
+    print("\n=== 评估句子窗口检索 ===")
+    sentence_runner = BatchEvalRunner(evaluators, workers=2, show_progress=True)
+    sentence_response_results = await sentence_runner.aevaluate_queries(
+        queries=queries, query_engine=sentence_query_engine
     )
 
-    # 4.2 对常规分块检索进行评估
-    print("\n=== 常规分块检索评估 ===")
-    base_evaluators = {
-        "faithfulness": faithfulness_evaluator,
-        "relevancy": relevancy_evaluator,
-    }
-    base_runner = BatchEvalRunner(base_evaluators, workers=4, show_progress=True)
-
-    base_eval_results = await base_runner.aevaluate_queries(
-        queries=queries,
-        query_engine=base_query_engine
+    # 常规分块检索响应评估
+    print("\n=== 评估常规分块检索 ===")
+    base_runner = BatchEvalRunner(evaluators, workers=2, show_progress=True)
+    base_response_results = await base_runner.aevaluate_queries(
+        queries=queries, query_engine=base_query_engine
     )
-    print("响应评估完成。")
 
     # 5. 分析并打印对比结果
-    print("\n" + "="*80)
-    print("评估结果对比分析")
-    print("="*80)
+    print("\n" + "="*60)
+    print("响应评估结果对比")
+    print("="*60)
 
-    # 5.1 句子窗口检索结果
-    if sentence_eval_results:
-        sentence_faithfulness = sentence_eval_results.get("faithfulness")
-        sentence_relevancy = sentence_eval_results.get("relevancy")
+    def calc_response_score(results, metric):
+        if results and results.get(metric):
+            scores = results[metric]
+            return sum(r.passing for r in scores) / len(scores)
+        return 0
 
-        if sentence_faithfulness and sentence_relevancy:
-            sentence_faith_score = sum(r.passing for r in sentence_faithfulness) / len(sentence_faithfulness)
-            sentence_rel_score = sum(r.passing for r in sentence_relevancy) / len(sentence_relevancy)
+    # 句子窗口检索结果
+    sentence_faith = calc_response_score(sentence_response_results, "faithfulness")
+    sentence_rel = calc_response_score(sentence_response_results, "relevancy")
 
-            print(f"\n--- 句子窗口检索评估结果 ---")
-            print(f"忠实度 (Faithfulness): {sentence_faith_score:.2%}")
-            print(f"相关性 (Relevancy): {sentence_rel_score:.2%}")
+    # 常规分块检索结果
+    base_faith = calc_response_score(base_response_results, "faithfulness")
+    base_rel = calc_response_score(base_response_results, "relevancy")
 
-    # 5.2 常规分块检索结果
-    if base_eval_results:
-        base_faithfulness = base_eval_results.get("faithfulness")
-        base_relevancy = base_eval_results.get("relevancy")
+    print(f"\n句子窗口检索:")
+    print(f"  忠实度: {sentence_faith:.1%}")
+    print(f"  相关性: {sentence_rel:.1%}")
 
-        if base_faithfulness and base_relevancy:
-            base_faith_score = sum(r.passing for r in base_faithfulness) / len(base_faithfulness)
-            base_rel_score = sum(r.passing for r in base_relevancy) / len(base_relevancy)
+    print(f"\n常规分块检索:")
+    print(f"  忠实度: {base_faith:.1%}")
+    print(f"  相关性: {base_rel:.1%}")
 
-            print(f"\n--- 常规分块检索评估结果 ---")
-            print(f"忠实度 (Faithfulness): {base_faith_score:.2%}")
-            print(f"相关性 (Relevancy): {base_rel_score:.2%}")
+
+
+    # 简单对比
+    if sentence_faith > base_faith and sentence_rel > base_rel:
+        print(f"\n✅ 句子窗口检索在两个维度上都优于常规分块检索")
+    elif sentence_faith > base_faith or sentence_rel > base_rel:
+        print(f"\n⚖️  句子窗口检索在某些维度上有优势")
+    else:
+        print(f"\n❌ 句子窗口检索未显示明显优势")
 
 
 
