@@ -9,6 +9,36 @@
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@latest/lib/themes/vue.css">
+    <style>
+        /* 脚注样式 */
+        .footnote {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #42b883;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        .footnote p {
+            margin: 0;
+        }
+        sup a {
+            color: #42b883;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        sup a:hover {
+            text-decoration: underline;
+        }
+        .footnote a {
+            color: #42b883;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+        .footnote a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -40,7 +70,17 @@
                 fontsize: '0.9em',
                 color: 'rgb(90,90,90)',
                 language: 'chinese'
-            }
+            },
+            plugins: [
+                function(hook, vm) {
+                    hook.beforeEach(function (html) {
+                        // 处理脚注语法 [^1] 和 [^1]: 定义
+                        html = html.replace(/\[\^([^\]]+)\]/g, '<sup><a href="#fn-$1" id="fnref-$1">$1</a></sup>');
+                        html = html.replace(/^\[\^([^\]]+)\]:\s*(.+)$/gm, '<div class="footnote" id="fn-$1"><p>$2 <a href="#fnref-$1">↩</a></p></div>');
+                        return html;
+                    });
+                }
+            ]
         }
     </script>
     <!-- Put them above docsify.min.js -->
@@ -60,6 +100,7 @@
     <script src="//cdn.jsdelivr.net/npm/docsify-katex@latest/dist/docsify-katex.js"></script>
     <!-- 字数统计 -->
     <script src="//unpkg.com/docsify-count/dist/countable.js"></script>
+
 </body>
 
 </html>
