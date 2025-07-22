@@ -54,7 +54,7 @@
 
 **第一章 解锁RAG** [📖 查看章节](./docs/chapter1)
 1. [x] [RAG简介](./docs/chapter1/01_RAG_intro.md) - RAG技术概述与应用场景
-2. [ ] [准备工作](./docs/chapter1/02_preparation.md) - 环境配置与工具准备
+2. [x] [准备工作](./docs/chapter1/02_preparation.md) - 环境配置与工具准备
 3. [x] [四步构建RAG](./docs/chapter1/03_get_start_rag.md) - 快速上手RAG开发
 
 **第二章 数据准备** [📖 查看章节](./docs/chapter2)
