@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <title>All-in-RAG | 大模型应用开发实战：RAG技术全栈指南</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="description" content="面向大模型应用开发者的RAG（检索增强生成）技术全栈教程，从零开始掌握RAG技术的核心原理与实际应用">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@latest/lib/themes/vue.css">
 </head>
+
 <body>
     <div id="app"></div>
+    <script src="//cdn.jsdelivr.net/npm/mermaid@8.0.0-rc.8/dist/mermaid.min.js"></script>
     <script>
         window.$docsify = {
             name: 'All-in-RAG',
             repo: 'https://github.com/datawhalechina/all-in-rag',
             loadSidebar: true,
             auto2top: true,
-            subMaxLevel: 3,
-            relativePath: false,
+            subMaxLevel: 2,
             alias: {
                 '/.*/_sidebar.md': '/_sidebar.md'
             },
@@ -40,18 +43,23 @@
             }
         }
     </script>
-    <!-- Docsify核心 -->
+    <!-- Put them above docsify.min.js -->
     <script src="//cdn.jsdelivr.net/npm/docsify@latest/lib/docsify.min.js"></script>
     <!-- 搜索功能 -->
     <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-    <!-- 代码高亮 -->
+    <!-- code render-->
     <script src="//cdn.jsdelivr.net/npm/prismjs@latest/components/prism-bash.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@latest/components/prism-python.js"></script>
-    <!-- 分页插件 -->
     <script src="//cdn.jsdelivr.net/npm/docsify-pagination@latest/dist/docsify-pagination.min.js"></script>
-    <!-- 代码复制 -->
     <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked@3"></script>
+    <!-- CDN files for docsify-katex -->
+    <script src="//cdn.jsdelivr.net/npm/docsify-katex@latest/dist/docsify-katex.js"></script>
     <!-- 字数统计 -->
     <script src="//unpkg.com/docsify-count/dist/countable.js"></script>
 </body>
+
 </html>
