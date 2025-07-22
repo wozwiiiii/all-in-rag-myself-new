@@ -166,7 +166,7 @@ all-in-rag/
 ## 关于 Datawhale
 
 <div align='center'>
-    <img src="./images/datawhale.png" alt="Datawhale" width="30%">
+    <img src="https://raw.githubusercontent.com/datawhalechina/pumpkin-book/master/res/qrcode.jpeg" alt="Datawhale" width="30%">
     <p>扫描二维码关注 Datawhale 公众号，获取更多优质开源内容</p>
 </div>
 
