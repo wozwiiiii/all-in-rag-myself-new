@@ -4,7 +4,7 @@
 
 ### 1.1 API申请
 
-要使用 Deepseek 提供的大语言模型服务，您首先需要一个 API Key。下面是申请步骤：
+要使用 Deepseek 提供的大语言模型服务，你首先需要一个 API Key。下面是申请步骤：
 
 1.  **访问 Deepseek 开放平台**
     打开浏览器，访问 [Deepseek 开放平台](https://platform.deepseek.com/)。
@@ -12,7 +12,7 @@
     ![Deepseek 平台首页](./images/1_2_1.webp)
 
 2.  **登录或注册账号**
-    如果您已有账号，请直接登录。如果没有，请点击页面上的注册按钮，使用邮箱或手机号完成注册。
+    如果你已有账号，请直接登录。如果没有，请点击页面上的注册按钮，使用邮箱或手机号完成注册。
 
 3.  **创建新的 API 密钥**
     登录成功后，在页面左侧的导航栏中找到并点击 `API Keys`。在 API 管理页面，点击 `创建 API key` 按钮。输入一个跟其他api key不重复的名称后点击创建
@@ -51,17 +51,17 @@
 1.  **打开终端**。
 
 2.  **编辑 Shell 配置文件**
-    使用 `vim` 编辑器打开您的 shell 配置文件。如果您使用的是 Bash (多数 Linux 发行版的默认 shell)，命令如下：
+    使用 `vim` 编辑器打开你的 shell 配置文件。如果你使用的是 Bash (多数 Linux 发行版的默认 shell)，命令如下：
     ```bash
     vim ~/.bashrc
     ```
-    如果您使用的是 Zsh (macOS 的默认 shell)，命令如下：
+    如果你使用的是 Zsh (macOS 的默认 shell)，命令如下：
     ```bash
     vim ~/.zshrc
     ```
 
 3.  **添加环境变量**
-    在文件末尾添加以下行，将 `[你的 Deepseek API 密钥]` 替换为您自己的密钥：
+    在文件末尾添加以下行，将 `[你的 Deepseek API 密钥]` 替换为你自己的密钥：
     ```bash
     export DEEPSEEK_API_KEY="[你的 Deepseek API 密钥]"
     ```
@@ -79,9 +79,9 @@
         ```bash
         source ~/.zshrc
         ```
-    现在，您可以在任何新的终端会话中访问这个环境变量了。
+    现在，你可以在任何新的终端会话中访问这个环境变量了。
 
-## 二、Miniconda 安装（下面流程暂未测试）
+## 二、Miniconda 安装（由于笔者用的是Anaconda怕安装Miniconda出现环境问题，所以下面流程暂未测试😅）
 
 Conda 是一个开源的包管理系统和环境管理系统，用于安装多个版本的软件包及其依赖关系，并在它们之间轻松切换。Miniconda 是 Conda 的一个免费的最小安装程序。它是 Anaconda 的一个轻量级替代品，只包含了 Conda、Python、它们所依赖的包以及少量其他有用的包。
 
@@ -91,11 +91,11 @@ Conda 是一个开源的包管理系统和环境管理系统，用于安装多�
 
 1.  **下载安装程序**
 
-    优先推荐访问[清华大学开源软件镜像站](https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/)，以获得更快的下载速度。根据您的系统选择最新的 `Windows-x86_64.exe` 版本下载。
+    优先推荐访问[清华大学开源软件镜像站](https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/)，以获得更快的下载速度。根据你的系统选择最新的 `Windows-x86_64.exe` 版本下载。
 
     ![选择Miniconda版本](images/ch1/miniconda-select-version.png)
 
-    您也可以从 [Miniconda 官方网站](https://docs.conda.io/en/latest/miniconda.html)下载。
+    你也可以从 [Miniconda 官方网站](https://docs.conda.io/en/latest/miniconda.html)下载。
 
 2.  **运行安装向导**
 
@@ -124,7 +124,7 @@ Conda 是一个开源的包管理系统和环境管理系统，用于安装多�
         ![环境变量按钮](./images/)
     *   在“环境变量”窗口中，找到“系统变量”下的 `Path` 变量，选中并点击“编辑”。
         ![编辑Path变量](./images/)
-    *   在“编辑环境变量”窗口中，新建三个路径，将它们指向您 Miniconda 的安装目录下的相应文件夹。如果您的安装路径是 `D:\Miniconda3`，则需要添加：
+    *   在“编辑环境变量”窗口中，新建三个路径，将它们指向你 Miniconda 的安装目录下的相应文件夹。如果你的安装路径是 `D:\Miniconda3`，则需要添加：
         ```
         D:\Miniconda3
         D:\Miniconda3\Scripts
@@ -152,7 +152,7 @@ Conda 是一个开源的包管理系统和环境管理系统，用于安装多�
     *   **初始化 Conda**: 当询问是否要通过运行 `conda init` 来初始化 Miniconda3 时，输入 `yes`。
 
 3.  **激活更改**
-    安装程序会自动修改您的 shell 配置文件 (如 `.bashrc`)。为了使更改生效，请关闭并重新打开您的终端，或者运行以下命令：
+    安装程序会自动修改你的 shell 配置文件 (如 `.bashrc`)。为了使更改生效，请关闭并重新打开你的终端，或者运行以下命令：
     ```bash
     source ~/.bashrc
     ```
