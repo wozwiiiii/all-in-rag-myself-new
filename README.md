@@ -1,4 +1,4 @@
-# All-in-RAG | 从原理出发的RAG全栈教程
+# All-in-RAG | 大模型应用开发实战：RAG技术全栈指南
 
 <div align='center'>
   <img src="./logo.svg" alt="All-in-RAG Logo" width="80%">
