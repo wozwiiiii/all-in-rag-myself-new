@@ -1,7 +1,7 @@
 # All-in-RAG | 从原理出发的RAG全栈教程
 
 <div align='center'>
-  <img src="./logo.svg" alt="All-in-RAG Logo" width="100%">
+  <img src="./logo.svg" alt="All-in-RAG Logo" width="80%">
 </div>
 
 ## 项目简介 [![Stars](https://img.shields.io/github/stars/datawhalechina/all-in-rag?style=social)](https://github.com/datawhalechina/all-in-rag/stargazers) ![GitHub forks](https://img.shields.io/github/forks/datawhalechina/all-in-rag) [![Python](https://img.shields.io/badge/Python-3.12.7-blue)](https://www.python.org/) [![Online Reading](https://img.shields.io/badge/Online%20Reading-Click%20Here-blue)](https://github.com/datawhalechina/all-in-rag)
@@ -160,7 +160,7 @@ all-in-rag/
 
 <div align="center">
   <p>如果这个项目对你有帮助，请给我们一个 ⭐️</p>
-  <p>让更多人发现这个项目！（护食？发来！）</p>
+  <p>让更多人发现这个项目（护食？发来！）</p>
 </div>
 
 ## 许可证
