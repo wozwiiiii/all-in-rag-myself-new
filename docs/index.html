@@ -47,6 +47,26 @@
             max-width: 100%;
             height: auto;
         }
+        /* Logo样式 */
+        .app-name-link {
+            display: flex !important;
+            align-items: center;
+        }
+        .app-name-link img {
+            max-height: 40px;
+            width: auto;
+            margin-right: 10px;
+            vertical-align: middle;
+            display: block !important;
+        }
+        .app-name {
+            display: flex;
+            align-items: center;
+        }
+        /* 隐藏文字，只显示logo */
+        .app-name-link .app-name-text {
+            display: none;
+        }
     </style>
 </head>
 
@@ -57,6 +77,7 @@
         window.$docsify = {
             name: 'All-in-RAG',
             repo: 'https://github.com/datawhalechina/all-in-rag',
+            logo: './logo.svg',
             loadSidebar: true,
             auto2top: true,
             subMaxLevel: 3,
