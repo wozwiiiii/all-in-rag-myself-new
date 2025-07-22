@@ -1,7 +1,7 @@
 # All-in-RAG | 大模型应用开发实战：RAG技术全栈指南
 
 <div align='center'>
-  <img src="../logo.svg" alt="All-in-RAG Logo" width="80%">
+  <img src="./logo.svg" alt="All-in-RAG Logo" width="80%">
 </div>
 
 ## 项目简介 [![Stars](https://img.shields.io/github/stars/datawhalechina/all-in-rag?style=social)](https://github.com/datawhalechina/all-in-rag/stargazers) ![GitHub forks](https://img.shields.io/github/forks/datawhalechina/all-in-rag) [![Python](https://img.shields.io/badge/Python-3.12.7-blue)](https://www.python.org/) [![Online Reading](https://img.shields.io/badge/Online%20Reading-Click%20Here-blue)](https://github.com/datawhalechina/all-in-rag)
@@ -166,7 +166,7 @@ all-in-rag/
 ## 关于 Datawhale
 
 <div align='center'>
-    <img src="./images/datawhale.png" alt="Datawhale" width="30%">
+    <img src="https://raw.githubusercontent.com/datawhalechina/pumpkin-book/master/res/qrcode.jpeg" alt="Datawhale" width="30%">
     <p>扫描二维码关注 Datawhale 公众号，获取更多优质开源内容</p>
 </div>
 
