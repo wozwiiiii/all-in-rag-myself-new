@@ -1,5 +1,6 @@
 import os
-os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+# hugging face镜像设置，如果国内环境无法使用启用该设置
+# os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 from dotenv import load_dotenv
 from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
