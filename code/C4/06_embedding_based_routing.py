@@ -1,5 +1,4 @@
 import os
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_deepseek import ChatDeepSeek

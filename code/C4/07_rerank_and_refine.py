@@ -1,5 +1,4 @@
 import os
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 from langchain_community.vectorstores import FAISS
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor
@@ -7,7 +6,6 @@ from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_deepseek import ChatDeepSeek
-from langchain.retrievers.document_compressors import LLMListwiseRerank
 
 # 导入ColBERT重排器需要的模块
 from langchain.retrievers.document_compressors.base import BaseDocumentCompressor

@@ -1,5 +1,3 @@
-import os
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core.documents import Document

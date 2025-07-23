@@ -1,5 +1,3 @@
-import os
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 from llama_index.core import VectorStoreIndex, Document, Settings
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 

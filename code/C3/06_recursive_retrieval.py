@@ -1,5 +1,4 @@
 import os
-os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 import pandas as pd
 from llama_index.core import VectorStoreIndex
 from llama_index.core.schema import IndexNode

@@ -64,9 +64,9 @@ rag/
 # Cache
 .cache/
 .cache/modelscope/
+.cargo
 
 # Models
-models/
 
 # LLM API keys
 *.key

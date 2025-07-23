@@ -1,5 +1,4 @@
 import os
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 from tqdm import tqdm
 from glob import glob
 import torch

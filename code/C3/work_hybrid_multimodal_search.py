@@ -1,6 +1,5 @@
 import json
 import os
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 from tqdm import tqdm
 import torch
 from visual_bge.visual_bge.modeling import Visualized_BGE

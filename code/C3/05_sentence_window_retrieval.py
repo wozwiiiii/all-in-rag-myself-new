@@ -1,5 +1,4 @@
 import os
-os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 from llama_index.core.node_parser import SentenceWindowNodeParser, SentenceSplitter
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
 from llama_index.llms.deepseek import DeepSeek
