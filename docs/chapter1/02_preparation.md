@@ -173,17 +173,78 @@ conda config --set show_channel_urls yes
 
 打开一个新的终端或 Anaconda Prompt，进行以下验证：
 
-1.  **检查 Conda 版本**:
-    ```bash
-    conda --version
-    ```
-    如果成功，将显示 Conda 的版本号。
+**检查 Conda 版本**:
+```bash
+conda --version
+```
+如果成功，将显示 Conda 的版本号。
 
-2.  **创建环境**:
-    尝试创建一个新的虚拟环境，检验镜像源是否配置成功。
-    ```bash
-    conda create --name rag python=3.12.7
-    ```
-    如果命令成功执行并提示安装包信息，则说明 Miniconda 已安装并配置正确。
+## 三、项目代码拉取
 
+### 3.1 安装 Git
 
+如果你尚未安装 Git，请按照以下步骤安装。
+
+* **Windows 系统**：访问[Git 官方网站](https://git-scm.com/download/win)，下载并运行安装程序，按照默认设置完成安装。
+* **macOS 系统**：打开终端，输入以下命令安装 Git：
+
+  ```bash
+  brew install git
+  ```
+* **Linux 系统（以 Ubuntu 为例）**：打开终端，输入以下命令安装 Git：
+
+  ```bash
+  sudo apt-get update
+  sudo apt-get install git
+  ```
+
+安装完成后，验证 Git 是否安装成功，输入以下命令：
+
+```bash
+git --version
+```
+
+如果成功，会显示 Git 的版本号。
+
+### 3.2 克隆项目代码
+
+1. **选择存放项目的目录**
+   打开终端（或 Windows 中的 Git Bash），导航到你想存放项目的目录：
+
+   ```bash
+   cd [你希望存放项目的路径]
+   ```
+
+2. **克隆仓库**
+   使用以下命令拉取 `all-in-rag` 仓库：
+
+   ```bash
+   git clone https://github.com/datawhalechina/all-in-rag.git
+   ```
+
+   等待下载完成，项目代码将存放在当前目录下的 `all-in-rag` 文件夹中。
+
+3. **进入项目目录**
+   拉取代码后，进入项目目录：
+
+   ```bash
+   cd all-in-rag
+   ```
+
+### 3.3 创建并激活虚拟环境
+
+在项目目录下，推荐使用前面配置好的 Miniconda 来创建 Python 虚拟环境。
+
+1. **创建虚拟环境**
+
+   ```bash
+   conda create --name rag python=3.12.7
+   ```
+
+2. **激活虚拟环境**
+
+   所有系统统一使用以下命令激活虚拟环境：
+
+   ```bash
+   conda activate rag
+   ```
