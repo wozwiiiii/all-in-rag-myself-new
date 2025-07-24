@@ -1,30 +1,27 @@
 # 第三节 四步构建RAG
 
-通过前面的学习，我们对RAG已经有了基本认识，并且也准备好了虚拟环境和api_key，接下来将尝试使用[**LangChain**](https://python.langchain.com/docs/introduction/)和[**LlamaIndex**](https://docs.llamaindex.ai/en/stable/)框架完成第一个RAG应用的实现与运行。通过一个示例，演示如何加载本地Markdown文档，利用嵌入模型处理文本，并结合大型语言模型（LLM）来回答与文档内容相关的问题。
+通过第一节的学习，我们对RAG已经有了基本认识，并且也准备好了虚拟环境和api_key，接下来将尝试使用[**LangChain**](https://python.langchain.com/docs/introduction/)和[**LlamaIndex**](https://docs.llamaindex.ai/en/stable/)框架完成第一个RAG应用的实现与运行。通过一个示例，演示如何加载本地Markdown文档，利用嵌入模型处理文本，并结合大型语言模型（LLM）来回答与文档内容相关的问题。
 
-## 一、环境配置与依赖安装
-
-请按照以下步骤配置本地环境：
+## 一、启动虚拟环境
 
 ### 1.1 激活虚拟环境
 
 假设已经按照前一章节的指导，创建了名为 `rag` 的 Conda 虚拟环境。在运行脚本前，先激活虚拟环境：
 
+> 如果使用是Cloud Studio，需要确认当前是否是用户环境，如果不是请运行 `su ubuntu` 切换到用户环境。
+
 ```bash
 conda activate rag
 ```
 
-### 1.2 安装依赖
-
-激活 `conda` 环境后，切换到存放 `requirements.txt` 文件的目录，然后使用 `pip` 安装所有依赖项。在 `conda` 环境中使用 `pip` 是完全兼容的。
+### 1.2 切换到项目目录
 
 ```bash
 # 假设当前在 all-in-rag 项目的根目录下
 cd code/C1
-pip install -r requirements.txt
 ```
 
-这将安装 LangChain、HuggingFace Transformers、ModelScope SDK、DeepSeek SDK等必要的库。
+每章内容中的代码文件都存放在 `code/Cx` 目录下，其中 `x` 表示章节编号。
 
 ## 二、运行RAG示例代码
 
