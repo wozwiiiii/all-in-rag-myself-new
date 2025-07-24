@@ -6,12 +6,12 @@
 
 ### 1.1 激活虚拟环境
 
-假设已经按照前一章节的指导，创建了名为 `rag` 的 Conda 虚拟环境。在运行脚本前，先激活虚拟环境：
+假设已经按照前一章节的指导，创建了名为 `all-in-rag` 的 Conda 虚拟环境。在运行脚本前，先激活虚拟环境：
 
 > 如果使用是Cloud Studio，需要确认当前是否是用户环境，如果不是请运行 `su ubuntu` 切换到用户环境。
 
 ```bash
-conda activate rag
+conda activate all-in-rag
 ```
 
 ### 1.2 切换到项目目录
