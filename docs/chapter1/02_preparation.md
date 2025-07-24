@@ -252,7 +252,7 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 
     > 如果出现关于grpcio的版本错误无需在意。
 
-## 四、windows环境配置
+## 四、windows环境配置（使用Cloud Studio 或 Codespaces 可跳过此步骤）
 
 ### 4.1 API配置
 
@@ -328,7 +328,7 @@ conda config --set show_channel_urls yes
 
 配置完成后，可以通过 `conda config --show channels` 命令查看已添加的源。
 
-## 五、项目代码拉取（使用Cloud Studio 或 可跳过此步骤）
+## 五、项目代码拉取（使用Cloud Studio 或 Codespaces 可跳过此步骤）
 
 ### 5.1 安装 Git
 
