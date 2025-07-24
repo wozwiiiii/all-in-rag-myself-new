@@ -1,5 +1,7 @@
 # 第二节 准备工作
 
+> 本节环境配置方面主推两种基于浏览器的集成开发环境。不管是手机、平板还是电脑，只要你想学都可以上号运行代码。虽然手机平板可能体验不佳，但胜在能用。
+
 ## 一、Deepseek API配置
 
 ### 1.1 API申请
@@ -35,10 +37,12 @@ GitHub Codespaces 是 GitHub 提供的一项服务，允许开发者在云端创
 ### 2.1 创建Codespaces
 
 1.  **访问项目地址**
+
     打开浏览器，访问 [all-in-rag](https://github.com/datawhalechina/all-in-rag)
 
 2.  **创建新分支**
     在项目页面的右上角，点击 `Fork` 按钮，创建一个新的分支。稍等一会儿即可创建成功。
+
     ![创建新分支1](./images/1_2_4.webp)
 
     ![创建新分支2](./images/1_2_5.webp)
@@ -48,11 +52,21 @@ GitHub Codespaces 是 GitHub 提供的一项服务，允许开发者在云端创
 
     ![创建Codespaces](./images/1_2_6.webp)
 
+4.  **再次进入Codespaces**
+    网页关闭后，找到刚才新建的存储库，点击红框框选内容即可重新进入 codespace 环境。
+
+    ![再次进入Codespaces](./images/1_2_7.webp)
+
+5.  **额度设置**
+    找到 GitHub 的账户设置中的 codespace 设置，挂起时间建议根据自己情况调整（时间过长会浪费额度，免费账号提供了单核120小时的额度）
+
+    ![额度设置](./images/1_2_8.webp)
+
 ### 2.2 python环境配置
 
 进入 IDE 后先选择下方终端
 
-![进入终端](./images/1_2_7.webp)
+![进入终端](./images/1_2_9.webp)
 
 1.  **更新系统软件包**
 
@@ -149,18 +163,18 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 3.  **创建应用**
     在页面上方的导航栏中找到并点击 `创建应用`。选择 `从 Git 仓库导入` ，在项目地址栏输入 `https://github.com/datawhalechina/all-in-rag.git` 后回车，将会自动为你创建标题和描述。
 
-    ![创建应用](./images/1_2_8.webp)
+    ![创建应用](./images/1_2_10.webp)
 
 4.  **再次进入**
     后续在[应用管理页面](https://cloudstudio.net/my-app)找到之前创建的应用，点击后选择右上角编写代码即可再次进入。
 
-    ![再次进入应用](./images/1_2_9.webp)
+    ![再次进入应用](./images/1_2_11.webp)
 
 ### 3.2 python环境配置
 
 进入 IDE 后先选择右侧终端
 
-![进入终端](./images/1_2_10.webp)
+![进入终端](./images/1_2_12.webp)
 
 1.  **更新系统软件包**
 
@@ -262,13 +276,13 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 
 3.  在 “系统属性” 对话框中，点击 “高级” 选项卡，然后点击下方的 “环境变量” 按钮。
 
-    ![高级系统设置](./images/1_2_11.webp)
+    ![高级系统设置](./images/1_2_13.webp)
 
 4.  在 “环境变量” 对话框中，点击 “新建”（在 “用户变量” 部分下），然后输入以下信息：
     - 变量名：DEEPSEEK_API_KEY
     - 变量值：[你的 Deepseek API 密钥]
 
-    ![高级系统设置](./images/1_2_12.webp)
+    ![高级系统设置](./images/1_2_14.webp)
 
 ### 4.2 安装Miniconda
 
