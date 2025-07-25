@@ -122,19 +122,19 @@ GitHub Codespaces 是 GitHub 提供的一项服务，允许开发者在云端创
 
 1.  **创建虚拟环境**
 
-   ```bash
-   conda create --name all-in-rag python=3.12.7
-   ```
+    ```bash
+    conda create --name all-in-rag python=3.12.7
+    ```
 
-   出现选项直接回车即可。
+    出现选项直接回车即可。
 
 2.  **激活虚拟环境**
 
-   使用以下命令激活虚拟环境：
+    使用以下命令激活虚拟环境：
 
-   ```bash
-   conda activate all-in-rag
-   ```
+    ```bash
+    conda activate all-in-rag
+    ```
 
 3.  **依赖安装**
     如果严格安装上述流程当前应该在项目根目录，进入code目录安装依赖库
@@ -236,25 +236,25 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 
 1.  **创建虚拟环境**
 
-   ```bash
-   conda create --name all-in-rag python=3.12.7
-   ```
+    ```bash
+    conda create --name all-in-rag python=3.12.7
+    ```
 
-   出现选项直接回车即可。
+    出现选项直接回车即可。
 
 2.  **配置文件权限**
 
-   ```bash
-   sudo chown -R ubuntu:ubuntu code models
-   ```
+    ```bash
+    sudo chown -R ubuntu:ubuntu code models
+    ```
 
 3.  **激活虚拟环境**
 
-   使用以下命令激活虚拟环境：
+    使用以下命令激活虚拟环境：
 
-   ```bash
-   conda activate all-in-rag
-   ```
+    ```bash
+    conda activate all-in-rag
+    ```
 
 4.  **依赖安装**
     如果严格安装上述流程当前应该在项目根目录，进入code目录安装依赖库
