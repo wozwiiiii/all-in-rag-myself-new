@@ -298,7 +298,7 @@ for i, doc in enumerate(final_results):
 3.  **构建处理管道 (`DocumentCompressorPipeline`)**：这是整个流程的核心。创建一个 `DocumentCompressorPipeline` 实例，并将 `reranker` 和 `compressor` 按顺序放入 `transformers` 列表中。根据 `DocumentCompressorPipeline` 的源码，它会依次调用列表中的每个处理器。因此，文档会先经过 `ColBERTReranker` 重排，重排后的结果再被送入 `LLMChainExtractor` 进行压缩。
 4.  **组装最终检索器**：最后，用 `ContextualCompressionRetriever` 将 `base_retriever` 和我们创建的 `pipeline_compressor` 包装在一起。当调用 `final_retriever` 时，它会自动执行“基础检索 -> 管道处理（重排 -> 压缩）”的完整流程。
 
-> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C4/07_rerank_and_refine.py)
+> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C4/07_rerank_and_refine.py)
 
 ### 2.3 LlamaIndex 中的检索压缩
 
@@ -331,7 +331,7 @@ C-RAG 的工作流程可以概括为 **“检索-评估-行动”** 三个阶段
 
 ## 练习
 
-- 本节“自定义重排器与压缩管道”部分的代码运行后的输出会出现重复的情况，思考为什么会出现这个问题并尝试修改代码解决。（[参考代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C4/work_rerank_and_refine.py)）
+- 本节“自定义重排器与压缩管道”部分的代码运行后的输出会出现重复的情况，思考为什么会出现这个问题并尝试修改代码解决。（[参考代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C4/work_rerank_and_refine.py)）
 
 ## 参考文献
 

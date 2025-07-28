@@ -87,7 +87,7 @@
 
 通过这种方式，成功地将 LLM 从一个简单的“文本改写员”提升为了一个能够理解复杂意图并生成可执行计划的“智能代理”，从而优雅地解决了“最值”查询的难题。
 
-> [完整代码](https://github.com/FutureUnreal/all-in-rag/tree/main/code/C4/04_text_to_metadata_filter_v2.py)
+> [完整代码](https://github.com/datawhalechina/all-in-rag/tree/main/code/C4/04_text_to_metadata_filter_v2.py)
 
 ### 1.2 多查询分解 (Multi-query)
 
@@ -215,7 +215,7 @@ full_router_chain = {"topic": classifier_chain, "question": lambda x: x["questio
 # result = full_router_chain.invoke({"question": "麻婆豆腐怎么做？"})
 ```
 
-> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C4/05_llm_based_routing.py)
+> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C4/05_llm_based_routing.py)
 
 #### 2.2.2 嵌入相似性路由
 
@@ -289,7 +289,7 @@ full_chain = RunnableLambda(route)
 # result = full_chain.invoke({"question": "如何做一碗清淡的云吞面？"})
 ```
 
-> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C4/06_embedding_based_routing.py)
+> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C4/06_embedding_based_routing.py)
 
 ### 2.3 LlamaIndex 拓展
 

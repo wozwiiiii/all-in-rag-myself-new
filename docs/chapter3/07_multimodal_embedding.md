@@ -117,7 +117,7 @@ print(f"图文结合1 vs 图文结合2: {sim_4}")
 图文结合1 vs 图文结合2: tensor([[0.9058]])
 ```
 
-> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C3/01_bge_visualized.py)
+> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/01_bge_visualized.py)
 
 ## 练习
 

@@ -79,7 +79,7 @@ print(result)
     *   首先，它继承自 `JsonOutputParser`，会将 LLM 输出的文本字符串解析成一个 Python 字典。
     *   然后，最关键的一步，它会使用 `PersonInfo.model_validate()` 方法，用定义的数据模型来验证这个字典。如果字典的键和值类型都符合 `PersonInfo` 的定义，解析器就会返回一个 `PersonInfo` 的实例对象；如果验证失败，则会抛出一个 `OutputParserException` 异常。
 
-> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C5/01_pydantic.py)
+> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C5/01_pydantic.py)
 
 ### 2.2 LlamaIndex 的输出解析
 
@@ -160,7 +160,7 @@ if message.tool_calls:
 4.  **第二次调用 (`Tool -> Model`)**：将原始的用户问题、模型的工具调用响应，以及模拟执行后得到的工具结果（`"role": "tool"`），一同打包成新的对话历史，再次发送给模型。
 5.  **获取最终答案**：模型在看到工具的执行结果后，就能用自然语言回答用户最初的问题了。
 
-> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C5/02_function_calling_example.py)
+> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C5/02_function_calling_example.py)
 
 ### 3.3 Function Calling 的优势
 

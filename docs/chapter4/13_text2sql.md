@@ -369,21 +369,21 @@ SQLite引擎逐行检查users表中的数据：
 ```bash
 python code/C4/03_text2sql_demo.py
 ```
-> 完整演示代码：[03_text2sql_demo.py](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C4/03_text2sql_demo.py)
+> 完整演示代码：[03_text2sql_demo.py](https://github.com/datawhalechina/all-in-rag/blob/main/code/C4/03_text2sql_demo.py)
 
 **核心代码获取**：三个核心模块的完整实现
 - `knowledge_base.py` - 知识库模块
 - `sql_generator.py` - SQL生成模块  
 - `text2sql_agent.py` - 代理协调模块
 
-> 源码地址：[code/C4/text2sql/](https://github.com/FutureUnreal/all-in-rag/tree/main/code/C4/text2sql)
+> 源码地址：[code/C4/text2sql/](https://github.com/datawhalechina/all-in-rag/tree/main/code/C4/text2sql)
 
 **数据资源**：框架使用的JSON知识数据
 - `ddl_examples.json` - DDL结构示例
 - `qsql_examples.json` - 问题-SQL对示例
 - `db_descriptions.json` - 表和字段描述
 
-> 数据文件：[code/C4/text2sql/data/](https://github.com/FutureUnreal/all-in-rag/tree/main/code/C4/text2sql/data)
+> 数据文件：[code/C4/text2sql/data/](https://github.com/datawhalechina/all-in-rag/tree/main/code/C4/text2sql/data)
 
 ### 3.6 为什么不直接使用封装好的框架？
 

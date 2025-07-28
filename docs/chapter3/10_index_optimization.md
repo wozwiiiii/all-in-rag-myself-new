@@ -117,7 +117,7 @@ print(f"回答: {base_response}\n")
 
 这种差异正是句子窗口检索策略优势的体现。它通过“精确检索小文本块（单个句子），再扩展上下文（句子窗口）”的方式，为大语言模型提供了高度相关且信息丰富的上下文，从而生成了质量更高的答案。
 
-> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C3/05_sentence_window_retrieval.py)
+> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/05_sentence_window_retrieval.py)
 
 ## 二、结构化索引
 
@@ -218,7 +218,7 @@ df[df['年份'] == 1994].nsmallest(1, '评分人数')['电影名称'].iloc[0]
 3.  **子层查询**：`Retrieving with query id 年份_1994`，`PandasQueryEngine` 接管查询，并将问题发送给 LLM，让其生成 Pandas 代码。
 4.  **代码生成与执行**：LLM 生成了 `df[df['年份'] == 1994].nsmallest(1, '评分人数')['电影名称'].iloc[0]`，引擎执行后得到输出 `燃情岁月`。
 
-> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C3/06_recursive_retrieval.py)
+> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/06_recursive_retrieval.py)
 
 > ⚠️ **重要安全警告**：实际上在 LlamaIndex 的官网有提到，`PandasQueryEngine` 是一个实验性功能，具有潜在的安全风险。它的工作原理是让 LLM 生成 Python 代码，然后使用 `eval()` 函数在本地执行。这意味着，在没有严格沙箱隔离的环境下，理论上可能执行任意代码。**因此，强烈不建议在生产环境中使用此工具**。
 
@@ -238,7 +238,7 @@ df[df['年份'] == 1994].nsmallest(1, '评分人数')['电影名称'].iloc[0]
 
 通过这种“先路由，后用元数据过滤检索”的方式，既实现了跨多个数据源的查询能力，又避免了执行代码的安全隐患。LlamaIndex 官方也提供了类似的结构化分层检索[^4]可以参考。
 
-> [完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C3/07_recursive_retrieval_v2.py)
+> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/07_recursive_retrieval_v2.py)
 
 ## 题外话：关于框架
 

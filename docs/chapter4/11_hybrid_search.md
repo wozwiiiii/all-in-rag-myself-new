@@ -411,12 +411,12 @@ for i, hit in enumerate(results):
     描述: 在电影《驯龙高手》中，主角小嗝嗝骑着他的龙伙伴无牙仔在高空飞翔。他们飞向灿烂的太阳，下方是岛屿和海洋，画面充满了冒险与友谊。...
 ```
 
-> [本节完整代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C4/01_hybrid_search.py)
+> [本节完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C4/01_hybrid_search.py)
 
 ## 练习
 
 - 分析代码为什么在密集向量检索和稀疏向量检索中，排名第三的驯龙高手在混合检索中反而排在了第五？
-- 基于上一节的多模态检索代码 `04_multi_milvus.py` ，结合本节的检索代码加入多模态信息融合的功能并尝试使用混合检索。（[参考代码](https://github.com/FutureUnreal/all-in-rag/blob/main/code/C3/work_multimodal_dragon_search.py)）
+- 基于上一节的多模态检索代码 `04_multi_milvus.py` ，结合本节的检索代码加入多模态信息融合的功能并尝试使用混合检索。（[参考代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/work_multimodal_dragon_search.py)）
 
 ## 脚注
 
