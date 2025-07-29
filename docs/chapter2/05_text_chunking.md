@@ -288,7 +288,7 @@ LlamaIndex 的分块体系有以下特点：
 
 ### 4.3 ChunkViz：简易的可视化分块工具
 
-在本文开头部分展示的分块图就是通过 [**ChunkViz**](https://github.com/FullStackRetrieval-com/chunkviz) 生成的。可以将你的文档、分块配置作为输入，用不同的颜色块展示每个 chunk 的边界和重叠部分，方便快速理解分块逻辑。
+在本文开头部分展示的分块图就是通过 [**ChunkViz**](https://chunkviz.up.railway.app/) 生成的。可以将你的文档、分块配置作为输入，用不同的颜色块展示每个 chunk 的边界和重叠部分，方便快速理解分块逻辑。
 
 ## 参考文献
 
