@@ -8,9 +8,6 @@ import logging
 from pathlib import Path
 from typing import List
 
-# 设置环境变量（临时设置，将在配置初始化时被覆盖）
-os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-
 # 添加模块路径
 sys.path.append(str(Path(__file__).parent))
 

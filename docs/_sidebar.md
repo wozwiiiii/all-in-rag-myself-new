@@ -24,10 +24,15 @@
         - [第一节 评估介绍](chapter6/18_system_evaluation.md)
         - [第二节 评估工具](chapter6/19_common_tools.md)
     - 第七章 高级RAG架构（拓展选修篇）
+        - [第一节 基于知识图谱的RAG](chapter7/20_kg_rag.md)
     - 第八章 项目实战一（基础篇）
         - [环境配置与项目架构](chapter8/01_env_architecture.md)
         - [数据准备模块实现](chapter8/02_data_preparation.md)
         - [索引构建与检索优化](chapter8/03_index_retrieval.md)
         - [生成集成与系统整合](chapter8/04_generation_sys.md)
     - 第九章 项目实战一优化（选修篇）
+        - [图RAG架构设计](chapter9/01_graph_rag_architecture.md)
+        - [图数据建模与准备](chapter9/02_graph_data_modeling.md)
+        - [Milvus索引构建](chapter9/03_index_construction.md)
+        - [智能查询路由与检索策略](chapter9/04_intelligent_query_routing.md)
     - 第十章 项目实战二（选修篇）

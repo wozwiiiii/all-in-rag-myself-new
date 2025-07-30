@@ -2,7 +2,6 @@
 RAG系统配置文件
 """
 
-import os
 from dataclasses import dataclass
 from typing import Dict, Any
 
@@ -25,12 +24,9 @@ class RAGConfig:
     temperature: float = 0.1
     max_tokens: int = 2048
 
-    # 环境配置
-    hf_endpoint: str = "https://hf-mirror.com"
-    
     def __post_init__(self):
-        """初始化后设置环境变量"""
-        os.environ['HF_ENDPOINT'] = self.hf_endpoint
+        """初始化后的处理"""
+        pass
     
     @classmethod
     def from_dict(cls, config_dict: Dict[str, Any]) -> 'RAGConfig':
@@ -46,8 +42,7 @@ class RAGConfig:
             'llm_model': self.llm_model,
             'top_k': self.top_k,
             'temperature': self.temperature,
-            'max_tokens': self.max_tokens,
-            'hf_endpoint': self.hf_endpoint
+            'max_tokens': self.max_tokens
         }
 
 # 默认配置实例
