@@ -2,8 +2,6 @@
 
 > 不同类型的查询需要不同的检索策略。本节将详细介绍如何构建智能查询路由器，实现查询复杂度分析和检索策略的自动选择，以及三种核心检索策略的设计与实现。
 
-> [本节完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C9/rag_modules/intelligent_query_router.py)
-
 ## 一、智能查询路由器设计
 
 ### 1.1 查询路由的必要性
