@@ -509,3 +509,5 @@ print(f"已删除 Collection: '{COLLECTION_NAME}'")
 通过上图可以看出，这个多模态检索引擎成功地理解了“一条龙”这个图文组合查询的意图，并从图库中找到了最相关的几张图片并进行排序。
 
 > [本节完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/04_multi_milvus.py)
+
+> 若代码运行出现报错 `ImportError: libgl.so.1 cannot open shared object file no such file or directory`, 执行 `sudo apt-get install python3-opencv` 安装依赖库。
