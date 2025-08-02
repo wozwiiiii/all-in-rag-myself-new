@@ -122,6 +122,18 @@ all-in-rag/
 └── README.md       # 项目说明
 ```
 
+## 实战项目展示
+
+### 第八章 项目一：
+
+![项目一](./project01.png)
+
+### 第九章 项目一（Graph RAG优化）：
+
+![项目一（Graph RAG优化）](./project01_graph.png)
+
+### 第十章 项目二：
+
 ## 致谢
 
 **核心贡献者**

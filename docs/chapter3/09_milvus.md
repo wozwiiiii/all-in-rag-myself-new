@@ -18,6 +18,8 @@ Milvus 提供了多种部署方式，这里以 **Milvus Standalone (单机版)**
 
 - **安装 Docker 与 Docker Compose**: 确保系统中已安装并正在运行 Docker 和 Docker Compose。如果你对 Docker 不熟悉，可以参考这篇详细的教程：[Docker 万字教程：从入门到掌握](https://mp.weixin.qq.com/s/u2es87JU5FNlGo3qDLY_ng)。
 
+> codespace 环境自带Docker Compose无需安装
+
 ### 2. 下载并启动 Milvus
 
 在你选定的工作目录下，打开终端（Terminal）或命令行工具（PowerShell），执行以下步骤：
