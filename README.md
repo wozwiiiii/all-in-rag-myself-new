@@ -103,6 +103,7 @@
 
 **第九章 项目实战一优化（选修篇）** [📖 查看章节](./docs/chapter9)
 
+[🍽️ 项目展示](https://github.com/FutureUnreal/What-to-eat-today)
 1. [x] [图RAG架构设计](./docs/chapter9/01_graph_rag_architecture.md)
 2. [x] [图数据建模与准备](./docs/chapter9/02_graph_data_modeling.md)
 3. [x] [Milvus索引构建](./docs/chapter9/03_index_construction.md)
