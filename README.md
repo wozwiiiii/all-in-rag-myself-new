@@ -143,7 +143,6 @@ all-in-rag/
 - 感谢 [@Sm1les](https://github.com/Sm1les) 对本项目的帮助与支持
 - 感谢所有为本项目做出贡献的开发者们
 - 感谢开源社区提供的优秀工具和框架支持
-- 如果有任何想法可以联系我们，也欢迎大家多多提出 issue
 - 特别感谢以下为教程做出贡献的开发者！
 
 [![Contributors](https://contrib.rocks/image?repo=datawhalechina/all-in-rag)](https://github.com/datawhalechina/all-in-rag/graphs/contributors)
