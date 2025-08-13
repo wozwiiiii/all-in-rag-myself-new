@@ -71,12 +71,13 @@ if collection.is_empty:
     docs, metadata = [], []
     for item in dataset:
         parts = [
-            item.get('title', ''), item.get('description', ''),
-            *item.get('combat_details', {}).get('combat_style', []),
-            *item.get('combat_details', {}).get('abilities_used', []),
-            item.get('scene_info', {}).get('location', ''),
-            item.get('scene_info', {}).get('environment', ''),
-            item.get('scene_info', {}).get('time_of_day', '')
+            item.get('title', ''),
+            item.get('description', ''),
+            item.get('location', ''),
+            item.get('environment', ''),
+            # *item.get('combat_details', {}).get('combat_style', []),
+            # *item.get('combat_details', {}).get('abilities_used', []),
+            # item.get('scene_info', {}).get('time_of_day', '')
         ]
         docs.append(' '.join(filter(None, parts)))
         metadata.append(item)
@@ -144,8 +145,6 @@ for i in range(min(5, sparse_vec.nnz)):
     print(f"  - 索引: {sparse_vec.indices[i]}, 值: {sparse_vec.data[i]:.4f}")
 density = (sparse_vec.nnz / sparse_vec.shape[1] * 100)
 print(f"\n稀疏向量密度: {density:.8f}%")
-
-# 定义搜索参数
 
 # 定义搜索参数
 search_params = {"metric_type": "IP", "params": {}}
