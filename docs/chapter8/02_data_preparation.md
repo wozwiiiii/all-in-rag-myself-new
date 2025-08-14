@@ -298,10 +298,10 @@ def get_parent_documents(self, child_chunks: List[Document]) -> List[Document]:
                              key=lambda x: parent_relevance[x], reverse=True)
 
     # 构建去重后的父文档列表
-        parent_docs = []
-        for parent_id in sorted_parent_ids:
-            if parent_id in parent_docs_map:
-                parent_docs.append(parent_docs_map[parent_id])
+    parent_docs = []
+    for parent_id in sorted_parent_ids:
+        if parent_id in parent_docs_map:
+            parent_docs.append(parent_docs_map[parent_id])
 
     return parent_docs
 ```
