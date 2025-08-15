@@ -178,7 +178,6 @@ if collection.is_empty:
             item.get('description', ''),
             item.get('location', ''),
             item.get('environment', ''),
-            # 以下字段在当前数据中不存在，已注释
             # *item.get('combat_details', {}).get('combat_style', []),
             # *item.get('combat_details', {}).get('abilities_used', []),
             # item.get('scene_info', {}).get('time_of_day', '')

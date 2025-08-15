@@ -214,12 +214,10 @@ if collection.is_empty:
     docs, metadata = [], []
     for item in dataset:
         parts = [
-            item.get('title', ''), item.get('description', ''),
-            *item.get('combat_details', {}).get('combat_style', []),
-            *item.get('combat_details', {}).get('abilities_used', []),
-            item.get('scene_info', {}).get('location', ''),
-            item.get('scene_info', {}).get('environment', ''),
-            item.get('scene_info', {}).get('time_of_day', '')
+            item.get('title', ''),
+            item.get('description', ''),
+            item.get('location', ''),
+            item.get('environment', ''),
         ]
         docs.append(' '.join(filter(None, parts)))
         metadata.append(item)
