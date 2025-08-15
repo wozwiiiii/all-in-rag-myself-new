@@ -167,6 +167,8 @@ all-in-rag/
   <p>让更多人发现这个项目（护食？发来！）</p>
 </div>
 
+![star](./emoji.png)
+
 ## 关于 Datawhale
 
 <div align='center'>
