@@ -3,6 +3,7 @@
         - [第一节 RAG简介](chapter1/01_RAG_intro.md)
         - [第二节 准备工作](chapter1/02_preparation.md)
         - [第三节 四步构建RAG](chapter1/03_get_start_rag.md)
+        - [附：Python虚拟环境部署方案补充](chapter1/04_virtualenv.md)
     - 第二章 数据准备
         - [第一节 数据加载](chapter2/04_data_load.md)
         - [第二节 文本分块](chapter2/05_text_chunking.md)
