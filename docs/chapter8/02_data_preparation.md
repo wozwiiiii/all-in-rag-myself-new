@@ -192,7 +192,10 @@ def chunk_documents(self) -> List[Document]:
 
     # 为每个chunk添加基础元数据
     for i, chunk in enumerate(chunks):
-        chunk.metadata['chunk_id'] = i
+        if 'chunk_id' not in chunk.metadata:
+            # 如果没有chunk_id（比如分割失败的情况），则生成一个
+            chunk.metadata['chunk_id'] = str(uuid.uuid4())
+        chunk.metadata['batch_index'] = i  # 在当前批次中的索引
         chunk.metadata['chunk_size'] = len(chunk.page_content)
 
     self.chunks = chunks
@@ -249,7 +252,31 @@ def _markdown_header_split(self) -> List[Document]:
 - **父子关系**: 每个子块都记录其父文档的`parent_id`
 - **唯一标识**: 每个子块都有独立的`child_id`
 
-#### 2.3.3 分块效果示例
+#### 2.3.3 ID管理策略
+
+**重要说明**: 在分块过程中，系统采用了两阶段的ID管理策略：
+
+1. **第一阶段** (`_markdown_header_split`): 为每个子块生成UUID作为`chunk_id`
+2. **第二阶段** (`chunk_documents`): 保留UUID，添加`batch_index`作为批次索引
+
+```python
+# 第一阶段：生成UUID
+child_id = str(uuid.uuid4())  # 例如: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+chunk.metadata["chunk_id"] = child_id
+
+# 第二阶段：保留UUID，添加批次索引
+if 'chunk_id' not in chunk.metadata:
+    chunk.metadata['chunk_id'] = str(uuid.uuid4())
+chunk.metadata['batch_index'] = i  # 0, 1, 2, 3...
+```
+
+**设计优势**:
+- ✅ **全局唯一性**: UUID确保每个chunk在整个系统中都有唯一标识
+- ✅ **父子关系**: `parent_child_map`使用UUID维护准确的父子映射
+- ✅ **批次信息**: `batch_index`提供在当前批次中的位置信息
+- ✅ **兼容性**: 避免了ID冲突和覆盖问题
+
+#### 2.3.4 分块效果示例
 
 以"西红柿炒鸡蛋"为例，分块后的效果：
 
