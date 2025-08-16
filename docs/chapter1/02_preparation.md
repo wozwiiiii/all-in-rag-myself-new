@@ -155,7 +155,7 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 ### 3.1 应用创建
 
 1.  **访问 Cloud Studio**
-    打开浏览器，访问 [Cloud Studio](https://studio.cloud.tencent.com/)。
+    打开浏览器，访问 [Cloud Studio](https://cloudstudio.net/)。
 
 2.  **登录或注册账号**
     点击页面右上角的 `注册登录` 按钮，使用微信等方式完成登录。
