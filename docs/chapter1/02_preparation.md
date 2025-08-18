@@ -411,3 +411,11 @@ git --version
    ```bash
    conda activate all-in-rag
    ```
+
+3.  **依赖安装**
+    如果严格安装上述流程当前应该在项目根目录，进入code目录安装依赖库
+
+    ```bash
+    cd code
+    pip install -r requirements.txt
+    ```
