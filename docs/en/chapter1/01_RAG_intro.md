@@ -13,7 +13,7 @@ RAG (Retrieval-Augmented Generation) is a technical paradigm that **combines inf
 ### 1.2 Technical Principles
 
 - **Two-Stage Architecture**:
-![Two-Stage](./chapter1/images/1_1.svg)
+![Two-Stage](./images/1_1.svg)
 
 - **Key Components**:
   1. **Indexing** 📑: Split unstructured documents (PDF/Word, etc.) into chunks and convert them into vector data through embedding models.
