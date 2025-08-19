@@ -13,6 +13,7 @@ RAG (Retrieval-Augmented Generation) is a technical paradigm that **combines inf
 ### 1.2 Technical Principles
 
 - **Two-Stage Architecture**:
+
 ```mermaid
 flowchart LR
     A[User Query] --> B[Retrieval Module]

@@ -39,7 +39,7 @@
   </table>
 </div>
 
-## Project Introduction
+## Project Introduction（[中文](README.md) | English）
 
 This project is a comprehensive RAG (Retrieval-Augmented Generation) technology full-stack tutorial for large model application developers. It aims to help developers master RAG application development skills based on large language models through systematic learning paths and hands-on practice projects, building production-grade intelligent Q&A and knowledge retrieval systems.
 
