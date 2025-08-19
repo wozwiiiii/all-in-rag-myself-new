@@ -126,7 +126,8 @@
             fallbackLanguages: ['zh-cn', 'en'],
             alias: {
                 '/.*/_sidebar.md': '/_sidebar.md',
-                '/en/.*/_sidebar.md': '/en/_sidebar.md'
+                '/en/.*/_sidebar.md': '/en/_sidebar.md',
+                '/README_EN.md': '/README_EN.md'
             },
             search: {
                 maxAge: 86400000,
@@ -197,14 +198,21 @@
 
                             if (lang === '') {
                                 // 切换到中文
-                                if (currentPath.startsWith('en/')) {
+                                if (currentPath === 'README_EN.md') {
+                                    location.hash = '#/';
+                                } else if (currentPath.startsWith('en/')) {
                                     location.hash = '#/' + currentPath.replace('en/', '');
                                 } else {
                                     location.hash = '#/';
                                 }
                             } else {
                                 // 切换到英文
-                                if (currentPath.startsWith('en/')) {
+                                if (currentPath === '' || currentPath === '/') {
+                                    location.hash = '#/README_EN.md';
+                                } else if (currentPath === 'README_EN.md') {
+                                    // 已经在英文首页
+                                    return;
+                                } else if (currentPath.startsWith('en/')) {
                                     // 已经在英文页面
                                     return;
                                 } else {
@@ -216,7 +224,7 @@
                         // 根据当前路径设置选择器状态
                         function updateSelector() {
                             var currentPath = location.hash.replace('#/', '');
-                            if (currentPath.startsWith('en/')) {
+                            if (currentPath.startsWith('en/') || currentPath === 'README_EN.md') {
                                 selector.value = 'en';
                             } else {
                                 selector.value = '';

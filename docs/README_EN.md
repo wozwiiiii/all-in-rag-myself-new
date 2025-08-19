@@ -1,12 +1,12 @@
 # All-in-RAG | Large Model Application Development: RAG Technology Full-Stack Guide
 
 <div align='center'>
-  <img src="../logo.svg" alt="All-in-RAG Logo" width="70%">
+  <img src="./logo.svg" alt="All-in-RAG Logo" width="70%">
 </div>
 
 ## Project Introduction [![Stars](https://img.shields.io/github/stars/datawhalechina/all-in-rag?style=social)](https://github.com/datawhalechina/all-in-rag/stargazers) ![GitHub forks](https://img.shields.io/github/forks/datawhalechina/all-in-rag) [![Python](https://img.shields.io/badge/Python-3.12.7-blue)](https://www.python.org/) [![Online Reading](https://img.shields.io/badge/Online%20Reading-Click%20Here-blue)](https://datawhalechina.github.io/)
 
-[中文](#/) | English
+[中文](README.md) | English
 
 This project is a comprehensive RAG (Retrieval-Augmented Generation) technology full-stack tutorial for large model application developers. It aims to help developers master RAG application development skills based on large language models through systematic learning paths and hands-on practical projects, building production-level intelligent Q&A and knowledge retrieval systems.
 
@@ -55,60 +55,60 @@ This project starts from practice, combines the latest RAG technology developmen
 
 ### Part I: RAG Foundation
 
-**Chapter 1: Unlocking RAG** [📖 View Chapter](../chapter1)
-1. [x] [RAG Introduction](../chapter1/01_RAG_intro.md) - RAG technology overview and application scenarios
-2. [x] [Preparation](../chapter1/02_preparation.md) - Environment configuration and tool preparation
-3. [x] [Four Steps to Build RAG](../chapter1/03_get_start_rag.md) - Quick start with RAG development
+**Chapter 1: Unlocking RAG** [📖 View Chapter](./chapter1)
+1. [x] [RAG Introduction](./chapter1/01_RAG_intro.md) - RAG technology overview and application scenarios
+2. [x] [Preparation](./chapter1/02_preparation.md) - Environment configuration and tool preparation
+3. [x] [Four Steps to Build RAG](./chapter1/03_get_start_rag.md) - Quick start with RAG development
 
-**Chapter 2: Data Preparation** [📖 View Chapter](../chapter2)
-1. [x] [Data Loading](../chapter2/04_data_load.md) - Multi-format document processing and loading
-2. [x] [Text Chunking](../chapter2/05_text_chunking.md) - Text segmentation strategies and optimization
+**Chapter 2: Data Preparation** [📖 View Chapter](./chapter2)
+1. [x] [Data Loading](./chapter2/04_data_load.md) - Multi-format document processing and loading
+2. [x] [Text Chunking](./chapter2/05_text_chunking.md) - Text segmentation strategies and optimization
 
 ### Part II: Index Construction and Optimization
 
-**Chapter 3: Index Construction** [📖 View Chapter](../chapter3)
-1. [x] [Vector Embedding](../chapter3/06_vector_embedding.md) - Detailed text vectorization techniques
-2. [x] [Multimodal Embedding](../chapter3/07_multimodal_embedding.md) - Image-text multimodal vectorization
-3. [x] [Vector Database](../chapter3/08_vector_db.md) - Vector storage and retrieval systems
-4. [x] [Milvus Practice](../chapter3/09_milvus.md) - Milvus multimodal retrieval practice
-5. [x] [Index Optimization](../chapter3/10_index_optimization.md) - Index performance tuning tips
+**Chapter 3: Index Construction** [📖 View Chapter](./chapter3)
+1. [x] [Vector Embedding](./chapter3/06_vector_embedding.md) - Detailed text vectorization techniques
+2. [x] [Multimodal Embedding](./chapter3/07_multimodal_embedding.md) - Image-text multimodal vectorization
+3. [x] [Vector Database](./chapter3/08_vector_db.md) - Vector storage and retrieval systems
+4. [x] [Milvus Practice](./chapter3/09_milvus.md) - Milvus multimodal retrieval practice
+5. [x] [Index Optimization](./chapter3/10_index_optimization.md) - Index performance tuning tips
 
 ### Part III: Advanced Retrieval Techniques
 
-**Chapter 4: Retrieval Optimization** [📖 View Chapter](../chapter4)
-1. [x] [Hybrid Retrieval](../chapter4/11_hybrid_search.md) - Dense + sparse retrieval fusion
-2. [x] [Query Construction](../chapter4/12_query_construction.md) - Intelligent query understanding and construction
-3. [x] [Text2SQL](../chapter4/13_text2sql.md) - Natural language to SQL query
-4. [x] [Query Rewriting and Routing](../chapter4/14_query_rewriting.md) - Query optimization strategies
-5. [x] [Advanced Retrieval Techniques](../chapter4/15_advanced_retrieval_techniques.md) - Advanced retrieval algorithms
+**Chapter 4: Retrieval Optimization** [📖 View Chapter](./chapter4)
+1. [x] [Hybrid Retrieval](./chapter4/11_hybrid_search.md) - Dense + sparse retrieval fusion
+2. [x] [Query Construction](./chapter4/12_query_construction.md) - Intelligent query understanding and construction
+3. [x] [Text2SQL](./chapter4/13_text2sql.md) - Natural language to SQL query
+4. [x] [Query Rewriting and Routing](./chapter4/14_query_rewriting.md) - Query optimization strategies
+5. [x] [Advanced Retrieval Techniques](./chapter4/15_advanced_retrieval_techniques.md) - Advanced retrieval algorithms
 
 ### Part IV: Generation and Evaluation
 
-**Chapter 5: Generation Integration** [📖 View Chapter](../chapter5)
-1. [x] [Formatted Generation](../chapter5/16_formatted_generation.md) - Structured output and format control
+**Chapter 5: Generation Integration** [📖 View Chapter](./chapter5)
+1. [x] [Formatted Generation](./chapter5/16_formatted_generation.md) - Structured output and format control
 
-**Chapter 6: RAG System Evaluation** [📖 View Chapter](../chapter6)
-1. [x] [Evaluation Introduction](../chapter6/18_system_evaluation.md) - RAG system evaluation methodology
-2. [x] [Evaluation Tools](../chapter6/19_common_tools.md) - Common evaluation tools and metrics
+**Chapter 6: RAG System Evaluation** [📖 View Chapter](./chapter6)
+1. [x] [Evaluation Introduction](./chapter6/18_system_evaluation.md) - RAG system evaluation methodology
+2. [x] [Evaluation Tools](./chapter6/19_common_tools.md) - Common evaluation tools and metrics
 
 ### Part V: Advanced Applications and Practice
 
-**Chapter 7: Advanced RAG Architecture (Extended Elective)** [📖 View Chapter](../chapter7)
-1. [x] [Knowledge Graph-based RAG](../chapter7/20_kg_rag.md)
+**Chapter 7: Advanced RAG Architecture (Extended Elective)** [📖 View Chapter](./chapter7)
+1. [x] [Knowledge Graph-based RAG](./chapter7/20_kg_rag.md)
 
-**Chapter 8: Practical Project I (Basic)** [📖 View Chapter](../chapter8)
-1. [x] [Environment Configuration and Project Architecture](../chapter8/01_env_architecture.md)
-2. [x] [Data Preparation Module Implementation](../chapter8/02_data_preparation.md)
-3. [x] [Index Construction and Retrieval Optimization](../chapter8/03_index_retrieval.md)
-4. [x] [Generation Integration and System Integration](../chapter8/04_generation_sys.md)
+**Chapter 8: Practical Project I (Basic)** [📖 View Chapter](./chapter8)
+1. [x] [Environment Configuration and Project Architecture](./chapter8/01_env_architecture.md)
+2. [x] [Data Preparation Module Implementation](./chapter8/02_data_preparation.md)
+3. [x] [Index Construction and Retrieval Optimization](./chapter8/03_index_retrieval.md)
+4. [x] [Generation Integration and System Integration](./chapter8/04_generation_sys.md)
 
-**Chapter 9: Practical Project I Optimization (Elective)** [📖 View Chapter](../chapter9)
-1. [x] [Graph RAG Architecture Design](../chapter9/01_graph_rag_architecture.md)
-2. [x] [Graph Data Modeling and Preparation](../chapter9/02_graph_data_modeling.md)
-3. [x] [Milvus Index Construction](../chapter9/03_index_construction.md)
-4. [x] [Intelligent Query Routing and Retrieval Strategies](../chapter9/04_intelligent_query_routing.md)
+**Chapter 9: Practical Project I Optimization (Elective)** [📖 View Chapter](./chapter9)
+1. [x] [Graph RAG Architecture Design](./chapter9/01_graph_rag_architecture.md)
+2. [x] [Graph Data Modeling and Preparation](./chapter9/02_graph_data_modeling.md)
+3. [x] [Milvus Index Construction](./chapter9/03_index_construction.md)
+4. [x] [Intelligent Query Routing and Retrieval Strategies](./chapter9/04_intelligent_query_routing.md)
 
-**Chapter 10: Practical Project II (Elective)** [📖 View Chapter](../chapter10) *In Planning*
+**Chapter 10: Practical Project II (Elective)** [📖 View Chapter](./chapter10) *In Planning*
 
 ## Acknowledgments
 
@@ -143,7 +143,7 @@ We welcome all forms of contributions, including but not limited to:
   <p>Let more people discover this project!</p>
 </div>
 
-![star](../emoji.png)
+![star](./emoji.png)
 
 ## About Datawhale
 
