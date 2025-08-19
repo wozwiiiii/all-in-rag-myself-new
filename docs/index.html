@@ -92,18 +92,31 @@
             auto2top: true,
             subMaxLevel: 3,
             alias: {
-                '/.*/_sidebar.md': '/_sidebar.md'
+                '/.*/_sidebar.md': '/_sidebar.md',
+                '/en/.*/_sidebar.md': '/en/_sidebar.md'
             },
             search: {
                 maxAge: 86400000,
                 paths: 'auto',
-                placeholder: '🔍 搜索',
-                noData: '😞 找不到结果',
+                placeholder: {
+                    '/en/': '🔍 Search',
+                    '/': '🔍 搜索'
+                },
+                noData: {
+                    '/en/': '😞 No Results',
+                    '/': '😞 找不到结果'
+                },
                 depth: 6
             },
             pagination: {
-                previousText: '上一章节',
-                nextText: '下一章节',
+                previousText: {
+                    '/en/': 'Previous',
+                    '/': '上一章节'
+                },
+                nextText: {
+                    '/en/': 'Next',
+                    '/': '下一章节'
+                }
             },
             count: {
                 countable: true,
