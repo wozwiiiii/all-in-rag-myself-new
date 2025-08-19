@@ -1,10 +1,45 @@
 # All-in-RAG | 大模型应用开发实战：RAG技术全栈指南
 
 <div align='center'>
-  <img src="./logo.svg" alt="All-in-RAG Logo" width="70%">
+  <img src="./docs/logo.svg" alt="All-in-RAG Logo" width="70%">
 </div>
 
-## 项目简介 [![Stars](https://img.shields.io/github/stars/datawhalechina/all-in-rag?style=social)](https://github.com/datawhalechina/all-in-rag/stargazers) ![GitHub forks](https://img.shields.io/github/forks/datawhalechina/all-in-rag) [![Python](https://img.shields.io/badge/Python-3.12.7-blue)](https://www.python.org/) [![Online Reading](https://img.shields.io/badge/Online%20Reading-Click%20Here-blue)](https://datawhalechina.github.io/)
+<div align="center">
+  <h2>🔍 检索增强生成 (RAG) 技术全栈指南</h2>
+  <p><em>从理论到实践，从基础到进阶，构建你的RAG技术体系</em></p>
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/github/stars/datawhalechina/all-in-rag?style=for-the-badge&logo=github&color=ff6b6b" alt="GitHub stars"/>
+  <img src="https://img.shields.io/github/forks/datawhalechina/all-in-rag?style=for-the-badge&logo=github&color=4ecdc4" alt="GitHub forks"/>
+  <img src="https://img.shields.io/badge/Python-3.12.7-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python"/>
+</div>
+
+<div align="center">
+  <a href="https://datawhalechina.github.io/all-in-rag/">
+    <img src="https://img.shields.io/badge/📖_在线阅读-立即开始-success?style=for-the-badge&logoColor=white" alt="在线阅读"/>
+  </a>
+  <a href="README_en.md">
+    <img src="https://img.shields.io/badge/🌍_English-Version-blue?style=for-the-badge&logoColor=white" alt="English Version"/>
+  </a>
+  <a href="https://github.com/datawhalechina">
+    <img src="https://img.shields.io/badge/💬_讨论交流-加入我们-purple?style=for-the-badge&logoColor=white" alt="讨论交流"/>
+  </a>
+</div>
+
+<div align="center">
+  <br>
+  <table>
+    <tr>
+      <td align="center">🎯 <strong>系统化学习</strong><br>完整的RAG技术体系</td>
+      <td align="center">🛠️ <strong>动手实践</strong><br>丰富的项目案例</td>
+      <td align="center">🚀 <strong>生产就绪</strong><br>工程化最佳实践</td>
+      <td align="center">📊 <strong>多模态支持</strong><br>文本+图像检索</td>
+    </tr>
+  </table>
+</div>
+
+## 项目简介
 
 本项目是一个面向大模型应用开发者的RAG（检索增强生成）技术全栈教程，旨在通过体系化的学习路径和动手实践项目，帮助开发者掌握基于大语言模型的RAG应用开发技能，构建生产级的智能问答和知识检索系统。
 
