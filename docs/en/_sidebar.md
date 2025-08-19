@@ -1,6 +1,6 @@
 - Table of Contents
     - Chapter 1: Unlocking RAG
-        - [Section 1: RAG Introduction](en/chapter1/01_RAG_intro.md)
+        - [Section 1: RAG Introduction](chapter1/01_RAG_intro.md)
         - [Section 2: Preparation](chapter1/02_preparation.md)
         - [Section 3: Four Steps to Build RAG](chapter1/03_get_start_rag.md)
         - [Appendix: Python Virtual Environment Deployment](chapter1/04_virtualenv.md)
