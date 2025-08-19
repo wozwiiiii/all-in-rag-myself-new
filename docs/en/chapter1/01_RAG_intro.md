@@ -13,7 +13,27 @@ RAG (Retrieval-Augmented Generation) is a technical paradigm that **combines inf
 ### 1.2 Technical Principles
 
 - **Two-Stage Architecture**:
-![Two-Stage](./images/1_1.svg)
+```mermaid
+flowchart LR
+    A[User Query] --> B[Retrieval Module]
+    
+    subgraph Retrieval["Retrieval Stage"]
+        B --> C[(External Knowledge Base)]
+        C --> D[Relevant Documents/Chunks]
+    end
+    
+    subgraph Generation["Generation Stage"]
+        D --> E[Generation Module]
+        E --> F[LLM Response]
+    end
+    
+    style A fill:#e1f5fe
+    style B fill:#e8f5e8
+    style C fill:#fff3e0
+    style D fill:#f3e5f5
+    style E fill:#e8f5e8
+    style F fill:#ffccbc
+```
 
 - **Key Components**:
   1. **Indexing** 📑: Split unstructured documents (PDF/Word, etc.) into chunks and convert them into vector data through embedding models.
