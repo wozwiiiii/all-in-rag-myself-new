@@ -1,7 +1,7 @@
 # All-in-RAG | Large Model Application Development: RAG Technology Full-Stack Guide
 
 <div align='center'>
-  <img src="../logo.svg" alt="All-in-RAG Logo" width="70%">
+  <img src="./logo.svg" alt="All-in-RAG Logo" width="70%">
 </div>
 
 ## Project Introduction [![Stars](https://img.shields.io/github/stars/datawhalechina/all-in-rag?style=social)](https://github.com/datawhalechina/all-in-rag/stargazers) ![GitHub forks](https://img.shields.io/github/forks/datawhalechina/all-in-rag) [![Python](https://img.shields.io/badge/Python-3.12.7-blue)](https://www.python.org/) [![Online Reading](https://img.shields.io/badge/Online%20Reading-Click%20Here-blue)](https://datawhalechina.github.io/)
