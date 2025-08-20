@@ -6,7 +6,7 @@
 
 ### 1.1 从Markdown到图数据的转换
 
-本章的图数据来源于第八章中使用的Markdown格式菜谱数据。为了构建知识图谱，笔者开发了一个简单的Agent，通过LLM将结构化的Markdown菜谱数据转换为CSV格式的图数据。
+本章的图数据来源于第八章中使用的Markdown格式菜谱数据。为了构建知识图谱，笔者用AI开发了一个简单的[Agent](https://github.com/datawhalechina/all-in-rag/tree/main/code/C9/agent(%E4%BB%A3%E7%A0%81%E7%B3%BBai%E7%94%9F%E6%88%90))，通过LLM将结构化的Markdown菜谱数据转换为CSV格式的图数据。
 
 **转换流程**：
 1. **读取Markdown菜谱**：从第八章的数据源加载菜谱文件
