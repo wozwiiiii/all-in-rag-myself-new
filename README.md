@@ -92,6 +92,7 @@
 1. [x] [RAG简介](./docs/chapter1/01_RAG_intro.md) - RAG技术概述与应用场景
 2. [x] [准备工作](./docs/chapter1/02_preparation.md) - 环境配置与准备
 3. [x] [四步构建RAG](./docs/chapter1/03_get_start_rag.md) - 快速上手RAG开发
+4. [x] [附：环境部署](./docs/chapter1/virtualenv.md) - Python虚拟环境部署方案补充
 
 **第二章 数据准备** [📖 查看章节](./docs/chapter2)
 1. [x] [数据加载](./docs/chapter2/04_data_load.md) - 多格式文档处理与加载
