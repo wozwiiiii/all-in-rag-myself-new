@@ -77,7 +77,7 @@ Unstructured能够识别和分类以下文档元素：
 ### 3.1 安装依赖
 
 ```bash
-cd code/C2
+cd code
 pip install -r requirements.txt
 ```
 
