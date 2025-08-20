@@ -33,6 +33,8 @@ Open the terminal, ensure the virtual environment is activated, then execute the
 python 01_langchain_example.py
 ```
 
+> If you encounter nltk-related errors, try running [fix_nltk.py](https://github.com/datawhalechina/all-in-rag/blob/main/code/C1/fix_nltk.py) in the code path.
+
 After the code runs, you can see output similar to the following (formatted):
 
 ```bash
@@ -207,8 +209,6 @@ The final step is to combine the retrieved context with user questions and use l
 > Yes, brother, yes! There are other user-friendly frameworks like LlamaIndex😉
 
 ## 4. Low-Code (Based on LlamaIndex)
-
-> If you encounter nltk-related errors, try running [fix_nltk.py](https://github.com/datawhalechina/all-in-rag/blob/main/code/C1/fix_nltk.py) in the code path.
 
 In terms of RAG, LlamaIndex provides more encapsulated API interfaces, which undoubtedly lowers the barrier to entry. Here's a simple implementation:
 

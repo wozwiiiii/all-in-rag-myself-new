@@ -33,6 +33,8 @@ cd code/C1
 python 01_langchain_example.py
 ```
 
+> 若出现nltk相关报错，尝试运行代码路径下[fix_nltk.py](https://github.com/datawhalechina/all-in-rag/blob/main/code/C1/fix_nltk.py)
+
 代码运行后，可以看到类似下面的输出（格式化后）：
 
 ```bash
@@ -207,8 +209,6 @@ load_dotenv()
 > 有的兄弟，有的！像这样好用的框架还有LlamaIndex😉
 
 ## 四、低代码（基于LlamaIndex）
-
-> 若出现nltk相关报错，尝试运行代码路径下[fix_nltk.py](https://github.com/datawhalechina/all-in-rag/blob/main/code/C1/fix_nltk.py)
 
 在RAG方面，LlamaIndex提供了更多封装好的API接口，这无疑降低了上手门槛，下面是一个简单实现：
 
