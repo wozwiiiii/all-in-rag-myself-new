@@ -30,7 +30,6 @@
 
 ```python
 import os
-os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 from langchain_deepseek import ChatDeepSeek 
 from langchain_community.document_loaders import BiliBiliLoader
 from langchain.chains.query_constructor.base import AttributeInfo
