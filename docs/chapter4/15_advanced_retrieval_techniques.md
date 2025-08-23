@@ -45,7 +45,9 @@ Cross-Encoder（交叉编码器）能提供出色的重排精度[^2]。它的工
 
 > 注：**[SEP]** 是在 BERT 这类基于 Transformer 架构的模型中，用于分隔不同文本片段（如查询和文档）的特殊标记。
 
-![cross-encoder](images/4_5_3.webp)
+<div align="center">
+<img src="./images/4_5_3.svg" alt="cross-encoder" width="600">
+</div>
 
 上图清晰地展示了 Cross-Encoder 的工作流程：
 1.  **初步检索**：搜索引擎首先从知识库中召回一个初始的文档列表（例如，前 50 篇）。
