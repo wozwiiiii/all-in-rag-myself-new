@@ -13,7 +13,10 @@ RAG（Retrieval-Augmented Generation）是一种**融合信息检索与文本生
 ### 1.2 技术原理
 
 - **双阶段架构**：  
-![双阶段](./images/1_1.svg)
+
+<div align="center">
+<img src="./images/1_1.svg" alt="双阶段" width="800">
+</div>
 
 - **关键组件**：
   1. **索引（Indexing）** 📑：将非结构化文档（PDF/Word等）分割为片段，通过嵌入模型转换为向量数据。
