@@ -2,7 +2,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 
 # 1. 文档加载
-loader = TextLoader("../../data/C2/txt/蜂医.txt")
+loader = TextLoader("../../data/C2/txt/蜂医.txt", encoding="utf-8")
 docs = loader.load()
 
 # 2. 初始化固定大小分块器
