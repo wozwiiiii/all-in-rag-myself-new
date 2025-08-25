@@ -161,10 +161,44 @@
             plugins: [
                 function(hook, vm) {
                     hook.beforeEach(function (html) {
-                        // 处理脚注语法 [^1] 和 [^1]: 定义
-                        html = html.replace(/\[\^([^\]]+)\]/g, '<sup><a href="#fn-$1" id="fnref-$1">$1</a></sup>');
+                        // 先替换脚注定义，再替换脚注引用，避免定义被误替换
                         html = html.replace(/^\[\^([^\]]+)\]:\s*(.+)$/gm, '<div class="footnote" id="fn-$1"><p>$2 <a href="#fnref-$1">↩</a></p></div>');
+                        html = html.replace(/\[\^([^\]]+)\]/g, '<sup class="footnote-ref"><a href="#fn-$1" data-footnote-ref="$1" id="fnref-$1">$1</a></sup>');
                         return html;
+                    });
+
+                    hook.doneEach(function () {
+                        try {
+                            // 重新绑定点击事件，拦截脚注链接，平滑滚动到同页目标
+                            var prev = window.__footnoteContainer;
+                            var prevHandler = window.__footnoteHandler;
+                            if (prev && prevHandler) {
+                                prev.removeEventListener('click', prevHandler, true);
+                            }
+
+                            var container = document.querySelector('.markdown-section');
+                            if (!container) return;
+
+                            var handler = function (e) {
+                                var a = e.target && e.target.closest ? e.target.closest('a') : null;
+                                if (!a) return;
+                                var href = a.getAttribute('href') || '';
+                                if (!/^#(fn-|fnref-)/.test(href)) return;
+                                var targetId = href.slice(1);
+                                var el = document.getElementById(targetId);
+                                if (!el) return;
+                                e.preventDefault();
+                                e.stopPropagation();
+                                try { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                                catch (_) { el.scrollIntoView(true); }
+                            };
+
+                            container.addEventListener('click', handler, true);
+                            window.__footnoteContainer = container;
+                            window.__footnoteHandler = handler;
+                        } catch (e) {
+                            // 忽略脚注绑定中的异常
+                        }
                     });
                 },
                 // 语言切换插件
