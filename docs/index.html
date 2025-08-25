@@ -161,10 +161,19 @@
             plugins: [
                 function(hook, vm) {
                     hook.beforeEach(function (html) {
-                        // 先替换脚注定义，再替换脚注引用，避免定义被误替换
-                        html = html.replace(/^\[\^([^\]]+)\]:\s*(.+)$/gm, '<div class="footnote" id="fn-$1"><p>$2 <a href="#fnref-$1">↩</a></p></div>');
-                        html = html.replace(/\[\^([^\]]+)\]/g, '<sup class="footnote-ref"><a href="#fn-$1" data-footnote-ref="$1" id="fnref-$1">$1</a></sup>');
+                        // 渲染前仅处理脚注“引用”，并避免匹配定义行 [^x]:
+                        html = html.replace(/\[\^([^\]]+)\](?!:)/g, '<sup class="footnote-ref"><a href="#fn-$1" data-footnote-ref="$1" id="fnref-$1">$1</a></sup>');
                         return html;
+                    });
+
+                    // 渲染后处理脚注“定义”，保留 Markdown 已生成的外链等 HTML
+                    hook.afterEach(function (html, next) {
+                        try {
+                            html = html.replace(/<p>\s*\[\^([^\]]+)\]:\s*([\s\S]*?)<\/p>/g, function(_, id, content) {
+                                return '<div class="footnote" id="fn-' + id + '"><p>' + content + ' <a href="#fnref-' + id + '">↩</a></p></div>';
+                            });
+                        } catch (e) { /* 忽略 */ }
+                        next(html);
                     });
 
                     hook.doneEach(function () {
