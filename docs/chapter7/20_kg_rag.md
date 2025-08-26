@@ -6,7 +6,7 @@
 
 ## 一、从传统RAG到知识图谱增强RAG的演进
 
-![传统RAG vs GraphRAG](./images/7_1_1.gif)
+![传统RAG vs GraphRAG](./images/7_1_1.svg)
 
 ### 1.1 传统RAG框架的固有局限性
 
