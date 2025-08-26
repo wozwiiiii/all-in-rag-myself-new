@@ -142,6 +142,10 @@ all-in-rag/
 **核心贡献者**
 - [尹大吕-项目负责人](https://github.com/FutureUnreal)（项目发起人与主要贡献者）
 
+**额外章节贡献者**
+
+
+
 ### 特别感谢
 - 感谢 [@Sm1les](https://github.com/Sm1les) 对本项目的帮助与支持
 - 感谢所有为本项目做出贡献的开发者们
