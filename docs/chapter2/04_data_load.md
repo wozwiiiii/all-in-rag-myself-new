@@ -78,6 +78,8 @@ Unstructured能够识别和分类以下文档元素：
 
 创建一个简单的示例，尝试使用Unstructured库加载并解析一个PDF文件：
 
+> 若代码运行出现报错 `ImportError: libgl.so.1 cannot open shared object file no such file or directory`, 执行 `sudo apt-get install python3-opencv` 安装依赖库。
+
 ```python
 from unstructured.partition.auto import partition
 
