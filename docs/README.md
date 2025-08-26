@@ -143,8 +143,7 @@ all-in-rag/
 - [尹大吕-项目负责人](https://github.com/FutureUnreal)（项目发起人与主要贡献者）
 
 **额外章节贡献者**
-
-
+- [孙超-内容创作者](https://github.com/anarchysaiko)（Datawhale成员-上海工程技术大学）
 
 ### 特别感谢
 - 感谢 [@Sm1les](https://github.com/Sm1les) 对本项目的帮助与支持
