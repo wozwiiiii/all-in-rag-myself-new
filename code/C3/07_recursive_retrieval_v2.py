@@ -1,11 +1,14 @@
 import os
 import pandas as pd
+from dotenv import load_dotenv
 from llama_index.core import VectorStoreIndex, Document, Settings
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.vector_stores import MetadataFilters, ExactMatchFilter
 from llama_index.llms.deepseek import DeepSeek
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+
+load_dotenv()
 
 # 配置模型
 Settings.llm = DeepSeek(model="deepseek-chat", api_key=os.getenv("DEEPSEEK_API_KEY"))
