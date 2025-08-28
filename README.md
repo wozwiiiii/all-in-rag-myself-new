@@ -193,8 +193,8 @@ all-in-rag/
 我们欢迎所有形式的贡献，包括但不限于：
 
 - 🚨 **Bug报告**：发现问题请提交 [Issue](https://github.com/datawhalechina/all-in-rag/issues)
-- 💭 **功能建议**：有好的想法欢迎在 [Discussions](https://github.com/datawhalechina/all-in-rag/discussions) 中讨论
-- 📚 **文档改进**：帮助完善文档内容和示例代码（当前仅支持第七章的优质内容pr）
+- 💭 **教程建议**：有好的想法欢迎在 [Discussions](https://github.com/datawhalechina/all-in-rag/discussions) 中讨论
+- 📚 **文档改进**：帮助完善文档内容和示例代码（当前仅支持第七章优质内容pr）
 - ⚡ **代码贡献**：提交 [Pull Request](https://github.com/datawhalechina/all-in-rag/pulls) 改进项目
 
 ## Star History
