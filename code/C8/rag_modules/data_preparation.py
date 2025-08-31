@@ -48,8 +48,13 @@ class DataPreparationModule:
                 with open(md_file, 'r', encoding='utf-8') as f:
                     content = f.read()
 
-                # 为每个父文档分配确定性的唯一ID（基于文件路径）
-                parent_id = hashlib.md5(str(md_file).encode()).hexdigest()
+                # 为每个父文档分配确定性的唯一ID（基于数据根目录的相对路径）
+                try:
+                    data_root = Path(self.data_path).resolve()
+                    relative_path = Path(md_file).resolve().relative_to(data_root).as_posix()
+                except Exception:
+                    relative_path = Path(md_file).as_posix()
+                parent_id = hashlib.md5(relative_path.encode("utf-8")).hexdigest()
 
                 # 创建Document对象
                 doc = Document(
