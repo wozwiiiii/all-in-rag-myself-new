@@ -147,6 +147,7 @@ Phoenix (现由Arize维护) 是一个**开源的LLM可观测性与评估平台**
 > 在实践中，这些工具并非互斥，可以结合使用，以获得对RAG系统更全面、多维度的洞察。
 
 ## 参考文献
+
 [^1]: [*LlamaIndex Evaluating*](https://docs.llamaindex.ai/en/stable/module_guides/evaluating/)
 
 [^2]: [*Ragas Docs*](https://docs.ragas.io/en/stable/)
