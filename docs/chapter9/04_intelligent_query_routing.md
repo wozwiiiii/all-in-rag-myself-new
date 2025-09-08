@@ -432,4 +432,4 @@ def _update_route_stats(self, strategy: SearchStrategy):
         self.route_stats["combined_count"] += 1
 ```
 
-> 最后的生成部分就不过多赘述了，和第八章类似，可以自行查阅代码。
+> 最后的生成部分就不过多赘述了，和第八章类似，可以自行查阅代码。本章项目并不完善，仅作为对 GraphRAG 流程和架构的理解。可根据前面所学内容自行优化。

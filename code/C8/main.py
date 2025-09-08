@@ -156,9 +156,14 @@ class RecipeRAGSystem:
             print("🤖 智能分析查询...")
             rewritten_query = self.generation_module.query_rewrite(question)
         
-        # 3. 检索相关子块
+        # 3. 检索相关子块（自动应用元数据过滤）
         print("🔍 检索相关文档...")
-        relevant_chunks = self.retrieval_module.hybrid_search(rewritten_query, top_k=self.config.top_k)
+        filters = self._extract_filters_from_query(question)
+        if filters:
+            print(f"应用过滤条件: {filters}")
+            relevant_chunks = self.retrieval_module.metadata_filtered_search(rewritten_query, filters, top_k=self.config.top_k)
+        else:
+            relevant_chunks = self.retrieval_module.hybrid_search(rewritten_query, top_k=self.config.top_k)
 
         # 显示检索到的子块信息
         if relevant_chunks:
@@ -230,6 +235,27 @@ class RecipeRAGSystem:
                     return self.generation_module.generate_basic_answer_stream(question, relevant_docs)
                 else:
                     return self.generation_module.generate_basic_answer(question, relevant_docs)
+    
+    def _extract_filters_from_query(self, query: str) -> dict:
+        """
+        从用户问题中提取元数据过滤条件
+        """
+        filters = {}
+        # 分类关键词
+        category_keywords = DataPreparationModule.get_supported_categories()
+        for cat in category_keywords:
+            if cat in query:
+                filters['category'] = cat
+                break
+
+        # 难度关键词
+        difficulty_keywords = DataPreparationModule.get_supported_difficulties()
+        for diff in sorted(difficulty_keywords, key=len, reverse=True):
+            if diff in query:
+                filters['difficulty'] = diff
+                break
+
+        return filters
     
     def search_by_category(self, category: str, query: str = "") -> List[str]:
         """

@@ -16,6 +16,20 @@ logger = logging.getLogger(__name__)
 
 class DataPreparationModule:
     """数据准备模块 - 负责数据加载、清洗和预处理"""
+    # 统一维护的分类与难度配置，供外部复用，避免关键词重复定义
+    CATEGORY_MAPPING = {
+        'meat_dish': '荤菜',
+        'vegetable_dish': '素菜',
+        'soup': '汤品',
+        'dessert': '甜品',
+        'breakfast': '早餐',
+        'staple': '主食',
+        'aquatic': '水产',
+        'condiment': '调料',
+        'drink': '饮品'
+    }
+    CATEGORY_LABELS = list(set(CATEGORY_MAPPING.values()))
+    DIFFICULTY_LABELS = ['非常简单', '简单', '中等', '困难', '非常困难']
     
     def __init__(self, data_path: str):
         """
@@ -89,20 +103,8 @@ class DataPreparationModule:
         path_parts = file_path.parts
         
         # 提取菜品分类
-        category_mapping = {
-            'meat_dish': '荤菜',
-            'vegetable_dish': '素菜', 
-            'soup': '汤品',
-            'dessert': '甜品',
-            'breakfast': '早餐',
-            'staple': '主食',
-            'aquatic': '水产',
-            'condiment': '调料',
-            'drink': '饮品'
-        }
-        
         doc.metadata['category'] = '其他'
-        for key, value in category_mapping.items():
+        for key, value in self.CATEGORY_MAPPING.items():
             if key in path_parts:
                 doc.metadata['category'] = value
                 break
@@ -124,6 +126,16 @@ class DataPreparationModule:
             doc.metadata['difficulty'] = '非常简单'
         else:
             doc.metadata['difficulty'] = '未知'
+
+    @classmethod
+    def get_supported_categories(cls) -> List[str]:
+        """对外提供支持的分类标签列表"""
+        return cls.CATEGORY_LABELS
+
+    @classmethod
+    def get_supported_difficulties(cls) -> List[str]:
+        """对外提供支持的难度标签列表"""
+        return cls.DIFFICULTY_LABELS
     
     def chunk_documents(self) -> List[Document]:
         """
