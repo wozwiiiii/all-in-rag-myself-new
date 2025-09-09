@@ -59,7 +59,7 @@
 1. [x] [RAG简介](chapter1/01_RAG_intro.md) - RAG技术概述与应用场景
 2. [x] [准备工作](chapter1/02_preparation.md) - 环境配置与工具准备
 3. [x] [四步构建RAG](chapter1/03_get_start_rag.md) - 快速上手RAG开发
-4. [x] [附：环境部署](chapter1/virtualenv.md) - Python虚拟环境部署方案补充
+4. [x] [附：环境部署](chapter1/virtualenv.md) - Python虚拟环境部署方案补充 (贡献者: [@anarchysaiko](https://github.com/anarchysaiko))
 
 **第二章 数据准备** [📖 查看章节](chapter2)
 1. [x] [数据加载](chapter2/04_data_load.md) - 多格式文档处理与加载
