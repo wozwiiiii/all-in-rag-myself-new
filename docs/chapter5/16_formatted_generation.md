@@ -65,7 +65,7 @@ print(result)
 # name='张三' age=30 skills=['Python', 'Go语言']
 ```
 
-1.  **定义数据模型 (Schema)**：使用 Pydantic 的 `BaseModel` 定义 `PersonInfo` 类，这不仅是一个 Python 对象，更是一个清晰的数据结构规范（Schema）。`Field` 中的 `description` 描述文本至关重要，因为它们将被用来生成给大模型的指令。
+1.  **定义数据模型 (Schema)**：使用 Pydantic 的 `BaseModel` 定义 `PersonInfo` 类，这不仅是一个 Python 对象，更是一个清晰的数据结构规范（Schema）。`Field` 中的 `description` 描述文本将直接作为指令提供给大模型，因此其表述需要清晰准确。
 
 2.  **生成格式指令 (Format Instructions)**：当 `PydanticOutputParser` 实例化后，其 `get_format_instructions()` 方法会执行以下操作：
     *   调用 Pydantic 模型的 `.model_json_schema()` 方法，提取出该数据结构的 JSON Schema 定义。
@@ -154,7 +154,7 @@ if message.tool_calls:
 
 关键步骤：
 
-1.  **定义 `tools`**：用一个列表包含了所有可用的函数定义。每个定义都是一个 JSON 对象，严格描述了函数的名称 (`name`)、功能 (`description`) 和参数 (`parameters`)。这个描述对于模型能否正确选择和使用工具至关重要。
+1.  **定义 `tools`**：用一个列表包含了所有可用的函数定义。每个定义都是一个 JSON 对象，严格描述了函数的名称 (`name`)、功能 (`description`) 和参数 (`parameters`)。这个描述的质量直接决定了模型能否正确选择和使用工具。
 2.  **第一次调用 (`User -> Model`)**：将用户的原始问题（`"role": "user"`）和 `tools` 列表一同发送给模型。
 3.  **处理 `tool_calls`**：检查模型的响应中是否包含 `tool_calls`。如果包含，就说明模型决定使用工具。解析出函数名和参数，并**模拟执行**（在真实场景中，这里会是真实的 API 调用）。
 4.  **第二次调用 (`Tool -> Model`)**：将原始的用户问题、模型的工具调用响应，以及模拟执行后得到的工具结果（`"role": "tool"`），一同打包成新的对话历史，再次发送给模型。

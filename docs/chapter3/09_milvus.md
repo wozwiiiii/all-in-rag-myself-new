@@ -87,7 +87,7 @@ Docker 将会自动拉取所需的镜像并启动三个容器：`milvus-standalo
 
 #### 3.1.1 Schema
 
-在创建 Collection 之前，必须先定义它的 **Schema**。 `Schema` 规定了 Collection 的数据结构，定义了其中包含的所有**字段 (Field)** 及其属性。一个设计良好的 Schema 对于保证数据一致性和提升查询性能至关重要。
+在创建 Collection 之前，必须先定义它的 **Schema**。 `Schema` 规定了 Collection 的数据结构，定义了其中包含的所有**字段 (Field)** 及其属性。一个设计良好的 Schema 是能够保证数据一致性并提升查询性能。
 
 Schema 通常包含以下几类字段：
 
