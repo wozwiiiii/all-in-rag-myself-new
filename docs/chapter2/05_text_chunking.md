@@ -242,7 +242,7 @@ docs = text_splitter.split_documents(documents)
 
 #### 以 Markdown 结构分块为例
 
-对于结构清晰的 Markdown 文档，利用其标题层级进行分块是一种高效且保留了丰富语义的方法。LangChain 提供了 `MarkdownHeaderTextSplitter` 来处理。
+针对结构清晰的 Markdown 文档，利用其标题层级进行分块是一种高效且保留了丰富语义的方法。LangChain 提供了 `MarkdownHeaderTextSplitter` 来处理。
 
 - **实现原理**: 该分块器的主要逻辑是“先按标题分组，再按需细分”。
     1.  **定义分割规则**: 用户首先需要提供一个标题层级的映射关系，例如 `[ ("#", "Header 1"), ("##", "Header 2") ]`，告诉分块器 `#` 是一级标题，`##` 是二级标题。
@@ -257,8 +257,6 @@ docs = text_splitter.split_documents(documents)
 - **RAG应用优势**: 这种两阶段的分块方法，既保留了文档的宏观逻辑结构（通过元数据），又确保了每个块的大小适中，是处理结构化文档进行RAG的理想方案。
 
 ## 四、其他开源框架中的分块策略
-
-除了 LangChain，还有其他优秀的开源框架提供了便捷且强大的分块方案。
 
 ### 4.1 Unstructured：基于文档元素的智能分块
 
