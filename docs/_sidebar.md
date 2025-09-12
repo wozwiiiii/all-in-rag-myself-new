@@ -37,3 +37,4 @@
         - [Milvus索引构建](chapter9/03_index_construction.md)
         - [智能查询路由与检索策略](chapter9/04_intelligent_query_routing.md)
     - 第十章 项目实战二（选修篇）
+        - [规划中...](chapter10/)
