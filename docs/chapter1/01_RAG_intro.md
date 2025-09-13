@@ -15,7 +15,7 @@ RAG（Retrieval-Augmented Generation）是一种**融合信息检索与文本生
 - **双阶段架构**：  
 
 <div align="center">
-<img src="./images/1_1.svg" alt="双阶段" width="800">
+   <img src="./images/1_1.svg" alt="双阶段" width="800">
 </div>
 
 - **关键组件**：
