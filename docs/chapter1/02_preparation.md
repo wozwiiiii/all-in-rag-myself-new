@@ -288,9 +288,9 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 
 1.  **下载安装程序**
 
-    优先推荐访问[清华大学开源软件镜像站](https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/)，以获得更快的下载速度。根据你的系统选择最新的 `Windows-x86_64.exe` 版本下载。
+    优先推荐访问[清华大学开源软件镜像站](https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/)，以获得更快的下载速度。请根据日期排序在最新的版本中，根据你的系统选择 `Windows-x86_64.exe` 版本下载。
 
-    ![选择Miniconda版本](images/ch1/miniconda-select-version.png)
+    ![选择Miniconda版本](images/1_4_4.png)
 
     你也可以从 [Miniconda 官方网站](https://docs.conda.io/en/latest/miniconda.html)下载。
 
