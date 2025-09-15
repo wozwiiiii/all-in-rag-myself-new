@@ -74,7 +74,7 @@ class SigLIPEmbeddingFunction:
         with torch.no_grad():
             for i in range(0, len(texts), batch_size):
                 batch_texts = texts[i:i + batch_size]
-                inputs = self.processor(text=batch_texts, padding="max_length", return_tensors="pt")
+                inputs = self.processor(text=batch_texts, padding="max_length", truncation=True, return_tensors="pt")
                 inputs = {k: v.to(self.device) for k, v in inputs.items() if k != 'pixel_values'}
                 
                 outputs = self.model.text_model(**inputs)
