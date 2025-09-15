@@ -21,12 +21,12 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 $env:Path = "C:\Users\michaelbradley\.local\bin;$env:Path" 
 ```
 
-![安装成功的提示](./images/1_4_1.png)
+![安装成功的提示](./images/1_4_1.webp)
 
 
 **输入 uv 命令，如果出现以下提示，说明安装成功**
 
-![成功安装uv](./images/1_4_2.png)
+![成功安装uv](./images/1_4_2.webp)
 
 ### 1.1.2 Linux / MacOS 系统
 
@@ -44,7 +44,7 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 
 **输入 uv 命令，如果出现以下提示，说明安装成功**
 
-![成功安装uv](./images/1_4_3.png)
+![成功安装uv](./images/1_4_3.webp)
 
 
 ## 1.2 创建并激活虚拟环境
