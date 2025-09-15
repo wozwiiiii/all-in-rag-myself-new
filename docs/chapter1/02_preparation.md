@@ -299,26 +299,26 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
     下载完成后，双击 `.exe` 文件启动安装。按照向导提示操作：
 
     *   **Welcome**: 点击 `Next`。
-        ![Welcome](./images/)
+        ![Welcome](./images/1_2_16.png)
     *   **License Agreement**: 点击 `I Agree`。
-        ![License Agreement](./images/)
+        ![License Agreement](./images/1_2_17.png)
     *   **Installation Type**: 选择 `Just Me`，点击 `Next`。
-        ![Installation Type](./images/)
+        ![Installation Type](./images/1_2_18.png)
     *   **Choose Install Location**: 建议保持默认路径，或选择一个不含中文和空格的路径。点击 `Next`。
-        ![Install Location](./images/)
+        ![Install Location](./images/1_2_19.png)
     *   **Advanced Installation Options**: **请不要勾选** “Add Miniconda3 to my PATH environment variable”。我们将稍后手动配置环境变量。点击 `Install`。
-        ![Advanced Options](./images/)
+        ![Advanced Options](./images/1_2_20.png)
     *   **Installation Complete**: 安装完成后，点击 `Next`，然后取消勾选 “Learn more” 并点击 `Finish` 完成安装。
-        ![Installation Complete](./images/)
+        ![Installation Complete](./images/1_2_21.png)
 
 3.  **手动配置环境变量**
 
     为了能在任意终端窗口使用 `conda` 命令，需要手动配置环境变量。
 
     *   在Windows搜索栏中搜索“编辑系统环境变量”并打开。
-        ![编辑系统环境变量](./images/)
+        ![编辑系统环境变量](./images/1_2_22.png)
     *   在“系统属性”窗口中，点击“环境变量”。
-        ![环境变量按钮](./images/)
+        ![环境变量按钮](./images/1_2_23.png)
     *   在“环境变量”窗口中，找到“系统变量”下的 `Path` 变量，选中并点击“编辑”。
         ![编辑Path变量](./images/)
     *   在“编辑环境变量”窗口中，新建三个路径，将它们指向你 Miniconda 的安装目录下的相应文件夹。如果你的安装路径是 `D:\Miniconda3`，则需要添加：
