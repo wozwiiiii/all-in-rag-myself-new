@@ -290,44 +290,73 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 
     优先推荐访问[清华大学开源软件镜像站](https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/)，以获得更快的下载速度。请根据日期排序在最新的版本中，根据你的系统选择 `Windows-x86_64.exe` 版本下载。
 
-    ![选择Miniconda版本](images/1_4_4.png)
+    ![选择Miniconda版本](images/1_4_4.png)  
+ 
+    <br/><br/>
 
-    你也可以从 [Miniconda 官方网站](https://docs.conda.io/en/latest/miniconda.html)下载。
+    你也可以从 [Miniconda 官方网站](https://www.anaconda.com/download/success)下载。
+
+    ![Miniconda 官方下载](images/1_4_5.png)
+
+
 
 2.  **运行安装向导**
 
     下载完成后，双击 `.exe` 文件启动安装。按照向导提示操作：
 
     *   **Welcome**: 点击 `Next`。
-        ![Welcome](./images/)
-    *   **License Agreement**: 点击 `I Agree`。
-        ![License Agreement](./images/)
-    *   **Installation Type**: 选择 `Just Me`，点击 `Next`。
-        ![Installation Type](./images/)
-    *   **Choose Install Location**: 建议保持默认路径，或选择一个不含中文和空格的路径。点击 `Next`。
-        ![Install Location](./images/)
-    *   **Advanced Installation Options**: **请不要勾选** “Add Miniconda3 to my PATH environment variable”。我们将稍后手动配置环境变量。点击 `Install`。
-        ![Advanced Options](./images/)
-    *   **Installation Complete**: 安装完成后，点击 `Next`，然后取消勾选 “Learn more” 并点击 `Finish` 完成安装。
-        ![Installation Complete](./images/)
+  
+        ![Welcome](images/1_4_6.png)
 
+    <br/><br/>
+    *   **License Agreement**: 点击 `I Agree`。
+    
+        ![License Agreement](images/1_4_7.png)
+    <br/><br/>
+    *   **Installation Type**: 选择 `Just Me`，点击 `Next`。
+  
+        ![Installation Type](images/1_4_8.png)
+    <br/><br/>
+    *   **Choose Install Location**: 建议保持默认路径，或选择一个不含中文和空格的路径。点击 `Next`。
+  
+        ![Install Location](images/1_4_9.png)
+    <br/><br/>
+    *   **Advanced Installation Options**: **请不要勾选** `Add Miniconda3 to my PATH environment variable`选项。我们将稍后手动配置环境变量。点击 `Install`。
+  
+        ![Advanced Options](images/1_4_10.png)
+    <br/><br/>
+    *   **Installation Complete**: 安装完成后，点击 `Next`，然后取消勾选 “Learn more” 并点击 `Finish` 完成安装。
+          
+    
 3.  **手动配置环境变量**
 
     为了能在任意终端窗口使用 `conda` 命令，需要手动配置环境变量。
 
     *   在Windows搜索栏中搜索“编辑系统环境变量”并打开。
-        ![编辑系统环境变量](./images/)
+    
+        ![编辑系统环境变量](images/1_4_11.png)
+        <br/><br/>
+
     *   在“系统属性”窗口中，点击“环境变量”。
-        ![环境变量按钮](./images/)
+    
+        ![环境变量按钮](images/1_4_12.png)
+        <br/><br/>
+
     *   在“环境变量”窗口中，找到“系统变量”下的 `Path` 变量，选中并点击“编辑”。
-        ![编辑Path变量](./images/)
+  
+        ![编辑Path变量](images/1_4_13.png)
+        <br/><br/>
+
     *   在“编辑环境变量”窗口中，新建三个路径，将它们指向你 Miniconda 的安装目录下的相应文件夹。如果你的安装路径是 `D:\Miniconda3`，则需要添加：
         ```
         D:\Miniconda3
         D:\Miniconda3\Scripts
         D:\Miniconda3\Library\bin
         ```
-        ![添加路径](./images/)
+
+        ![添加路径](images/1_4_14.png)
+        <br/><br/>
+
     *   完成后，一路点击“确定”保存更改。
 
 ### 4.3 配置 Conda 镜像源
