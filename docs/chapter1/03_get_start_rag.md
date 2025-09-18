@@ -238,6 +238,6 @@ print(query_engine.query("文中举了哪些例子?"))
 
 ## 练习（可利用大模型辅助完成）
 
-- 修改Langchain代码中`RecursiveCharacterTextSplitter()`的参数`chunk_size`和`chunk_overlap`，观察输出结果有什么变化。
 - LangChain代码最终得到的输出携带了各种参数，查询相关资料尝试把这些参数过滤掉得到`content`里的具体回答。
+- 修改Langchain代码中`RecursiveCharacterTextSplitter()`的参数`chunk_size`和`chunk_overlap`，观察输出结果有什么变化。
 - 给LlamaIndex代码添加代码注释。
