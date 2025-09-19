@@ -300,27 +300,25 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 
     *   **Welcome**: 点击 `Next`。
 
-        ![Welcome](./images/1_2_16.png)
+        ![Welcome](./images/1_2_16.webp)
 
     *   **License Agreement**: 点击 `I Agree`。
 
-        ![License Agreement](./images/1_2_17.png)
+        ![License Agreement](./images/1_2_17.webp)
 
     *   **Installation Type**: 选择 `Just Me`，点击 `Next`。
 
-        ![Installation Type](./images/1_2_18.png)
+        ![Installation Type](./images/1_2_18.webp)
 
     *   **Choose Install Location**: 建议保持默认路径，或选择一个不含中文和空格的路径。点击 `Next`。
 
-        ![Install Location](./images/1_2_19.png)
+        ![Install Location](./images/1_2_19.webp)
 
     *   **Advanced Installation Options**: **请不要勾选** “Add Miniconda3 to my PATH environment variable”。我们将稍后手动配置环境变量。点击 `Install`。
 
-        ![Advanced Options](./images/1_2_20.png)
+        ![Advanced Options](./images/1_2_20.webp)
 
     *   **Installation Complete**: 安装完成后，点击 `Next`，然后取消勾选 “Learn more” 并点击 `Finish` 完成安装。
-
-        ![Installation Complete](./images/1_2_21.png)
 
 3.  **手动配置环境变量**
 
@@ -328,15 +326,15 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 
     *   在Windows搜索栏中搜索“编辑系统环境变量”并打开。
 
-        ![编辑系统环境变量](./images/1_2_22.png)
+        ![编辑系统环境变量](./images/1_2_21.webp)
 
     *   在“系统属性”窗口中，点击“环境变量”。
 
-        ![环境变量按钮](./images/1_2_23.png)
+        ![环境变量按钮](./images/1_2_22.webp)
 
     *   在“环境变量”窗口中，找到“系统变量”下的 `Path` 变量，选中并点击“编辑”。
 
-        ![编辑Path变量](./images/1_2_24.png)
+        ![编辑Path变量](./images/1_2_23.webp)
 
     *   在“编辑环境变量”窗口中，新建三个路径，将它们指向你 Miniconda 的安装目录下的相应文件夹。如果你的安装路径是 `D:\Miniconda3`，则需要添加：
         ```
@@ -344,7 +342,7 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
         D:\Miniconda3\Scripts
         D:\Miniconda3\Library\bin
         ```
-        ![添加路径](./images/1_2_25.png)
+        ![添加路径](./images/1_2_24.webp)
         
     *   完成后，一路点击“确定”保存更改。
 
