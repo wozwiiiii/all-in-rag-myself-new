@@ -433,3 +433,5 @@ def _update_route_stats(self, strategy: SearchStrategy):
 ```
 
 > 最后的生成部分就不过多赘述了，和第八章类似，可以自行查阅代码。本章项目并不完善，仅作为对 GraphRAG 流程和架构的理解。可根据前面所学内容自行优化。
+>
+> [What-to-eat-today 给当前项目加个前端并做了点优化，可以参考](https://github.com/FutureUnreal/What-to-eat-today)
