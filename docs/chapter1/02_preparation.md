@@ -336,7 +336,7 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 
     *   在“环境变量”窗口中，找到“系统变量”下的 `Path` 变量，选中并点击“编辑”。
 
-        ![编辑Path变量](./images/)
+        ![编辑Path变量](./images/1_2_24.png)
 
     *   在“编辑环境变量”窗口中，新建三个路径，将它们指向你 Miniconda 的安装目录下的相应文件夹。如果你的安装路径是 `D:\Miniconda3`，则需要添加：
         ```
@@ -344,7 +344,7 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
         D:\Miniconda3\Scripts
         D:\Miniconda3\Library\bin
         ```
-        ![添加路径](./images/)
+        ![添加路径](./images/1_2_25.png)
         
     *   完成后，一路点击“确定”保存更改。
 
