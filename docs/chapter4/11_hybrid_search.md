@@ -121,7 +121,7 @@ $$ Hybrid_{score} = \alpha \cdot Dense_{score} + (1 - \alpha) \cdot Sparse_{scor
 
 ## 三、代码实践：通过 Milvus 实现混合检索
 
-实践是检验真理的唯一标准✊。接下来使用 Milvus 来实现一个完整的混合检索流程，从定义 Schema、插入数据，到执行查询。
+接下来使用 Milvus 来实现一个完整的混合检索流程，从定义 Schema、插入数据，到执行查询。
 
 ### 3.1 步骤一：定义 Collection
 
