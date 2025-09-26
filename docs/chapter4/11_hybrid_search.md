@@ -305,7 +305,7 @@ sparse_vec = query_embeddings["sparse"]._getrow(0)
 
 #### 3.3.2 混合检索执行
 
-使用 RRF 算法进行混合检索，通过 milvus 封装的 RRFRanker 实现。RRFRanker的核心参数是 `k` 值（默认60），用于控制 RRF 算法中的排序平滑程度。
+使用 RRF 算法进行混合检索，通过 milvus 封装的 RRFRanker 实现。RRFRanker 的核心参数是 `k` 值（默认60），用于控制 RRF 算法中的排序平滑程度。
 
 其中 `k` 值越大，排序结果越平滑；越小则高排名结果的权重越突出
 
