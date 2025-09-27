@@ -38,3 +38,9 @@
         - [智能查询路由与检索策略](chapter9/04_intelligent_query_routing.md)
     - 第十章 项目实战二（选修篇）
         - [规划中...](chapter10/)
+
+    - 第十一章 Neo4J
+        - [知识图谱与 Neo4j 安装](chapter11/01_knowledge_graph.md)
+        - [Neo4j 基本使用](chapter11/02_neo4j.md)
+
+    

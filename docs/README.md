@@ -116,9 +116,9 @@
 
 ### 第六部分：知识拓展
 
-**第十一章 Neo4J** [📖 查看章节](./docs/chapter11)
-1. [x] [知识图谱与 Neo4j 安装](./docs/chapter11/01_knowledge_graph.md)
-2. [x] [Neo4j 基本使用](./docs/chapter11/02_neo4j.md)
+**第十一章 Neo4J** [📖 查看章节](chapter11)
+1. [x] [知识图谱与 Neo4j 安装](chapter11/01_knowledge_graph.md)
+2. [x] [Neo4j 基本使用](chapter11/02_neo4j.md)
 
 ## 目录结构说明
 
