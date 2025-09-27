@@ -39,7 +39,7 @@
     - 第十章 项目实战二（选修篇）
         - [规划中...](chapter10/)
 
-    - 第十一章 Neo4J
+    - 第十一章 Neo4J 简单应用
         - [知识图谱与 Neo4j 安装](chapter11/01_knowledge_graph.md)
         - [Neo4j 基本使用](chapter11/02_neo4j.md)
 
