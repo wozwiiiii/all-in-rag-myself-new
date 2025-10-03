@@ -273,7 +273,7 @@ search_query = "悬崖上的巨龙"
 search_filter = 'category in ["western_dragon", "chinese_dragon", "movie_character"]'
 top_k = 5
 
-print(f"\n{'='*20} 开始混合搜索 {'='*20}"
+print(f"\n{'='*20} 开始混合搜索 {'='*20}")
 print(f"查询: '{search_query}'")
 print(f"过滤器: '{search_filter}'")
 

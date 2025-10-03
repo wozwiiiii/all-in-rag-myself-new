@@ -27,9 +27,9 @@ LangChain 提供了一个强大的组件——`OutputParsers`（输出解析器�
 
 LangChain 提供了多种开箱即用的解析器，例如：
 
-*   **`StrOutputParser`**：最基础的输出解析器，它简单地将 LLM 的输出作为字符串返回。
-*   **`JsonOutputParser`**：可以解析包含嵌套结构和列表的复杂 JSON 字符串。
-*   **`PydanticOutputParser`**：通过与 Pydantic 模型结合，可以实现对输出格式最严格的定义和验证。
+*   **StrOutputParser**：最基础的输出解析器，它简单地将 LLM 的输出作为字符串返回。
+*   **JsonOutputParser**：可以解析包含嵌套结构和列表的复杂 JSON 字符串。
+*   **PydanticOutputParser**：通过与 Pydantic 模型结合，可以实现对输出格式最严格的定义和验证。
 
 接下来通过一个具体的代码示例，重点分析 `PydanticOutputParser` 的工作原理。它通过将用户定义的 Pydantic 数据模型转换为详细的格式指令，并注入到提示词中，来引导 LLM 生成严格符合该数据结构的 JSON 输出。最后再将模型返回的 JSON 字符串安全地解析为 Pydantic 对象实例。
 
