@@ -65,17 +65,17 @@ print(result)
 # name='张三' age=30 skills=['Python', 'Go语言']
 ```
 
-1.  **定义数据模型 (Schema)**：使用 Pydantic 的 `BaseModel` 定义 `PersonInfo` 类，这不仅是一个 Python 对象，更是一个清晰的数据结构规范（Schema）。`Field` 中的 `description` 描述文本将直接作为指令提供给大模型，因此其表述需要清晰准确。
+1.  **定义数据模型**：使用 Pydantic 的 `BaseModel` 定义 `PersonInfo` 类，这不仅是一个 Python 对象，更是一个清晰的数据结构规范（Schema）。`Field` 中的 `description` 描述文本将直接作为指令提供给大模型，因此其表述需要清晰准确。
 
-2.  **生成格式指令 (Format Instructions)**：当 `PydanticOutputParser` 实例化后，其 `get_format_instructions()` 方法会执行以下操作：
+2.  **生成格式指令**：当 `PydanticOutputParser` 实例化后，其 `get_format_instructions()` 方法会执行以下操作：
     *   调用 Pydantic 模型的 `.model_json_schema()` 方法，提取出该数据结构的 JSON Schema 定义。
     *   对该 Schema 进行简化，并将其嵌入到一个预设的、指导性的提示模板中。这个模板明确要求 LLM 输出一个符合该 Schema 的 JSON 对象。
 
-3.  **构建并执行调用链 (LCEL Chain)**：通过 LangChain 表达式语言（LCEL），将 `prompt`、`llm` 和 `parser` 链接起来。当调用链被触发时：
+3.  **构建并执行调用链**：通过 LangChain 表达式语言（LCEL），将 `prompt`、`llm` 和 `parser` 链接起来。当调用链被触发时：
     *   `prompt` 会将用户输入（`text`）和上一步生成的格式指令（`format_instructions`）组合成最终的提示，发送给 `llm`。
     *   `llm` 根据这个包含严格格式要求的提示，生成一个 JSON 格式的字符串。
 
-4.  **解析与验证 (Parse & Validate)**：`PydanticOutputParser` 接收到 LLM 返回的字符串后，会执行一个两步解析过程：
+4.  **解析与验证**：`PydanticOutputParser` 接收到 LLM 返回的字符串后，会执行一个两步解析过程：
     *   首先，它继承自 `JsonOutputParser`，会将 LLM 输出的文本字符串解析成一个 Python 字典。
     *   然后，最关键的一步，它会使用 `PersonInfo.model_validate()` 方法，用定义的数据模型来验证这个字典。如果字典的键和值类型都符合 `PersonInfo` 的定义，解析器就会返回一个 `PersonInfo` 的实例对象；如果验证失败，则会抛出一个 `OutputParserException` 异常。
 
@@ -85,11 +85,11 @@ print(result)
 
 LlamaIndex 的输出解析与生成过程紧密结合，主要体现在两大核心组件中：响应合成（Response Synthesis）和结构化输出（Structured Output）。
 
-1.  **响应合成 (Response Synthesis)**
+1.  **响应合成**
 
     在 RAG 流程中，检索器召回一系列相关的文本块（Nodes）后，并不是简单地将它们拼接起来。响应合成器（Response Synthesizer）负责接收这些文本块和原始查询，并以一种更智能的方式将它们呈现给 LLM 以生成最终答案。例如，它可以逐块处理信息并迭代地优化答案（`refine` 模式），或者将尽可能多的文本块压缩进单次 LLM 调用中（`compact` 模式）。这个阶段的默认目标是生成一段高质量的**文本**回答。
 
-2.  **结构化输出 (Structured Output)**
+2.  **结构化输出\**
 
     当需要 LLM 返回结构化数据（如 JSON）而非纯文本时，LlamaIndex 主要使用 **Pydantic 程序（Pydantic Programs）**。这与 LangChain 的 `PydanticOutputParser` 思想一致：
 
