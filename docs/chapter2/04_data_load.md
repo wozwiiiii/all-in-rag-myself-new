@@ -33,7 +33,7 @@
 
 ## 二、Unstructured文档处理库
 
-[**Unstructured**](https://docs.unstructured.io/open-source/) 是一个专业的文档处理库，专门设计用于RAG和AI微调场景的非结构化数据预处理。提供了统一的接口来处理多种文档格式，是目前最受欢迎的文档加载解决方案之一。
+[**Unstructured**](https://docs.unstructured.io/open-source/) 是一个专业的文档处理库，专门设计用于RAG和AI微调场景的非结构化数据预处理。提供了统一的接口来处理多种文档格式，是目前应用较广泛的文档加载解决方案之一。
 
 ### 2.1 Unstructured的核心优势
 
