@@ -49,7 +49,7 @@ prompt = ChatPromptTemplate.from_template("""请根据下面提供的上下文�
 llm = ChatDeepSeek(
     model="deepseek-chat",
     temperature=0.7,
-    max_tokens=2048,
+    max_tokens=4096,
     api_key=os.getenv("DEEPSEEK_API_KEY")
 )
 
