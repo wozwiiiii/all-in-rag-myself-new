@@ -56,7 +56,7 @@ When choosing a technical path, a key consideration is the balance between cost 
 We can understand the differences between these techniques from two dimensions. As shown in Figure 1-3, the **horizontal axis represents "LLM Optimization"**—the degree to which the model itself is modified. From left to right, the level of optimization deepens; Prompt Engineering and RAG do not change model weights at all, while Fine-tuning directly modifies model parameters. The **vertical axis represents "Context Optimization"**—the degree to which the information provided to the model is enhanced. From bottom to top, the level of enhancement increases; Prompt Engineering only optimizes the way questions are asked, while RAG vastly enriches the context by introducing an external knowledge base.
 
 <div align="center">
-  <img src="./images/1_1_3.png" width="70%" alt="Technical Selection Path" />
+  <img src="./images/1_1_3.svg" width="70%" alt="Technical Selection Path" />
   <p>Figure 1-3 RAG, Fine-tuning, and Prompt Engineering Technical Selection Path</p>
 </div>
 
