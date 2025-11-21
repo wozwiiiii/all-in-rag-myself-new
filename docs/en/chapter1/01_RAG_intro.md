@@ -51,7 +51,7 @@ The technical architecture of RAG has evolved from simple to complex, which can 
 
 When choosing a technical path, a key consideration is the balance between cost and benefit. Typically, we should prioritize the solution with the least modification to the model and the lowest cost, so the technical selection path often follows this order:
 
-**Prompt Engineering -> Retrieval-Augmented Generation (RAG) -> Fine-tuning**.
+**Prompt Engineering -> Retrieval-Augmented Generation -> Fine-tuning**.
 
 We can understand the differences between these techniques from two dimensions. As shown in Figure 1-3, the **horizontal axis represents "LLM Optimization"**—the degree to which the model itself is modified. From left to right, the level of optimization deepens; Prompt Engineering and RAG do not change model weights at all, while Fine-tuning directly modifies model parameters. The **vertical axis represents "Context Optimization"**—the degree to which the information provided to the model is enhanced. From bottom to top, the level of enhancement increases; Prompt Engineering only optimizes the way questions are asked, while RAG vastly enriches the context by introducing an external knowledge base.
 
