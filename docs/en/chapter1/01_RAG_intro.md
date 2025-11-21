@@ -144,7 +144,7 @@ In response to these challenges, the community has explored various optimization
 
 With the rise of long context window capabilities in large models, a voice has emerged in the community: "RAG is dead." The core arguments come from two aspects: first, that long context can already "digest" massive texts by brute force, making complex retrieval systems unnecessary; second, a criticism that the term RAG itself is too broad, blurring too many technical details and thus hindering clear understanding and optimization.
 
-These views, however, overlook a common pattern in the evolution of technical concepts. Just as we could easily coin a more precise, impressive name for a modern, complex RAG system—like the **"Large Language Model Knowledge Management Expert System" (LKE)**. It has already far surpassed the simple "retrieve-augment-generate" scope. But this "renaming game" merely illustrates the superficiality of the "RAG is dead" argument—they are just putting old wine in a new bottle.
+These views, however, overlook a common pattern in the evolution of technical concepts. Just as we could easily coin a more precise, impressive name for a modern, complex RAG system—like the **"Large Language Model Knowledge Management Expert System" (LKE)**. It has already far surpassed the simple "retrieve-augment-generate" scope. But this "renaming game" merely illustrates the superficiality of the "RAG is dead" argument—it is tantamount to putting old wine in a new bottle.
 
 > The author does not intend to create a new term here, but why call it LKE? It represents three core elements:
 > -   **L (Large Language Model)**: Emphasizes that the system's driving force is the large language model.
