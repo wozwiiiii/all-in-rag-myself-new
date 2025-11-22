@@ -109,6 +109,13 @@
             border-color: #42b883;
             box-shadow: 0 0 0 2px rgba(66, 184, 131, 0.2);
         }
+        
+        /* 修复表格渲染问题：恢复表格的默认布局行为，覆盖 docsify 默认的 display: block */
+        .markdown-section table {
+            display: table;
+            width: 100%;
+            table-layout: auto;
+        }
     </style>
 </head>
 
