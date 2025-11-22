@@ -113,7 +113,8 @@
         /* 修复表格渲染问题：恢复表格的默认布局行为，覆盖 docsify 默认的 display: block */
         .markdown-section table {
             display: table;
-            width: 100%;
+            width: auto;
+            max-width: 100%;
             table-layout: auto;
         }
     </style>
