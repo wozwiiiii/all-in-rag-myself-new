@@ -36,12 +36,43 @@ RAG 的技术架构经历了从简单到复杂的演进，如图 1-2 大致可�
    <p>图 1-2 RAG 技术演进分类</p>
 </div>
 
-| | **初级 RAG（Naive RAG）** | **高级 RAG（Advanced RAG）** | **模块化 RAG（Modular RAG）** |
-|:---:|:---:|:---:|:---:|
-| **流程** | **离线:** `索引`<br>**在线:** `检索 → 生成` | **离线:** `索引`<br>**在线:** `...→ 检索前 → ... → 检索后 → ...` | 积木式可编排流程 |
-| **特点** | 基础线性流程 | 增加**检索前后**的优化步骤 | 模块化、可组合、可动态调整 |
-| **关键技术** | 基础向量检索 | **查询重写（Query Rewrite）**<br>**结果重排（Rerank）** | **动态路由（Routing）**<br>**查询转换（Query Transformation）**<br>**多路融合（Fusion）** |
-| **局限性**| 效果不稳定，难以优化 | 流程相对固定，优化点有限 | 系统复杂性高 |
+这三个阶段的具体对比如表 1-1 所示。
+
+<div align="center">
+<table border="1" style="margin: 0 auto;">
+  <tr>
+    <th style="text-align: center;"></th>
+    <th style="text-align: center;">初级 RAG（Naive RAG）</th>
+    <th style="text-align: center;">高级 RAG（Advanced RAG）</th>
+    <th style="text-align: center;">模块化 RAG（Modular RAG）</th>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>流程</strong></td>
+    <td style="text-align: center;"><strong>离线:</strong> <code>索引</code><br><strong>在线:</strong> <code>检索 → 生成</code></td>
+    <td style="text-align: center;"><strong>离线:</strong> <code>索引</code><br><strong>在线:</strong> <code>...→ 检索前 → ... → 检索后 → ...</code></td>
+    <td style="text-align: center;">积木式可编排流程</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>特点</strong></td>
+    <td style="text-align: center;">基础线性流程</td>
+    <td style="text-align: center;">增加<strong>检索前后</strong>的优化步骤</td>
+    <td style="text-align: center;">模块化、可组合、可动态调整</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>关键技术</strong></td>
+    <td style="text-align: center;">基础向量检索</td>
+    <td style="text-align: center;"><strong>查询重写（Query Rewrite）</strong><br><strong>结果重排（Rerank）</strong></td>
+    <td style="text-align: center;"><strong>动态路由（Routing）</strong><br><strong>查询转换（Query Transformation）</strong><br><strong>多路融合（Fusion）</strong></td>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>局限性</strong></td>
+    <td style="text-align: center;">效果不稳定，难以优化</td>
+    <td style="text-align: center;">流程相对固定，优化点有限</td>
+    <td style="text-align: center;">系统复杂性高</td>
+  </tr>
+</table>
+<p><em>表 1-1 RAG 技术演进分类对比</em></p>
+</div>
 
 > “离线”指提前完成的数据预处理工作（如索引构建）；“在线”指用户发起请求后的实时处理流程。
 
@@ -63,14 +94,33 @@ RAG 的技术架构经历了从简单到复杂的演进，如图 1-2 大致可�
 - **再选择 RAG**：如果模型缺乏特定或实时知识而无法回答，则使用 RAG，通过外挂知识库为其提供上下文信息。
 - **最后考虑微调**：当目标是改变模型“如何做”（行为/风格/格式）而不是“知道什么”（知识）时，微调是最终且最合适的选择。例如，让模型学会严格遵循某种独特的输出格式、模仿特定人物的对话风格，或者将极其复杂的指令“蒸馏”进模型权重中。
 
-RAG 的出现填补了通用模型与专业领域之间的鸿沟，它在解决以下 LLM 局限时尤其有效：
+RAG 的出现填补了通用模型与专业领域之间的鸿沟，它在解决如表 1-2 所示 LLM 局限时尤其有效：
 
-| 问题 | RAG的解决方案 |
-|---------------------|----------------------------------|
-| **静态知识局限** | 实时检索外部知识库，支持动态更新 |
-| **幻觉（Hallucination）** | 基于检索内容生成，错误率降低 |
-| **领域专业性不足** | 引入领域特定知识库（如医疗/法律） |
-| **数据隐私风险** | 本地化部署知识库，避免敏感数据泄露 |
+<div align="center">
+<table border="1" style="margin: 0 auto;">
+  <tr>
+    <th style="text-align: center;">问题</th>
+    <th style="text-align: center;">RAG的解决方案</th>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>静态知识局限</strong></td>
+    <td style="text-align: center;">实时检索外部知识库，支持动态更新</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>幻觉（Hallucination）</strong></td>
+    <td style="text-align: center;">基于检索内容生成，错误率降低</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>领域专业性不足</strong></td>
+    <td style="text-align: center;">引入领域特定知识库（如医疗/法律）</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>数据隐私风险</strong></td>
+    <td style="text-align: center;">本地化部署知识库，避免敏感数据泄露</td>
+  </tr>
+</table>
+<p><em>表 1-2 RAG 对 LLM 局限的解决方案</em></p>
+</div>
 
 ### 2.2 关键优势 
 
@@ -92,13 +142,33 @@ RAG 的架构具备极强的包容性，支持**多源集成**，无论是 PDF�
 
 ### 2.3 适用场景风险分级 
 
-> 以下是RAG技术在不同风险等级场景中的适用性
+表 1-3 是RAG技术在不同风险等级场景中的适用性。
 
-| 风险等级 | 案例 | RAG适用性 |
-|:--------:|:------------------------------|:--------------------------:|
-| **低风险** | 翻译/语法检查 | 高可靠性 |
-| **中风险** | 合同起草/法律咨询 | 需结合人工审核 |
-| **高风险** | 证据分析/签证决策 | 需严格质量控制机制 |
+<div align="center">
+<table border="1" style="margin: 0 auto;">
+  <tr>
+    <th style="text-align: center;">风险等级</th>
+    <th style="text-align: center;">案例</th>
+    <th style="text-align: center;">RAG适用性</th>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>低风险</strong></td>
+    <td style="text-align: center;">翻译/语法检查</td>
+    <td style="text-align: center;">高可靠性</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>中风险</strong></td>
+    <td style="text-align: center;">合同起草/法律咨询</td>
+    <td style="text-align: center;">需结合人工审核</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;"><strong>高风险</strong></td>
+    <td style="text-align: center;">证据分析/签证决策</td>
+    <td style="text-align: center;">需严格质量控制机制</td>
+  </tr>
+</table>
+<p><em>表 1-3 RAG 适用场景风险分级</em></p>
+</div>
 
 ## 三、如何上手RAG？
 
