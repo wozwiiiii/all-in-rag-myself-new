@@ -144,7 +144,20 @@ class GraphRAGRetrieval:
         这是图RAG的核心：从自然语言到图查询的转换
         """
         prompt = f"""
-        作为图数据库专家，分析以下查询的图结构意图：
+        作为图数据库专家，分析以下查询的图结构意图，并将自然语言问题映射到**已有图结构**上。
+        
+        已知图中大致有以下节点和关系：
+        - 节点类型：
+          - Recipe：菜谱节点，包含 name、description、cuisineType（如"川菜"）、category、tags、prepTime、cookTime 等属性
+          - Ingredient：食材节点，包含 name、category（如"蔬菜"、"蛋白质" 等）
+          - Category：菜品分类（如"川菜"、"家常菜"、"素菜"）
+          - CookingStep：烹饪步骤
+        - 主要关系：
+          - (Recipe)-[:REQUIRES]->(Ingredient)
+          - (Recipe)-[:BELONGS_TO_CATEGORY]->(Category)
+          - (Recipe)-[:CONTAINS_STEP]->(CookingStep)
+        
+        请根据上述图结构分析下面的查询：
         
         查询：{query}
         
@@ -156,24 +169,67 @@ class GraphRAGRetrieval:
            - path_finding: 路径查找（如：从食材到成品菜的制作路径）
            - clustering: 聚类相似性（如：和宫保鸡丁类似的菜有哪些？）
         
-        2. 核心实体：查询中的关键实体名称
-        3. 目标实体：期望找到的实体类型
-        4. 关系类型：涉及的关系类型
-        5. 遍历深度：需要的图遍历深度（1-3跳）
+        2. source_entities：
+           - 只包含在图中**很有可能有对应节点**的具体实体名称
+           - 优先选择：菜系（如"川菜"）、具体菜名（如"宫保鸡丁"）、食材名（如"鸡肉"、"豆腐"）
+           - 不要把抽象概念或约束（如"糖尿病饮食限制"、"具体川菜菜品"、"健康饮食"、"30分钟内"）放进 source_entities
         
-        示例：
+        3. target_entities：
+           - 只在确实需要限制「路径终点」时填写
+           - 同样只能使用可能出现在 Recipe / Ingredient / Category 节点上的名称（如"蔬菜"、"素菜"、具体菜名）
+           - 如果不确定目标实体怎么映射到图中，请返回空列表 []
+        
+        4. relation_types：本次推理中希望优先考虑的关系类型列表
+           - 例如：["REQUIRES", "BELONGS_TO_CATEGORY"]
+        
+        5. max_depth：建议的图遍历深度（1-3 之间的整数）
+        
+        6. constraints：可选的**属性级约束**，用于表达图结构之外的过滤条件，例如：
+           - 健康/饮食限制（如"糖尿病"、"低糖"）
+           - 时间限制（如"30分钟内"）
+           - 口味偏好（如"清淡"、"少油"）
+           用一个字典描述，例如：
+           {{
+             "health": ["糖尿病", "低糖"],
+             "time": {{"max_minutes": 30}},
+             "style": ["川菜"]
+           }}
+        
+        示例1：
         查询："鸡肉配什么蔬菜好？"
-        分析：这是multi_hop查询，需要通过"鸡肉→使用鸡肉的菜品→这些菜品使用的蔬菜"的路径推理
+        期望分析：这是 multi_hop 查询，需要通过"鸡肉→使用鸡肉的菜品→这些菜品使用的蔬菜"的路径推理。
         
-        返回JSON格式：
+        返回JSON示例：
         {{
-            "query_type": "multi_hop",
-            "source_entities": ["鸡肉"],
-            "target_entities": ["蔬菜类食材"],
-            "relation_types": ["REQUIRES", "BELONGS_TO_CATEGORY"],
-            "max_depth": 3,
-            "reasoning": "需要多跳推理：鸡肉→菜品→食材→蔬菜"
+          "query_type": "multi_hop",
+          "source_entities": ["鸡肉"],
+          "target_entities": ["蔬菜"],
+          "relation_types": ["REQUIRES", "BELONGS_TO_CATEGORY"],
+          "max_depth": 3,
+          "constraints": {{}}
         }}
+        
+        示例2：
+        查询："适合糖尿病人吃的低糖川菜有哪些，并且制作时间不超过30分钟？"
+        期望分析：
+          - 图中可以直接对应的实体：主要是菜系 "川菜"
+          - 糖尿病/低糖/30分钟 属于属性级约束，不能当作节点
+          - 可以使用 subgraph 或 multi_hop，以 "川菜" 为核心实体，结合属性约束做后续过滤
+        
+        返回JSON示例：
+        {{
+          "query_type": "subgraph",
+          "source_entities": ["川菜"],
+          "target_entities": [],
+          "relation_types": ["BELONGS_TO_CATEGORY", "REQUIRES"],
+          "max_depth": 2,
+          "constraints": {{
+            "health": ["糖尿病", "低糖"],
+            "time": {{"max_minutes": 30}}
+          }}
+        }}
+        
+        请严格返回一个合法的 JSON 对象，不要包含任何多余的说明文字。
         """
         
         try:
@@ -221,11 +277,20 @@ class GraphRAGRetrieval:
             with self.driver.session() as session:
                 # 构建多跳遍历查询
                 source_entities = graph_query.source_entities
-                target_entities = graph_query.target_entities or []
+                target_keywords = graph_query.target_entities or []
                 max_depth = graph_query.max_depth
                 
                 # 根据查询类型选择不同的遍历策略
                 if graph_query.query_type == QueryType.MULTI_HOP:
+                    # 根据是否有目标关键词动态拼接过滤条件
+                    target_filter_clause = ""
+                    if target_keywords:
+                        target_filter_clause = """
+                    AND ANY(kw IN $target_keywords WHERE
+                        (target.name IS NOT NULL AND (toString(target.name) CONTAINS kw OR kw CONTAINS toString(target.name))) OR
+                        (target.category IS NOT NULL AND (toString(target.category) CONTAINS kw OR kw CONTAINS toString(target.category)))
+                    )"""
+                    
                     cypher_query = f"""
                     // 多跳推理查询
                     UNWIND $source_entities as source_name
@@ -234,8 +299,7 @@ class GraphRAGRetrieval:
                     
                     // 执行多跳遍历
                     MATCH path = (source)-[*1..{max_depth}]-(target)
-                    WHERE NOT source = target
-                    {"AND ANY(label IN labels(target) WHERE label IN $target_labels)" if target_entities else ""}
+                    WHERE NOT source = target{target_filter_clause}
                     
                     // 计算路径相关性
                     WITH path, source, target,
@@ -255,11 +319,14 @@ class GraphRAGRetrieval:
                     RETURN path, source, target, path_len, rels, path_nodes, relevance
                     """
                     
-                    result = session.run(cypher_query, {
+                    params = {
                         "source_entities": source_entities,
-                        "target_labels": target_entities,
                         "relation_types": graph_query.relation_types or []
-                    })
+                    }
+                    if target_keywords:
+                        params["target_keywords"] = target_keywords
+                    
+                    result = session.run(cypher_query, params)
                     
                     for record in result:
                         path_data = self._parse_neo4j_path(record)
@@ -431,12 +498,12 @@ class GraphRAGRetrieval:
         try:
             # 2. 根据查询类型执行不同策略
             if graph_query.query_type in [QueryType.MULTI_HOP, QueryType.PATH_FINDING]:
-                # 多跳遍历
+                # 多跳遍历 / 路径查找
                 paths = self.multi_hop_traversal(graph_query)
                 results.extend(self._paths_to_documents(paths, query))
                 
-            elif graph_query.query_type == QueryType.SUBGRAPH:
-                # 子图提取
+            elif graph_query.query_type in [QueryType.SUBGRAPH, QueryType.CLUSTERING]:
+                # 子图提取 / 聚类查询：都视为“围绕核心实体的局部知识网络”
                 subgraph = self.extract_knowledge_subgraph(graph_query)
                 
                 # 图结构推理
@@ -445,7 +512,7 @@ class GraphRAGRetrieval:
                 results.extend(self._subgraph_to_documents(subgraph, reasoning_chains, query))
                 
             elif graph_query.query_type == QueryType.ENTITY_RELATION:
-                # 实体关系查询
+                # 实体关系查询（可以视为一跳 / 少量跳的路径查询）
                 paths = self.multi_hop_traversal(graph_query)
                 results.extend(self._paths_to_documents(paths, query))
             
