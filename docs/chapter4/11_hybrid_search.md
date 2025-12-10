@@ -413,7 +413,7 @@ for i, hit in enumerate(results):
 
 ## 练习
 
-- 分析算法为什么在密集向量检索和稀疏向量检索中，排名第三的驯龙高手在混合检索中反而排在了第五？
+- 分析代码为什么在密集向量检索和稀疏向量检索中，排名第三的驯龙高手在混合检索中反而排在了第五？
 - 基于上一节的多模态检索代码 `04_multi_milvus.py` ，结合本节的检索代码加入多模态信息融合的功能并尝试使用混合检索。（[参考代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/work_multimodal_dragon_search.py)）
 
 ## 脚注
