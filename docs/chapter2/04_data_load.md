@@ -223,12 +223,12 @@ for i, element in enumerate(elements, 1):
 
 > 在实际应用中，针对 pdf 的处理，目前更多选用的是 PaddleOCR、MinerU 等模型或工具。
 
+## 练习
+
+- 使用`partition_pdf`替换当前`partition`函数并分别尝试用`hi_res`和`ocr_only`进行解析，观察输出结果有何变化。
+
 ## 参考文献
 
 [^1]: [*Unstructured Open-Source Documentation*](https://docs.unstructured.io/open-source/)
 
 [^2]: [*Unstructured Open-Source: Document Elements*](https://docs.unstructured.io/open-source/concepts/document-elements)
-
-## 练习
-
-- 使用`partition_pdf`替换当前`partition`函数并分别尝试用`hi_res`和`ocr_only`进行解析，观察输出结果有何变化。

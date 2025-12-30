@@ -18,6 +18,8 @@
 
 ## 二、格式化生成的实现方法
 
+> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C5/01_pydantic.py)
+
 ### 2.1 Output Parsers
 
 LangChain 提供了一个强大的组件——`OutputParsers`（输出解析器），专门用于处理 LLM 的输出，其主要思想是在发送给 LLM 的提示（Prompt）中自动注入一段关于如何格式化输出的指令，并在得到结果后将 LLM 返回的纯文本字符串解析成预期的结构化数据（如 Python 对象）。
@@ -76,8 +78,6 @@ print(result)
 - 首先，它继承自 `JsonOutputParser`，会将 LLM 输出的文本字符串解析成一个 Python 字典。
 - 然后，最关键的一步，它会使用 `PersonInfo.model_validate()` 方法，用定义的数据模型来验证这个字典。如果字典的键和值类型都符合 `PersonInfo` 的定义，解析器就会返回一个 `PersonInfo` 的实例对象；如果验证失败，则会抛出一个 `OutputParserException` 异常。
 
-> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C5/01_pydantic.py)
-
 ### 2.2 LlamaIndex 的输出解析
 
 LlamaIndex 的输出解析与生成过程紧密结合，主要体现在两大核心组件中，分别是响应合成（Response Synthesis）和结构化输出（Structured Output）。
@@ -92,7 +92,7 @@ LlamaIndex 的输出解析与生成过程紧密结合，主要体现在两大核
 
 ### 2.3 不依赖框架的简单实现思路
 
-如果你不想依赖特定的框架，也可以通过提示工程（Prompt Engineering）的技巧来实现格式化生成。
+如果不想依赖特定的框架，也可以通过提示工程的技巧来实现格式化生成。
 
 主要思路是在提示中给出清晰、明确的指令和示例。以下是一些实用技巧：
 
@@ -104,6 +104,8 @@ LlamaIndex 的输出解析与生成过程紧密结合，主要体现在两大核
 ## 三、Function Calling
 
 Function Calling（或称 Tool Calling）是近年来 LLM 领域的一个重要进展，提升了模型与外部世界交互和生成结构化数据的能力。
+
+> [本节完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C5/02_function_calling_example.py)
 
 ### 3.1 概念与工作流程
 
@@ -162,12 +164,10 @@ if message.tool_calls:
 
 （5）**获取最终答案**：模型在看到工具的执行结果后，就能用自然语言回答用户最初的问题了。
 
-> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C5/02_function_calling_example.py)
-
 ### 3.3 Function Calling 的优势
 
 相比于单纯通过提示工程“请求”模型输出 JSON，Function Calling 的优势在于：
 
-- **可靠性更高**：这是模型原生支持的能力，相比于解析可能格式不稳定的纯文本输出，这种方式得到的结构化数据更稳定、更精确。
+- **可靠性更高**：这是模型原生支持的能力，相比于解析可能格式不稳定的纯文本输出，这种方式得到的结构化数据更稳定、精确。
 - **意图识别**：它不仅仅是格式化输出，更包含了“意图到函数的映射”。模型能根据用户问题主动选择最合适的工具。
 - **与外部世界交互**：它是构建能执行实际任务的 AI 代理（Agent）的核心基础，让 LLM 可以查询数据库、调用 API、控制智能家居等。
