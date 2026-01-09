@@ -171,11 +171,11 @@ class RecipeRAGSystem:
             for chunk in relevant_chunks:
                 dish_name = chunk.metadata.get('dish_name', '未知菜品')
                 # 尝试从内容中提取章节标题
-                content_preview = chunk.page_content[:50].replace('\n', ' ').strip()
+                content_preview = chunk.page_content[:100].strip()
                 if content_preview.startswith('#'):
-                    # 如果是标题开头，提取标题
-                    title_end = content_preview.find('\n') if '\n' in chunk.page_content[:100] else len(content_preview)
-                    section_title = chunk.page_content[:title_end].strip('#').strip()
+                    # 如果是标题开头，提取标题（仅取第一行）
+                    title_end = content_preview.find('\n') if '\n' in content_preview else len(content_preview)
+                    section_title = content_preview[:title_end].replace('#', '').strip()
                     chunk_info.append(f"{dish_name}({section_title})")
                 else:
                     chunk_info.append(f"{dish_name}(内容片段)")
