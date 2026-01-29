@@ -112,7 +112,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_deepseek import ChatDeepSeek
+from langchain_deepseek import ChatOpenAI
 
 # 加载环境变量
 load_dotenv()
@@ -190,13 +190,14 @@ load_dotenv()
     回答:"""
                                               )
     ```
-- **配置大语言模型**: 初始化`ChatDeepSeek`客户端，配置所用模型 (`deepseek-chat`)、生成答案的温度参数 (`temperature=0.7`)、最大Token数 (`max_tokens=2048`) 以及API密钥 (从环境变量加载)。
+- **配置大语言模型**: 初始化 `ChatOpenAI` 客户端，配置所用模型（`glm-4.7-flash-free`）、生成答案的温度参数（`temperature=0.7`）、最大Token数 (`max_tokens=2048`) 以及API密钥（从环境变量加载）和 url。
     ```python
-    llm = ChatDeepSeek(
-        model="deepseek-chat",
+    llm = ChatOpenAI(
+        model="glm-4.7-flash-free",
         temperature=0.7,
         max_tokens=2048,
         api_key=os.getenv("DEEPSEEK_API_KEY")
+        base_url="https://aihubmix.com/v1"
     )
     ```
 - **调用LLM生成答案并输出**: 将用户问题 (`question`) 和先前准备好的上下文 (`docs_content`) 格式化到提示模板中，然后调用ChatDeepSeek的`invoke`方法获取生成的答案。
@@ -218,12 +219,12 @@ import os
 # os.environ['HF_ENDPOINT']='https://hf-mirror.com'
 from dotenv import load_dotenv
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings 
-from llama_index.llms.deepseek import DeepSeek
+from llama_index.llms.openai import OpenAI
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 load_dotenv()
 
-Settings.llm = DeepSeek(model="deepseek-chat", api_key=os.getenv("DEEPSEEK_API_KEY"))
+Settings.llm = OpenAI(model="glm-4.7-flash-free", api_key=os.getenv("DEEPSEEK_API_KEY"), api_base="https://aihubmix.com/v1")
 Settings.embed_model = HuggingFaceEmbedding("BAAI/bge-small-zh-v1.5")
 
 documents = SimpleDirectoryReader(input_files=["../../data/C1/markdown/easy-rl-chapter1.md"]).load_data()
