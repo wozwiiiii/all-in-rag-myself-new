@@ -26,7 +26,7 @@
 下面这张图展示了端到端链路，也基本对应 `code/main.py` 的执行顺序。
 
 <div align="center">
-  <img src="images/10_1_1.jpeg" alt="端到端流程图：上传→解析/切分→向量化→Top-K 检索" width="100%" />
+  <img src="images/10_1_1.webp" alt="端到端流程图：上传→解析/切分→向量化→Top-K 检索" width="100%" />
   <p>图 10.1: 端到端流程（本 demo 只验收检索结果，不要求生成最终回答）</p>
 </div>
 
@@ -79,7 +79,7 @@ chunk + embedding 会写入向量索引（图里叫 Vector Store / Index）。
 - **chunk**：文档切分出来的文本片段（检索返回的就是它）
 
 <div align="center">
-  <img src="images/10_1_2.jpeg" alt="对象关系图：dataset-document-chunk-embedding 与 Top-K 返回" width="100%" />
+  <img src="images/10_1_2.webp" alt="对象关系图：dataset-document-chunk-embedding 与 Top-K 返回" width="100%" />
   <p>图 10.2: 对象关系与返回结构（检索返回的核心对象是 chunk）</p>
 </div>
 
@@ -293,7 +293,7 @@ python code/main.py \
 很多时候问题不在“你写的 Python”，而在“服务端是不是已经把 embedding 产出来了”。
 
 <div align="center">
-  <img src="images/10_1_3.jpeg" alt="简化时序图：上传→解析→写入索引→Top-K 检索→返回 chunks" width="100%" />
+  <img src="images/10_1_3.webp" alt="简化时序图：上传→解析→写入索引→Top-K 检索→返回 chunks" width="100%" />
   <p>图 10.3: code/main.py 与服务端 API 的交互顺序（简化版）</p>
 </div>
 
