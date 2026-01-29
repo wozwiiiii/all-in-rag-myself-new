@@ -142,6 +142,12 @@ GitHub Codespaces 是 GitHub 提供的一项服务，允许开发者在云端创
     export DEEPSEEK_API_KEY=[你的大模型 API 密钥]
     ```
 
+    如果选择的是 `AIHubmix` 平台，为了增加辨识度也可以使用：
+
+    ```bash
+    export AIHUBMIX_API_KEY=[你的大模型 API 密钥]
+    ```
+
     > 不要带 `[]`
 
 3.  保存并退出 在 vim 中，按 Esc 键进入命令模式，然后输入 `:wq` 并按 Enter 键保存文件并退出。
@@ -258,6 +264,12 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 
     ```bash
     export DEEPSEEK_API_KEY=[你的大模型 API 密钥]
+    ```
+
+    如果选择的是 `AIHubmix` 平台，为了增加辨识度也可以使用：
+
+    ```bash
+    export AIHUBMIX_API_KEY=[你的大模型 API 密钥]
     ```
 
     > 不要带 `[]`
