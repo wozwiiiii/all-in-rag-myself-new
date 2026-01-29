@@ -10,7 +10,7 @@ AIHubmix 提供的免费模型足够我们完成项目的学习。其公司注�
 
 1.  **访问 AIHubmix 平台**
 
-    打开浏览器，访问 [AIHubmix](https://aihubmix.com/?aff=anNj)。
+    打开浏览器，访问 [AIHubmix 平台](https://aihubmix.com/?aff=anNj)。
 
     ![AIHubmix](./images/1.png)
 
