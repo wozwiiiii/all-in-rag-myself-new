@@ -12,7 +12,7 @@ AIHubmix 是一个美国平台，公司注册在美国的特拉华州，一站�
 
 1.  **访问 AIHubmix 平台**
 
-    打开浏览器，访问 [AIHubmix 平台](https://aihubmix.com/?aff=anNj/)。
+    打开浏览器，访问 [AIHubmix](https://aihubmix.com/?aff=anNj)。
 
     ![AIHubmix](./images/1.png)
 
