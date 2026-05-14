@@ -119,6 +119,75 @@ print(f"图文结合1 vs 图文结合2: {sim_4}")
 
 > [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/01_bge_visualized.py)
 
+## 五、前沿模型补充（Gemini Embedding 2 与 jina-embeddings-v5-omni）
+
+前面我们讲了 CLIP 和 Visualized-BGE。最近两年，多模态嵌入又往前走了一步：不仅支持图文，还开始把音频、视频和文档一起纳入统一向量空间。这里用 **Gemini Embedding 2** 和 **jina-embeddings-v5-omni** 做一个实战视角的补充。
+
+### 5.1 jina-embeddings-v5-omni 的特点
+
+jina v5-omni 的核心思路是：在多模态扩展时尽量保留文本底座能力。公开资料里，它采用“冻结编码器 + 轻量投影层”的路线，即文本、视觉、音频主干保持冻结，只训练中间 projector 做跨模态对齐。视频一般按“多帧视觉 + 可选音频”处理，不额外训练一套全新大视频主干。官方口径中，可训练参数约占总参数的 0.35%。
+
+这条路线在论文中被命名为 **GELATO**（*Geometry-preserving Embeddings via Locked Aligned TOwers*）。可以把它理解为“锁住各模态主干、用小连接层做对齐”的模块化方案：相比全量联合训练，训练成本更低；同时文本路径的几何结构被尽量保持，文本输入的 embedding 行为与原有文本底座保持一致，便于平滑升级已有检索/RAG 系统。
+
+![jina-embeddings-v5-omni 架构图](./images/3_2_3.png)
+*图：v5-omni 架构。冻结的视觉和音频编码器通过可训练的投影层输入到冻结的文本骨干中。仅训练投影层（占总权重的 0.35%）。任务特定的 LoRA 适配器处理检索、分类、聚类和文本匹配。*
+
+对应的训练基座可以理解为三层映射关系：
+- 文本基座：`jina-embeddings-v5-omni-small` 对应 `jina-embeddings-v5-text-small`（Qwen3-0.6B 路径），`jina-embeddings-v5-omni-nano` 对应 `jina-embeddings-v5-text-nano`（EuroBERT-210m 路径）。
+- 视觉基座：small 路径使用 Qwen3.5 系视觉编码器，nano 路径使用 SigLIP2 Base 视觉编码器。
+- 音频基座：small 与 nano 都基于 Whisper-large-v3 体系（公开资料中也提到与 Qwen2.5-Omni 音频链路相关）。
+
+这套策略的直接收益是文本链路兼容性好、训练与显存开销更低、工程迭代更快；同时它继承了 Matryoshka 维度裁剪能力，便于按场景在效果、存储和延迟之间做权衡。
+
+### 5.2 Gemini Embedding 2 的特点
+
+从 Google 官方资料看，Gemini Embedding 2 的核心特点主要有：
+
+- 原生多模态：文本、图像、音频、视频、PDF 统一映射到同一向量空间。
+- 支持交错输入：一条请求里可以混合文本与图像等输入，适合复杂检索场景。
+- 维度可调：默认 3072 维，可按成本和效果压缩到更小维度（MRL 思路）。
+- 任务前缀可控：可通过 `task` 前缀针对检索、分类、聚类等任务做针对性优化。
+
+工程上，它更像一个“即插即用”的通用多模态嵌入能力，适合先快速搭起统一检索基线。
+
+> [完整代码（Jina v5-omni 示例）](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/08_jina_embedding_omni.py)
+
+### 5.3 局限与边界
+
+统一多模态表示很强，但不是万能替代方案：
+
+- 强时序视频理解、细粒度音频事件识别这类任务，专用模型往往更稳。
+- 如果业务要求强可解释性，单向量方案在“维度级解释”上不如多路检索直观。
+- 医疗影像、工业质检等高精度垂直场景，通常仍需领域数据和专门模型配合。
+
+### 5.4 与多向量列关系：互补而非替代
+
+统一多模态嵌入和多向量列在系统里通常是配合使用的：前者主要解决跨模态语义对齐，先把候选快速召回；后者主要解决同一实体在不同语义维度上的独立检索，再结合稀疏/稠密检索做过滤与重排。换句话说，一个负责“先找得到”，另一个负责“排得更准”。
+
+### 5.5 选型建议：以评测与成本约束驱动决策
+
+推荐一个比较稳的推进顺序：
+
+1. 先看目标：你更关心跨模态召回，还是结构化过滤和精排。  
+2. 再做评测：在自有数据上比较 Recall@K、nDCG、延迟、吞吐和成本。  
+3. 最后算迁移账：现有索引能否复用，Schema 是否要改，是否要重建索引。  
+
+实践里常见做法是：先把统一多模态模型跑通做基线，再按瓶颈逐步加多向量列、重排器和规则过滤，不要一开始就把系统堆太重。
+
 ## 练习
 
 尝试把代码中的部分文本替换一下，比如将`datawhale开源组织的logo`替换为`blue whale`看看结果有什么不同。
+
+## 延伸阅读（可选）
+
+- Gemini Embedding 2 发布说明（官方）：[https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/)
+- Gemini Embedding 2 模型页（Google DeepMind）：[https://deepmind.google/models/gemini/embedding/](https://deepmind.google/models/gemini/embedding/)
+- Gemini Embedding 2（Vertex/Agent Platform 官方文档）：[https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/embedding-2](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/embedding-2)
+- Gemini Embedding 2 开发者实践（Google Developers Blog）：[https://developers.googleblog.com/building-with-gemini-embedding-2/](https://developers.googleblog.com/building-with-gemini-embedding-2/)
+- Gemini API Embeddings 文档（官方）：[https://ai.google.dev/gemini-api/docs/embeddings](https://ai.google.dev/gemini-api/docs/embeddings)
+- Vertex AI Multimodal Embeddings（官方）：[https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-multimodal-embeddings](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-multimodal-embeddings)
+- Gemini 技术报告（Gemini 基座相关，非 Embedding 2 专项）：[https://arxiv.org/abs/2312.11805](https://arxiv.org/abs/2312.11805)
+
+- jina-embeddings-v5-omni 技术说明（官方）：[https://jina.ai/news/jina-embeddings-v5-omni-multimodal-embeddings-for-text-image-audio-and-video/](https://jina.ai/news/jina-embeddings-v5-omni-multimodal-embeddings-for-text-image-audio-and-video/)
+- jina Embeddings API（官方）：[https://jina.ai/embeddings](https://jina.ai/embeddings)
+- jina-embeddings-v5-omni 技术报告/论文：[https://arxiv.org/abs/2605.08384](https://arxiv.org/abs/2605.08384)
