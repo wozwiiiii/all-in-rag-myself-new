@@ -5,21 +5,25 @@ import torch
 from sentence_transformers import SentenceTransformer
 from transformers import AutoModel, AutoProcessor
 
-MODEL_PATH = Path("models/jina-embeddings-v5-omni-nano")
+SCRIPT_DIR = Path(__file__).resolve().parent
+TOPIC_DIR = SCRIPT_DIR.parent
+REPO_ROOT = TOPIC_DIR.parent.parent
+DATA_DIR = TOPIC_DIR / "data"
+
+MODEL_PATH = REPO_ROOT / "models/jina-embeddings-v5-omni-nano"
 MODEL_REPO = "jinaai/jina-embeddings-v5-omni-nano"
 SOURCES = {
-    "img1": "jina_embedding/beach1.jpg",
-    "img2": "jina_embedding/beach2.jpg",
-    "img_b64": "jina_embedding/tiny_base64_image.png",
-    "audio": "jina_embedding/example-audio-clip.wav",
-    "video": "jina_embedding/example-video-clip.mp4",
-    "pdf": "jina_embedding/paper_2506.18902_excerpt_2pages.pdf",
+    "img1": "beach1.jpg",
+    "img2": "beach2.jpg",
+    "audio": "example-audio-clip.wav",
+    "video": "example-video-clip.mp4",
+    "pdf": "paper_2506.18902_excerpt_2pages.pdf",
 }
 
 model_source = str(MODEL_PATH) if MODEL_PATH.exists() else MODEL_REPO
 print(f"model_source={model_source}")
 
-paths = {k: Path(v) for k, v in SOURCES.items()}
+paths = {k: DATA_DIR / v for k, v in SOURCES.items()}
 for p in paths.values():
     if not p.exists():
         raise FileNotFoundError(f"Missing local asset: {p}")
@@ -49,13 +53,12 @@ with torch.no_grad():
     ).float().cpu().numpy()
     img1 = raw_model.embed(**processor(images=[str(paths["img1"])], text="<image>", return_tensors="pt").to(device)).float().cpu().numpy()[0]
     img2 = raw_model.embed(**processor(images=[str(paths["img2"])], text="<image>", return_tensors="pt").to(device)).float().cpu().numpy()[0]
-    img3 = raw_model.embed(**processor(images=[str(paths["img_b64"])], text="<image>", return_tensors="pt").to(device)).float().cpu().numpy()[0]
 
 audio = st_model.encode(str(paths["audio"]), convert_to_numpy=True)
 video = st_model.encode(str(paths["video"]), convert_to_numpy=True)
 pdf = st_model.encode(str(paths["pdf"]), convert_to_numpy=True)
 
-corpus = np.vstack([docs[0], docs[1], docs[2], docs[3], img1, img2, img3, audio, video, pdf])
+corpus = np.vstack([docs[0], docs[1], docs[2], docs[3], img1, img2, audio, video, pdf])
 queries = [
     ("R1", "sunset on the beach"),
     ("R2", "waves and sunset on coast"),
@@ -86,7 +89,7 @@ for name in ["R2", "R3"]:
     scores = np.array(
         [
             float((base[0] @ other[i]) / (np.linalg.norm(base[0]) * np.linalg.norm(other[i])))
-            for i in range(1, 11)
+            for i in range(1, 1 + corpus.shape[0])
         ]
     )
     print(f"\nR1 -> {name}")
