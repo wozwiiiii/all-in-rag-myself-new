@@ -119,14 +119,6 @@ print(f"图文结合1 vs 图文结合2: {sim_4}")
 
 > [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/01_bge_visualized.py)
 
-## 五、拓展阅读：多模态前沿实践
-
-如果你想亲手验证"文本、图像、音频、视频、PDF 是否真的能在同一向量空间里按语义排序"，可以阅读 Extra-chapter 独立专题：
-
-> [多模态 Omni Embedding 实践（Jina v5-omni）](../../Extra-chapter/multimodal-embedding-omni-practice/readme.md)
-
-该专题以 `jina-embeddings-v5-omni-nano` 为主线，包含 GELATO 架构说明、可复现实验脚本、真实相似度输出与结果解读，并附 Gemini Embedding 2 作为同类参考。
-
 ## 练习
 
 尝试把代码中的部分文本替换一下，比如将`datawhale开源组织的logo`替换为`blue whale`看看结果有什么不同。
