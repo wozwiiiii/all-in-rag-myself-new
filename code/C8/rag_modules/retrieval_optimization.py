@@ -43,8 +43,6 @@ class RetrievalOptimizationModule:
             k=5
         )
 
-
-
         logger.info("检索器设置完成")
     
     def hybrid_search(self, query: str, top_k: int = 3) -> List[Document]:
@@ -159,5 +157,3 @@ class RetrievalOptimizationModule:
         logger.info(f"RRF重排完成: 向量检索{len(vector_docs)}个文档, BM25检索{len(bm25_docs)}个文档, 合并后{len(reranked_docs)}个文档")
 
         return reranked_docs
-
-

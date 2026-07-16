@@ -4,6 +4,7 @@
 
 import logging
 import hashlib
+import re
 from pathlib import Path
 from typing import List, Dict, Any
 
@@ -111,18 +112,13 @@ class DataPreparationModule:
         # 提取菜品名称
         doc.metadata['dish_name'] = file_path.stem
 
-        # 分析难度等级
+        # 分析难度等级（使用正则精确匹配连续星号数量）
         content = doc.page_content
-        if '★★★★★' in content:
-            doc.metadata['difficulty'] = '非常困难'
-        elif '★★★★' in content:
-            doc.metadata['difficulty'] = '困难'
-        elif '★★★' in content:
-            doc.metadata['difficulty'] = '中等'
-        elif '★★' in content:
-            doc.metadata['difficulty'] = '简单'
-        elif '★' in content:
-            doc.metadata['difficulty'] = '非常简单'
+        star_match = re.search(r'★+', content)
+        if star_match:
+            star_count = len(star_match.group())
+            difficulty_map = {5: '非常困难', 4: '困难', 3: '中等', 2: '简单', 1: '非常简单'}
+            doc.metadata['difficulty'] = difficulty_map.get(star_count, '未知')
         else:
             doc.metadata['difficulty'] = '未知'
 
@@ -187,14 +183,6 @@ class DataPreparationModule:
 
         for doc in self.documents:
             try:
-                # 检查文档内容是否包含Markdown标题
-                content_preview = doc.page_content[:200]
-                has_headers = any(line.strip().startswith('#') for line in content_preview.split('\n'))
-
-                if not has_headers:
-                    logger.warning(f"文档 {doc.metadata.get('dish_name', '未知')} 内容中没有发现Markdown标题")
-                    logger.debug(f"内容预览: {content_preview}")
-
                 # 对每个文档进行Markdown分割
                 md_chunks = markdown_splitter.split_text(doc.page_content)
 

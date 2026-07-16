@@ -6,7 +6,6 @@ import os
 import sys
 import logging
 from pathlib import Path
-from typing import List
 
 # 添加模块路径
 sys.path.append(str(Path(__file__).parent))
@@ -257,56 +256,6 @@ class RecipeRAGSystem:
 
         return filters
     
-    def search_by_category(self, category: str, query: str = "") -> List[str]:
-        """
-        按分类搜索菜品
-        
-        Args:
-            category: 菜品分类
-            query: 可选的额外查询条件
-            
-        Returns:
-            菜品名称列表
-        """
-        if not self.retrieval_module:
-            raise ValueError("请先构建知识库")
-        
-        # 使用元数据过滤搜索
-        search_query = query if query else category
-        filters = {"category": category}
-        
-        docs = self.retrieval_module.metadata_filtered_search(search_query, filters, top_k=10)
-        
-        # 提取菜品名称
-        dish_names = []
-        for doc in docs:
-            dish_name = doc.metadata.get('dish_name', '未知菜品')
-            if dish_name not in dish_names:
-                dish_names.append(dish_name)
-        
-        return dish_names
-    
-    def get_ingredients_list(self, dish_name: str) -> str:
-        """
-        获取指定菜品的食材信息
-
-        Args:
-            dish_name: 菜品名称
-
-        Returns:
-            食材信息
-        """
-        if not all([self.retrieval_module, self.generation_module]):
-            raise ValueError("请先构建知识库")
-
-        # 搜索相关文档
-        docs = self.retrieval_module.hybrid_search(dish_name, top_k=3)
-
-        # 生成食材信息
-        answer = self.generation_module.generate_basic_answer(f"{dish_name}需要什么食材？", docs)
-
-        return answer
-    
     def run_interactive(self):
         """运行交互式问答"""
         print("=" * 60)
@@ -349,7 +298,6 @@ class RecipeRAGSystem:
                 print(f"处理问题时出错: {e}")
         
         print("\n感谢使用尝尝咸淡RAG系统！")
-
 
 
 def main():
