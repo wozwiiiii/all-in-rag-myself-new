@@ -71,3 +71,8 @@ rag/
 # LLM API keys
 *.key
 *.secret
+
+#AI开发时的记忆文件及自主开发时的自定义文件
+/.workbuddy
+/.zcode
+my-rag-try/面试
