@@ -1,0 +1,11 @@
+.git
+.vscode
+storage/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+eval/reports/
+.env
+advance/embedding_cache_remote/
+advance/answer.csv
+baseline/

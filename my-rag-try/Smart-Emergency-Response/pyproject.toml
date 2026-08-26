@@ -1,0 +1,37 @@
+[project]
+name = "smart-emergency-qa"
+version = "0.1.0"
+description = "Enterprise-grade hybrid QA service for emergency-safety domain (RAG + Text-to-Pandas)"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "chromadb>=0.5",
+    "openai>=1.30",
+    "tenacity>=8.2",
+    "pandas>=2.2",
+    "openpyxl>=3.1",
+    "pyarrow>=15.0",
+    "python-docx>=1.1",
+    "pypdf>=4.0",
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*", "scripts*", "eval*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

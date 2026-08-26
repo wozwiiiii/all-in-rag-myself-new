@@ -1,0 +1,17 @@
+services:
+  qa:
+    build: .
+    container_name: smart-emergency-qa
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # 容器内路径与挂载点对应（相对项目根解析）
+      TEXT_DATA_DIR: /app/advance/datas/文本数据
+      TABLE_DATA_DIR: /app/advance/datas/表数据+表结构说明+表介绍
+    volumes:
+      # 数据与构建产物挂载在宿主机，镜像保持无状态、可重建
+      - ./advance/datas:/app/advance/datas:ro
+      - ./storage:/app/storage
+    restart: unless-stopped
