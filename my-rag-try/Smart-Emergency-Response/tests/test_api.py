@@ -12,7 +12,14 @@ from app.orchestrator.pipeline import QAResult
 
 class FakePipeline:
     async def answer(self, question: str) -> QAResult:
-        return QAResult(answer=f"echo:{question}", route="text", sources=[], refused=False, latency_ms=1)
+        return QAResult(
+            answer=f"echo:{question}",
+            route="text",
+            sources=[],
+            refused=False,
+            latency_ms=1,
+            usage={"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15, "calls": 1},
+        )
 
 
 def make_app(api_keys: str, rate_limit: int = 100) -> FastAPI:
@@ -55,6 +62,8 @@ def test_qa_ok_returns_contract():
     assert body["latency_ms"] >= 0
     assert body["request_id"]
     assert r.headers.get("X-Request-ID")  # request_id 由 qa 路由生成，响应头由中间件回传
+    assert body["usage"]["total_tokens"] == 15  # usage 契约暴露到 API 响应
+    assert body["usage"]["calls"] == 1
 
 
 def test_qa_validates_question_length():
