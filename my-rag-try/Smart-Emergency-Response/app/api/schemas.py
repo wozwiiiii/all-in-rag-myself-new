@@ -14,6 +14,15 @@ class QASource(BaseModel):
     kind: str | None = None
 
 
+class UsageMeta(BaseModel):
+    """单次问答请求实际消耗的 token 用量（观测用途）。"""
+
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    total_tokens: int = 0
+    calls: int = 0
+
+
 class QAResponse(BaseModel):
     answer: str
     route: str
@@ -21,6 +30,7 @@ class QAResponse(BaseModel):
     refused: bool = False
     latency_ms: int
     request_id: str
+    usage: UsageMeta | None = None
 
 
 class HealthResponse(BaseModel):

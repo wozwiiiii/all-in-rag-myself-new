@@ -13,6 +13,7 @@ from app.core.config import Settings
 from app.core.errors import AppError, RetrievalUnavailable
 from app.core.logging import get_logger
 from app.llm.client import LLMClient
+from app.orchestrator.guard import LEAK_SAFE_ANSWER, check_prompt_leak
 from app.orchestrator.router import IntentRouter
 from app.rag.generator import generate_answer
 from app.rag.retriever import RetrievedChunk, Retriever
@@ -29,6 +30,7 @@ class QAResult:
     refused: bool = False
     latency_ms: int = 0
     detail: dict = field(default_factory=dict)
+    usage: dict = field(default_factory=dict)  # 本次请求 token 用量（由 answer() 填充）
 
 
 _FUSION_PROMPT = """你是综合答复助手。下面是对同一问题的两路调查结果：
@@ -60,18 +62,55 @@ class QAPipeline:
         return self._retriever
 
     async def answer(self, question: str) -> QAResult:
+        """同步返回完整答案（API /qa 用）。消费 _answer_stages 取末事件。"""
+        result: QAResult | None = None
+        async for event in self._answer_stages(question):
+            if event["type"] == "answer":
+                result = event["result"]
+        if result is None:
+            raise AppError("问答流程未产出结果", code="qa_no_result", http_status=500)
+        return result
+
+    async def answer_stream(self, question: str):
+        """阶段事件流（API /qa/stream 用），逐事件透传。"""
+        async for event in self._answer_stages(question):
+            yield event
+
+    async def _answer_stages(self, question: str):
+        """问答编排为阶段事件流。
+
+        事件协议（dict）：
+          {"type":"stage","stage":"routing"}     路由判定开始
+          {"type":"route","route":<text|table|hybrid>}  已判定路由
+          {"type":"stage","stage":"working","branches":[...]}  分支执行中
+          {"type":"answer", **QAResult 字段}     最终答案
+          {"type":"error","code":...,"message":...}  致命错误（随后停止）
+        说明：分支（检索/生成/表分析）是单次阻塞调用，无法在内部细分
+        检索/生成阶段，故执行期统一发 working 阶段事件。
+        """
         start = time.monotonic()
         deadline = self._s.qa_total_timeout_s
+        snap_src = getattr(self._llm, "usage_snapshot", None)
+        usage_before = snap_src() if snap_src else {}
 
+        yield {"type": "stage", "stage": "routing"}
         try:
             route = await asyncio.wait_for(
                 asyncio.to_thread(self._router.route, question),
                 timeout=deadline,
             )
         except asyncio.TimeoutError:
-            # 路由失败兜底：启发式永不抛异常，超时大概率是 LLM 不可达
             route = "hybrid"
         logger.info("route_decided", extra={"route": route})
+        yield {"type": "route", "route": route}
+
+        if route == "text":
+            branches = ["text"]
+        elif route == "table":
+            branches = ["table"]
+        else:
+            branches = ["text", "table"]
+        yield {"type": "stage", "stage": "working", "branches": branches}
 
         try:
             if route == "text":
@@ -81,6 +120,11 @@ class QAPipeline:
             else:
                 result = await asyncio.wait_for(self._answer_hybrid(question), timeout=deadline)
         except asyncio.TimeoutError:
+            yield {
+                "type": "error",
+                "code": "qa_timeout",
+                "message": f"问答总耗时超过 {deadline}s 上限，已终止。请缩小问题范围后重试。",
+            }
             raise AppError(
                 f"问答总耗时超过 {deadline}s 上限，已终止。请缩小问题范围后重试。",
                 code="qa_timeout",
@@ -89,11 +133,30 @@ class QAPipeline:
 
         result.route = route
         result.latency_ms = int((time.monotonic() - start) * 1000)
+        delta_src = getattr(self._llm, "usage_delta", None)
+        if delta_src and usage_before:
+            result.usage = delta_src(usage_before)
+
+        # 输出侧泄露检测（覆盖全部路由）
+        leaked = check_prompt_leak(result.answer)
+        if leaked:
+            logger.warning(
+                "prompt_leak_detected",
+                extra={"route": route, "signature": leaked, "latency_ms": result.latency_ms},
+            )
+            result.answer = LEAK_SAFE_ANSWER
+            result.detail["prompt_leak"] = True
+
         logger.info(
             "qa_done",
-            extra={"route": route, "latency_ms": result.latency_ms, "refused": result.refused},
+            extra={
+                "route": route,
+                "latency_ms": result.latency_ms,
+                "refused": result.refused,
+                "usage": result.usage,
+            },
         )
-        return result
+        yield {"type": "answer", "result": result}
 
     # ---------------- 分支实现 ----------------
 
@@ -101,7 +164,7 @@ class QAPipeline:
         retriever = self._get_retriever()
         chunks: list[RetrievedChunk] = await asyncio.to_thread(retriever.retrieve, question)
         answer, sources, refused = await asyncio.to_thread(
-            generate_answer, question, chunks, self._llm
+            generate_answer, question, chunks, self._llm, two_pass=self._s.generation_two_pass
         )
         return QAResult(answer=answer, sources=sources, refused=refused, detail={"branch": "text"})
 

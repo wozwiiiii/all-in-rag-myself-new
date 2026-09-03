@@ -7,8 +7,10 @@
 from __future__ import annotations
 
 import contextlib
+import copy
 import hashlib
 import sqlite3
+import threading
 from typing import Any
 
 import numpy as np
@@ -46,6 +48,52 @@ class LLMClient:
         self._cache_path = settings.cache_dir / "embeddings.db"
         settings.cache_dir.mkdir(parents=True, exist_ok=True)
         self._init_cache()
+        # usage 观测：实例级线程安全累加器 + 请求级快照差值。
+        # 采用累加器而非 contextvar——generator 抽取轮用 ThreadPoolExecutor 并行，
+        # contextvar 在池线程 copy-context 写不回父上下文，会丢并行 token。
+        # 代价：并发请求间 token 归属有交叉误差，观测用途可接受。
+        self._usage_lock = threading.Lock()
+        self._usage = {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "calls": 0,
+        }
+
+    # ---------------- usage 观测 ----------------
+
+    def _record_usage(self, usage: Any, model: str) -> None:
+        """累加一次 LLM 调用的 token 用量（usage 缺失时仅计调用次数）。"""
+        if usage is not None:
+            prompt = getattr(usage, "prompt_tokens", None) or 0
+            completion = getattr(usage, "completion_tokens", None) or 0
+            total = getattr(usage, "total_tokens", None) or (prompt + completion)
+            logger.info(
+                "llm_call_usage",
+                extra={"model": model, "prompt_tokens": prompt, "completion_tokens": completion, "total_tokens": total},
+            )
+        else:
+            prompt = completion = total = 0
+        with self._usage_lock:
+            self._usage["prompt_tokens"] += prompt
+            self._usage["completion_tokens"] += completion
+            self._usage["total_tokens"] += total
+            self._usage["calls"] += 1
+
+    def usage_snapshot(self) -> dict:
+        """返回当前累加器的深拷贝快照，供请求入口做差值基线。"""
+        with self._usage_lock:
+            return copy.deepcopy(self._usage)
+
+    def usage_delta(self, before: dict) -> dict:
+        """计算 from 快照到当前的用量增量；无 before 字段时取绝对累计。"""
+        cur = self.usage_snapshot()
+        return {
+            "prompt_tokens": cur["prompt_tokens"] - before.get("prompt_tokens", 0),
+            "completion_tokens": cur["completion_tokens"] - before.get("completion_tokens", 0),
+            "total_tokens": cur["total_tokens"] - before.get("total_tokens", 0),
+            "calls": cur["calls"] - before.get("calls", 0),
+        }
 
     # ---------------- 缓存 ----------------
 
@@ -126,6 +174,7 @@ class LLMClient:
                 logger.warning("llm_retryable_status", extra={"status": e.status_code})
                 raise _Retryable429(str(e)) from e
             raise
+        self._record_usage(resp.usage, self._s.openai_api_model)
         return resp.choices[0].message
 
     def chat_safe(self, messages: list[dict[str, Any]], **kwargs: Any) -> Any:
@@ -134,6 +183,49 @@ class LLMClient:
             return self.chat(messages, **kwargs)
         except (RetryError, APIConnectionError, APITimeoutError, APIStatusError) as e:
             raise LLMError(f"LLM 调用失败（重试已耗尽）: {type(e).__name__}: {str(e)[:200]}") from e
+
+    # ---------------- rerank ----------------
+
+    @retry(
+        retry=retry_if_exception_type((_Retryable429,) + _RETRYABLE + (APIStatusError,)),
+        wait=wait_exponential(multiplier=2, min=2, max=30),
+        stop=stop_after_attempt(4),
+        reraise=True,
+    )
+    def _rerank_api_call(self, query: str, documents: list[str], top_n: int) -> list[tuple[int, float]]:
+        """直调 /v1/rerank（OpenAI SDK 未封装该端点）。返回 [(原索引, 相关性分数)] 降序。"""
+        import httpx
+
+        url = f"{self._s.openai_api_base.rstrip('/')}/rerank"
+        try:
+            resp = httpx.post(
+                url,
+                headers={"Authorization": f"Bearer {self._s.openai_api_key}"},
+                json={
+                    "model": self._s.rerank_model,
+                    "query": query,
+                    "documents": documents,
+                    "top_n": top_n,
+                },
+                timeout=self._s.llm_timeout_s,
+            )
+        except httpx.HTTPError as e:  # 连接/超时统一映射为可重试
+            raise APIConnectionError(message=str(e)) from e  # type: ignore[arg-type]
+        if resp.status_code == 429 or resp.status_code >= 500:
+            raise _Retryable429(f"rerank {resp.status_code}: {resp.text[:200]}")
+        if resp.status_code != 200:
+            raise LLMError(f"rerank 请求失败 {resp.status_code}: {resp.text[:200]}")
+        results = resp.json().get("results", [])
+        return [(int(r["index"]), float(r["relevance_score"])) for r in results]
+
+    def rerank(self, query: str, documents: list[str], top_n: int) -> list[tuple[int, float]]:
+        """重试耗尽后抛 LLMError，由调用方决定降级策略（Retriever 会退回向量序）。"""
+        try:
+            return self._rerank_api_call(query, documents, top_n)
+        except (
+            RetryError, APIConnectionError, APITimeoutError, APIStatusError, _Retryable429, LLMError,
+        ) as e:
+            raise LLMError(f"rerank 调用失败（重试已耗尽）: {type(e).__name__}: {str(e)[:200]}") from e
 
     # ---------------- embedding ----------------
 
