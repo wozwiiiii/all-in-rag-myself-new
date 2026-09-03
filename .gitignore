@@ -83,3 +83,4 @@ baseline/__pycache__/*.pyc
 baseline/embedding_cache_remote/embedding_cache.pkl
 
 data/
+.trae
