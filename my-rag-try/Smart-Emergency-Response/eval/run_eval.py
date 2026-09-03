@@ -70,6 +70,7 @@ async def run(limit: int | None, category: str | None) -> int:
             keywords=item.get("keywords", []),
             reference=item.get("reference"),
             llm=llm,
+            expected_route=item.get("expected_route"),
         )
         scores.update(
             {
@@ -77,7 +78,7 @@ async def run(limit: int | None, category: str | None) -> int:
                 "category": item["category"],
                 "question": item["question"],
                 "answer": answer[:300],
-                "expected_route": item["category"],
+                "expected_route": item.get("expected_route", item["category"]),
                 "actual_route": route,
                 "latency_ms": elapsed,
             }
@@ -90,6 +91,14 @@ async def run(limit: int | None, category: str | None) -> int:
     mean = sum(r["total"] for r in results) / max(len(results), 1)
     print(f"\n平均分: {mean:.4f}（{len(results)} 题）")
     return 0
+
+
+def _route_correct(r: dict) -> bool:
+    """路由判定：普通题比 actual/expected；refuse 题 router 结构上不输出
+    refuse 路由（拒答发生在下游），故以 refused 标志判定。"""
+    if r["expected_route"] == "refuse":
+        return bool(r.get("refused"))
+    return r["actual_route"] == r["expected_route"]
 
 
 def write_report(results: list[dict]) -> None:
@@ -115,14 +124,14 @@ def write_report(results: list[dict]) -> None:
     ]
     for cat, rows in sorted(by_cat.items()):
         mean = sum(r["total"] for r in rows) / len(rows)
-        routed = sum(1 for r in rows if r["actual_route"] == r["expected_route"])
+        routed = sum(1 for r in rows if _route_correct(r))
         lines.append(f"| {cat} | {len(rows)} | {mean:.3f} | {routed}/{len(rows)} |")
 
-    lines += ["", "## 明细", "", "| ID | 类别 | 得分 | 路由 | 耗时 |", "|---|---|---|---|---|"]
+    lines += ["", "## 明细", "", "| ID | 类别 | 得分 | 路由 | 路由判定 | 耗时 |", "|---|---|---|---|---|---|"]
     for r in results:
         lines.append(
             f"| {r['id']} | {r['category']} | {r['total']:.3f} | "
-            f"{r['actual_route']}（期望 {r['expected_route']}） | {r['latency_ms']}ms |"
+            f"{r['actual_route']}（期望 {r['expected_route']}） | {'✓' if _route_correct(r) else '✗'} | {r['latency_ms']}ms |"
         )
 
     lines += ["", "## 低分用例（< 0.5）", ""]
