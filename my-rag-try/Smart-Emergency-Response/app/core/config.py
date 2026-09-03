@@ -37,6 +37,13 @@ class Settings(BaseSettings):
     # ---- 检索参数 ----
     top_k: int = 6
     score_threshold: float = 0.35  # cosine 相似度阈值，低于则视为无可靠证据
+    recall_k: int = 20  # 每路召回窗口（向量/BM25 各取 top recall_k 后并集）
+    rerank_enabled: bool = True
+    rerank_model: str = "BAAI/bge-reranker-v2-m3"
+    bm25_enabled: bool = True  # 关闭即回到纯向量+rerank（依赖缺失时也自动降级）
+    # 两遍生成：先要点完备枚举再按 checklist 重组（+1 次 LLM 调用，约 +5-15s）；
+    # 解决单遍压缩有损丢条目问题（实测 Q1 感知/Q3 监护）
+    generation_two_pass: bool = True
 
     # ---- 限流 / 超时 / 迭代上限 ----
     rate_limit_per_minute: int = 20

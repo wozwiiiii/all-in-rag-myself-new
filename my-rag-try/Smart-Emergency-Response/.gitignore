@@ -4,6 +4,7 @@
 
 # ---- 构建产物与运行时数据 ----
 storage/
+.venv/
 **/__pycache__/
 *.pyc
 .pytest_cache/
