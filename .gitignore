@@ -78,6 +78,9 @@ rag/
 /.zcode
 my-rag-try/面试
 
+# Smart-Emergency-Response 早期旧文档（2026-08-17，内容已被 docs/ 9 月文档取代，不纳入版本控制）
+my-rag-try/Smart-Emergency-Response/docs/doc/
+
 # baseline
 baseline/__pycache__/*.pyc
 baseline/embedding_cache_remote/embedding_cache.pkl
