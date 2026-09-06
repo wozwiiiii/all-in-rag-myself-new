@@ -27,3 +27,8 @@ baseline/answer.csv
 *.egg-info/*.egg-info/
 baseline/__pycache__/
 baseline/embedding_cache_remote/embedding_cache.pkl
+# 技术文档本地化（2026-09-06）：文档仅存本地与 docs/doc/ 备份，不入版本控制
+README.md
+PLAN.md
+docs/wiki/
+docs/doc/
