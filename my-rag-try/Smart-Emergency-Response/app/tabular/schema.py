@@ -138,6 +138,41 @@ def table_intros(settings: Settings) -> dict[str, str]:
     return intros
 
 
+_COLUMNS_CACHE: dict[str, dict[str, dict[str, str]]] = {}
+
+
+def table_columns(settings: Settings) -> dict[str, dict[str, str]]:
+    """物理表名 -> {列名: 中文描述}，供选表阶段注入字段级语义提示。
+
+    列清单取自 parquet 实际结构（pyarrow 只读 schema，不加载 26 万行数据），
+    描述来自结构 docx 的 column_dict；docx 未覆盖的列回退用列名本身。
+    动因（实测归因，protocol-bench-20260906）：表介绍文本只描述业务定位
+    （enterprise_promise 的介绍只说"安全承诺"），而"开停车/风险等级"等真正
+    能区分表的语义在列描述里——选表 prompt 缺字段级信息导致 3/6 题选错表。
+    """
+    import pyarrow.parquet as pq
+
+    key = str(settings.parquet_dir)
+    if key in _COLUMNS_CACHE:
+        return _COLUMNS_CACHE[key]
+    colmap = column_dict(settings)
+    result: dict[str, dict[str, str]] = {}
+    for path in sorted(settings.parquet_dir.glob("*.parquet")):
+        try:
+            schema = pq.read_schema(path)
+            cols = [f.name for f in schema]
+        except Exception as e:  # 单表损坏不阻断选表，降级为空列清单
+            logger.warning(
+                "table_columns_read_failed",
+                extra={"table": path.stem, "err": str(e)},
+            )
+            cols = []
+        result[path.stem] = {c: colmap.get(c, c) for c in cols}
+    logger.info("table_columns_built", extra={"tables": len(result)})
+    _COLUMNS_CACHE[key] = result
+    return result
+
+
 def build_table_profiles(settings: Settings, tables: list[str] | None = None) -> str:
     """生成紧凑表画像：列名(中文描述/ dtype) + 1 行示例。tables=None 时全量。"""
     import pandas as pd

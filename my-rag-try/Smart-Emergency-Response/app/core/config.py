@@ -45,6 +45,12 @@ class Settings(BaseSettings):
     # 解决单遍压缩有损丢条目问题（实测 Q1 感知/Q3 监护）
     generation_two_pass: bool = True
 
+    # ---- 表格代理协议 ----
+    # react：经典 ReAct 文本协议（Thought/Action/Action Input），兼容 7B 等弱模型；
+    # tool_calls：OpenAI function calling 协议（execute_pandas / finish 工具）。
+    # 默认 react，保证现有行为不变；非法值会在 TabularAgent 构造时回退到 react 并告警。
+    agent_protocol: str = "react"
+
     # ---- 限流 / 超时 / 迭代上限 ----
     rate_limit_per_minute: int = 20
     qa_total_timeout_s: float = 120.0

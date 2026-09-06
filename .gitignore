@@ -52,7 +52,7 @@ ehthumbs.db
 Thumbs.db
 
 # python环境相关目录
-rag/
+/rag/  # 仅忽略仓库根的 rag/ 实验目录；无锚定的 rag/ 曾误伤生产代码 app/rag/，导致其从未入库（2026-09-06 修复）
 
 # Model files
 *.h5

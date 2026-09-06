@@ -29,11 +29,11 @@ app/
 ├── core/                 # 配置(pydantic-settings) / JSON 日志 / 异常体系
 ├── llm/client.py         # OpenAI 兼容客户端：超时、指数退避重试、embedding 缓存(sqlite)
 ├── rag/                  # chunking(标题层级分块) / ingest(索引构建) / retriever / generator
-├── tabular/              # loader(xlsx→parquet) / schema(两阶段元数据) / sandbox / agent(ReAct)
+├── tabular/              # loader(xlsx→parquet) / schema(两阶段元数据) / sandbox / agent(双协议: react/tool_calls 可配置)
 ├── orchestrator/         # router(意图路由) / pipeline(编排：分支/并行/融合/总超时)
 └── api/                  # schemas / security(API Key + 滑动窗口限流) / routes(含探针)
-eval/                     # 评测集(18题四类) / 指标(对齐竞赛公式) / 报告脚本 / 检索诊断工具
-tests/                    # 88 项测试：沙箱攻击载荷 30 条全部拦截 + API 合约 + 路由降级 + 分块 + 解析边界 + OCR/rerank/BM25/两遍生成
+eval/                     # 评测集(18题四类) / 指标(v1/v2/v3 三代口径) / 双协议 bench / 报告脚本 / 检索诊断工具
+tests/                    # 172 项测试：沙箱攻击载荷 30 条全部拦截 + API 合约 + 路由降级 + 分块/OCR + BM25/RRF + 双协议 + 选表增强 + 三代评分口径
 scripts/build_index.py    # 索引构建 CLI（与服务启动分离）
 ```
 
@@ -175,8 +175,8 @@ docker compose exec qa python -m scripts.build_index   # 首次构建索引
 
 ## 设计决策（面试可讲）
 
-1. **为什么 ReAct 文本协议而不是 function calling？**
-   实测硅基流动 Qwen2.5-7B 的 `tool_calls` 输出为不可解析的伪 JSON（乱码 + 重复 token，单次 26s+）。改为 `Thought/Action/Action Input` 三行文本协议 + 正则解析后完全可控。协议解析失败有明确的自纠错反馈路径。
+1. **ReAct 文本协议还是 function calling？——都实现了，用数据选。**
+   历史背景：7B 时代实测 `tool_calls` 输出为不可解析的伪 JSON，故先用 ReAct 文本协议 + 正则解析。2026-09 起两种协议均实现且可配置（`agent_protocol`），并在 72B 上做了同模型同温度的双协议对比实测（`eval/bench_protocol.py`）：收敛率均 100%、格式错误均 0，fc 多耗 15-30% token、延迟无稳定差异。结论不再依赖经验断言，而以 `eval/reports/protocol-bench-*.md` 为准。
 2. **为什么 72B 而不是免费 7B？**
    表格代理是多约束代码生成任务（业务过滤规则 + 真实列名 + 跨表关联），7B 错误率不可接受（幻觉列名/引号错配/日期乱码）。72B 单次问答成本约几分钱，质量决定可用性。模型名通过 `.env` 可切换，客户端无绑定。
 3. **为什么子进程沙箱而不是线程？**
@@ -189,11 +189,18 @@ docker compose exec qa python -m scripts.build_index   # 首次构建索引
 ## 评测
 
 ```bash
-python eval/run_eval.py                # 全量 18 题
+python eval/run_eval.py                # 全量 18 题（默认口径 v3）
 python eval/run_eval.py --category table
+python eval/run_eval.py --metrics v2   # 历史口径对比用
+python eval/bench_protocol.py --model Qwen/Qwen2.5-72B-Instruct   # 双协议对比
 ```
 
-指标对齐竞赛公式 `0.7×关键词命中 + 0.3×语义相似度`；refuse 类以"明确拒答"计分。报告输出至 `eval/reports/report-<时间戳>.md`，含分类汇总、路由正确率、低分用例明细——作为 prompt/参数改动的 A/B 基线。
+指标口径历经三代（详见 wiki《07-评测与可观测》）：
+v1 `0.7×关键词 + 0.3×语义` → v2 加入事实一致性（权重 0.6/0.25/0.15）→
+**v3 `0.3×关键词 + 0.2×语义 + 0.35×结论数字一致性 + 0.15×事实自洽`**：v2 实测发现
+"答错数值的表格题仍拿 0.81-0.90"（关键词权重过高、日期/字段编号稀释数字惩罚），
+v3 将结论数字一致性独立为主信号，并对结论数字完全不符的答案**封顶 ≤0.4**。
+三代分数不可横比；报告输出至 `eval/reports/report-<时间戳>.md`。
 
 ### 基线结果（Qwen2.5-72B-Instruct，本人实测）
 
@@ -250,7 +257,7 @@ python eval/run_eval.py --category table
 | 错误处理 | print 继续           | 统一异常体系 + JSON 错误体 + request\_id 日志                 |
 | 意图路由 | 每题一个全量 ReAct 循环    | LLM 单次分类 + 启发式降级                                   |
 | 质量   | 无度量                | 18 题评测集 + 报告，改动可 A/B                               |
-| 测试   | 无                  | 88 项（含 30 条沙箱攻击载荷，经独立红队审查后加固；OCR/rerank/BM25/两遍生成降级用例） |
+| 测试   | 无                  | 172 项（含 30 条沙箱攻击载荷，经独立红队审查后加固；OCR/rerank/BM25/双协议/选表增强/三代评分口径降级与验收用例） |
 | 检索   | 单路向量 top-k         | 融合检索：向量+BM25 召回并集 + RRF/rerank 排序（多级降级）                |
 | 生成   | 单遍长答案（压缩有损丢条目）  | 两遍生成：逐 chunk 抽取 + 程序化拼接 + 结论段（关键词覆盖 100%）          |
 
