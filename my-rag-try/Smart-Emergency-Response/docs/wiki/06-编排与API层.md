@@ -72,6 +72,8 @@ r1, r2 = await asyncio.gather(guard(t1), guard(t2))
 
 **设计判断（如实）**：分支（检索/生成/表分析）是单次阻塞调用，无法在内部细分"检索/生成"阶段，故执行期统一发 `working` 事件。选择阶段事件流而非全 token 流，是因为 two_pass 答案主体是程序化拼接的要点（非 token 流），且全 token 流需 `AsyncOpenAI` 破坏 LLM 收口惯例，收益小于侵入。
 
+**证据留存（evidence，2026-09-06 引入）**：`QAResult.evidence` 汇总各分支证据——text 路=召回 chunk 原文（800 字/块）拼接、table 路=沙箱 Observation（见 [05 章](05-表格Agent与安全沙箱.md)）、hybrid 合并两路（表格 Observation 在前，数值以表格路为准）。用途：评测侧事实一致性校验（[07 章](07-评测与可观测.md) 口径 v2）。同步 API 响应体（QAResponse 显式构造）不含该字段，仅评测与 SSE answer 事件可见，体积约 5k 字符。
+
 ### 输出侧注入防护（guard.py，2026-09-03 引入）
 
 输入侧结构隔离（agent 选表拆 system/user）之外，`pipeline.answer()` 出口统一做 `check_prompt_leak` 检测：答案命中 prompt 元层特征（角色定义/协议标记/画像标题）即替换为安全文案，日志 `prompt_leak_detected`。

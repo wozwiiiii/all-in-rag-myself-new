@@ -61,6 +61,8 @@ _ACTION_RE = re.compile(
 
 **自愈闭环**：沙箱执行失败的 traceback 原样回填下一轮 `Observation:`，LLM 读错误改代码再试，最多 8 轮。最后一轮强制 finish（不再执行代码——结果无处使用）。
 
+**观测留存（2026-09-06 引入）**：`TabularAnswer.observations` 保存每轮沙箱 Observation（finish/未收敛时截取尾部 3 轮）——早期轮多为报错自愈，对数值溯源价值低。用途：经 `QAResult.evidence` 透传给评测侧事实一致性校验（[07 章](07-评测与可观测.md) 口径 v2），让"答案中的数字是否真由代码执行得出"可核对。
+
 格式错误有专门的纠错反馈（`_FORMAT_ERROR`），模型重新输出协议。
 
 ## 5.4 sandbox.py — 三层防护（项目核心差异点）

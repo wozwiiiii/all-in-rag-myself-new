@@ -164,4 +164,6 @@ model_refused = any(m in head for m in _REFUSAL_MARKERS)
 
 sources 响应携带 `score`（向量分）与可选 `rerank_score`——每个证据的相关性可审计。
 
+**证据原文留存（2026-09-06 引入）**：text 路召回的 chunk 原文（800 字/块）经 `QAResult.evidence` 透传（[06 章](06-编排与API层.md)），供评测口径 v2 的证据一致性核对——答案中的数字是否真出自召回文本，可审计而非自评。
+
 下一章 → [05-表格Agent与安全沙箱](05-表格Agent与安全沙箱.md)
