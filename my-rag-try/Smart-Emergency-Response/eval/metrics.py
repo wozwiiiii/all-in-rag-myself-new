@@ -1,21 +1,56 @@
 """评测指标：对齐竞赛评分公式的可执行近似。
 
+口径 v1（score_answer）：
 score = 0.7 * keyword_score + 0.3 * semantic_score
 - keyword_score：期望关键词命中率（竞赛为带权，评测集简化为均权）
 - semantic_score：答案与参考描述的 embedding 余弦相似度（参考描述缺失时记 0.5 中性分）
 refuse 类：系统明确拒答得 1 分，编造答案得 0 分。
 判定来源：dataset 的 expected_route == "refuse"（显式），
 或旧数据集的隐式条件（无关键词且无参考描述）。
+
+口径 v2（score_answer_v2，2026-09-06）：v1 只测覆盖不测精确率——
+Q15 实证答错字段（risk_rating_code 应为 risk_grade=3）仍拿关键词分。
+total = 0.6 * keyword + 0.25 * semantic + 0.15 * faithful
+faithful = evidence_consistency × ref_consistency(有 reference 时) × (1 - redundancy_penalty)
+- evidence_consistency：answer 抽取的数字在证据文本（召回 chunk / 沙箱 Observation）中
+  出现的比例；无证据或答案无数字 → 1.0（中性不罚）
+- ref_consistency：answer 数字与 reference 数字的命中比。压 Q15 类"字段误用但数值
+  自洽"错误的关键子项——此类错误 answer 与沙箱执行结果一致（都是错的 0），纯证据
+  一致性查不出，只有对照 reference 数字才能发现
+- redundancy_penalty：要点行数/关键词命中数之比超过 10.0 后线性惩罚、20.0 打满
+  （阈值经 2026-09-06 实测校准：text 题要点/命中比常态 8-13，旧值 2.0 会误伤全部
+  正常列举型答案；详见 _REDUNDANCY_FREE_RATIO 注释）
+规则版已知局限（如实声明）：数字改写（"逾百家"）、区间、单位换算、中文数字均查不到；
+只做字面核对，不判断语义等价。
 """
 
 from __future__ import annotations
 
 import math
+import re
 
 from app.llm.client import LLMClient
 
 KEYWORD_WEIGHT = 0.7
 SEMANTIC_WEIGHT = 0.3
+
+# 口径 v2 权重（总和 1.0，满分仍为 1.0，历史报告口径见 eval/reports/）
+V2_KEYWORD_WEIGHT = 0.6
+V2_SEMANTIC_WEIGHT = 0.25
+V2_FAITH_WEIGHT = 0.15
+
+# 数字抽取：阿拉伯整数/小数/百分数。中文数字与文字化数量（"逾百"）不处理（局限见 docstring）
+_NUMBER_RE = re.compile(r"\d+(?:\.\d+)?%?")
+
+# 冗余惩罚参数：要点行数/关键词命中数超过 FREE_RATIO 起罚，FULL_SPAN 打满。
+# 校准依据（2026-09-06 实测）：两遍生成"宁可多抽"下，text 题要点数是关键词
+# 标注数的 8-13 倍是常态（如 Q5 抽 39 要点），FREE_RATIO=2 会把全部正常列举型
+# 答案打满、faith 维度失去区分度。免罚线放到常态上限之外，只罚极端失衡。
+_REDUNDANCY_FREE_RATIO = 10.0
+_REDUNDANCY_FULL_SPAN = 20.0
+
+# 两遍生成要点行格式："N. 内容 [i]"（_extract_points 全局重编号）
+_POINTS_LINE_RE = re.compile(r"^\s*\d+[.、)]\s", re.MULTILINE)
 
 # 关键词别名词典：答案出现任一别名即视为命中该关键词。
 # 动因：字面匹配的假阴性——Q8"吊装作业如何分级管理"的准确答案为
@@ -78,3 +113,111 @@ def score_answer(
     if math.isnan(total):
         total = 0.0
     return {"total": round(total, 4), "keyword": round(kw, 4), "semantic": round(sem, 4), "refused": refused}
+
+
+# ---------------- 口径 v2：事实一致性 + 冗余惩罚 ----------------
+
+
+def extract_numbers(text: str) -> list[str]:
+    """抽取阿拉伯数字 token（含小数与百分数），去重保序。
+
+    先剥离要点行首编号（'N. '）——编号是排版产物而非语义数字，
+    混入会稀释证据/参考一致性分数（正确答案的编号在证据里查不到）。
+    """
+    text = _POINTS_LINE_RE.sub("", text or "")
+    seen: dict[str, None] = {}
+    for m in _NUMBER_RE.findall(text):
+        seen.setdefault(m, None)
+    return list(seen)
+
+
+def evidence_consistency(answer: str, evidence: str) -> float:
+    """answer 中的数字在证据文本中出现的比例；无证据或答案无数字 → 1.0（中性不罚）。"""
+    if not evidence:
+        return 1.0
+    nums = extract_numbers(answer)
+    if not nums:
+        return 1.0
+    hit = sum(1 for n in nums if n in evidence)
+    return hit / len(nums)
+
+
+def ref_consistency(answer: str, reference: str | None) -> float:
+    """answer 数字被 reference 数字覆盖的比例；reference 缺失、双方任一无数字 → 1.0。
+
+    方向取 answer 为分子：答案中每个数字都应能在 reference 找到依据——
+    编造的数字（如 Q15 错误答案的"0 家"）不在 reference（107/3）中，直接归零；
+    而 reference 侧的额外数字（如 risk_grade=3）不会误伤只报了 107 的正确答案。
+    """
+    if not reference:
+        return 1.0
+    ref_nums = extract_numbers(reference)
+    ans_nums = extract_numbers(answer)
+    if not ref_nums or not ans_nums:
+        return 1.0
+    hit = sum(1 for n in ans_nums if n in ref_nums)
+    return hit / len(ans_nums)
+
+
+def redundancy_penalty(answer: str, keywords: list[str]) -> float:
+    """冗余惩罚：要点行数 / max(关键词命中数, 1) 超过 2.0 后线性惩罚，3.0 打满。
+
+    要点行按两遍生成格式（'N. '开头）识别；单遍答案无编号行 → 0（报告侧标注
+    '未计冗余'）。防的是'宁可多抽'在覆盖型指标下刷分。
+    """
+    points = len(_POINTS_LINE_RE.findall(answer or ""))
+    if points == 0:
+        return 0.0
+    hit = sum(1 for k in keywords if _keyword_hit(answer, k)) if keywords else 0
+    ratio = points / max(hit, 1)
+    if ratio <= _REDUNDANCY_FREE_RATIO:
+        return 0.0
+    span = _REDUNDANCY_FULL_SPAN - _REDUNDANCY_FREE_RATIO
+    return min((ratio - _REDUNDANCY_FREE_RATIO) / span, 1.0)
+
+
+def score_answer_v2(
+    *,
+    answer: str,
+    refused: bool,
+    keywords: list[str],
+    reference: str | None,
+    llm: LLMClient,
+    expected_route: str | None = None,
+    evidence: str = "",
+) -> dict:
+    """口径 v2 评分。公式与局限见模块 docstring；旧 score_answer 保留不动。"""
+    # refuse 判定与 v1 完全一致
+    if expected_route is not None:
+        is_refuse_item = expected_route == "refuse"
+    else:
+        is_refuse_item = not keywords and reference is None
+    if is_refuse_item:
+        text_refused = any(m in answer for m in ("无法回答", "未检索到", "无法给出", "资料库未"))
+        effective = refused or text_refused
+        return {
+            "total": 1.0 if effective else 0.0,
+            "keyword": 0.0,
+            "semantic": 0.0,
+            "faithful": 0.0,  # refuse 类不适用事实维度
+            "redundancy": 0.0,
+            "refused": effective,
+        }
+
+    kw = keyword_score(answer, keywords) if keywords else 0.0
+    sem = semantic_score(answer, reference, llm) if keywords else 0.0
+    ev = evidence_consistency(answer, evidence)
+    rc = ref_consistency(answer, reference)
+    red = redundancy_penalty(answer, keywords)
+    faith = ev * rc * (1.0 - red)
+    total = V2_KEYWORD_WEIGHT * kw + V2_SEMANTIC_WEIGHT * sem + V2_FAITH_WEIGHT * faith
+    if math.isnan(total):
+        total = 0.0
+    return {
+        "total": round(total, 4),
+        "keyword": round(kw, 4),
+        "semantic": round(sem, 4),
+        "faithful": round(faith, 4),
+        "redundancy": round(red, 4),
+        "refused": refused,
+    }

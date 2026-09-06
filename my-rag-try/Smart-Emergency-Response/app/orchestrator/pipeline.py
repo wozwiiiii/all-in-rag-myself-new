@@ -31,6 +31,10 @@ class QAResult:
     latency_ms: int = 0
     detail: dict = field(default_factory=dict)
     usage: dict = field(default_factory=dict)  # 本次请求 token 用量（由 answer() 填充）
+    # 证据留存（评测侧事实一致性校验用）：text 路=召回 chunk 原文截断拼接，
+    # table 路=最近几轮沙箱 Observation。同步 API 响应体不含此字段（QAResponse 显式构造），
+    # 仅评测与 SSE answer 事件可见；每 chunk 截 800 字 × 6 ≈ 4.8k 字符，体积可控。
+    evidence: str = ""
 
 
 _FUSION_PROMPT = """你是综合答复助手。下面是对同一问题的两路调查结果：
@@ -166,15 +170,24 @@ class QAPipeline:
         answer, sources, refused = await asyncio.to_thread(
             generate_answer, question, chunks, self._llm, two_pass=self._s.generation_two_pass
         )
-        return QAResult(answer=answer, sources=sources, refused=refused, detail={"branch": "text"})
+        # 证据留存：召回 chunk 原文截断拼接（事实一致性校验的证据面；
+        # 800 字/块——400 字会把含数字的段落截掉，稀释证据一致性）
+        evidence = "\n---\n".join(c.text[:800] for c in chunks)
+        return QAResult(
+            answer=answer, sources=sources, refused=refused, evidence=evidence,
+            detail={"branch": "text"},
+        )
 
     async def _answer_table(self, question: str) -> QAResult:
         tab = await asyncio.to_thread(self._agent.run, question)
         sources = [{"source": f"表:{t}", "kind": "table"} for t in tab.tables_used]
+        # 证据留存：最近几轮沙箱 Observation（含执行结果数值）
+        evidence = "\n\n".join(tab.observations)
         return QAResult(
             answer=tab.answer,
             sources=sources,
             refused=False,
+            evidence=evidence,
             detail={"branch": "table", "iterations": tab.iterations, "converged": tab.converged},
         )
 
@@ -218,10 +231,13 @@ class QAPipeline:
             fused_text = table_res.answer
             fusion_degraded = True
         sources = table_res.sources + text_res.sources
+        # 证据留存：融合两路证据（表格 Observation 在前——数据数值以表格路为准）
+        evidence = "\n\n".join(e for e in (table_res.evidence, text_res.evidence) if e)
         return QAResult(
             answer=fused_text,
             sources=sources,
             refused=False,
+            evidence=evidence,
             detail={"branch": "hybrid", "fusion_degraded": fusion_degraded},
         )
 

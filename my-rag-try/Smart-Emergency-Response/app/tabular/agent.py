@@ -92,6 +92,9 @@ class TabularAnswer:
     tables_used: list[str] = field(default_factory=list)
     iterations: int = 0
     converged: bool = False
+    # 最近几轮沙箱执行的 Observation 文本（供评测侧事实一致性校验作证据；
+    # 只留尾部 N 轮——早期轮多为报错自愈，对答案数值溯源价值低）
+    observations: list[str] = field(default_factory=list)
 
 
 _DFS_RE = re.compile(r"dfs\[['\"]([^\]'\"]+)['\"]\]")
@@ -186,6 +189,7 @@ class TabularAgent:
             {"role": "user", "content": f"【问题】\n{question}"},
         ]
         used_tables: set[str] = set(selected or [])
+        observations: list[str] = []  # 证据留存：每轮沙箱执行的 Observation
 
         for i in range(1, self._s.agent_max_iterations + 1):
             force_finish = i == self._s.agent_max_iterations
@@ -216,6 +220,7 @@ class TabularAgent:
                     tables_used=sorted(used_tables),
                     iterations=i,
                     converged=True,
+                    observations=observations[-3:],
                 )
 
             if force_finish:
@@ -230,6 +235,7 @@ class TabularAgent:
 
             used_tables.update(_DFS_RE.findall(action_input))
             observation = self._execute(action_input)
+            observations.append(f"Observation:\n{observation}")
             logger.info(
                 "tabular_step",
                 extra={"iter": i, "ok": observation.startswith("[OK")},
@@ -241,6 +247,7 @@ class TabularAgent:
             tables_used=sorted(used_tables),
             iterations=self._s.agent_max_iterations,
             converged=False,
+            observations=observations[-3:],
         )
 
     def _execute(self, code: str) -> str:
