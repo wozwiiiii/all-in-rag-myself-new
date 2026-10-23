@@ -1,5 +1,8 @@
 # All-in-RAG | 大模型应用开发实战一：RAG技术全栈指南
 
+> **📖 Fork 声明**：本仓库 fork 自 Datawhale 开源教程 [datawhalechina/all-in-rag](https://github.com/datawhalechina/all-in-rag)，根目录 `code/`、`docs/`、`Extra-chapter/` 均为上游教程内容，非本人所写。本人的实践项目——危化品应急管理「RAG + 表格」双路问答系统——位于 [`my-rag-try/Smart-Emergency-Response/`](./my-rag-try/Smart-Emergency-Response/)。
+
+
 <div align='center'>
   <img src="./docs/logo.svg" alt="All-in-RAG Logo" width="70%">
 </div>
